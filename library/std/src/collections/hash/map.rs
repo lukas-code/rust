@@ -3237,9 +3237,7 @@ pub(super) fn map_try_reserve_error(err: hashbrown::TryReserveError) -> TryReser
 }
 
 #[inline]
-fn map_raw_entry<'a, K, V, S>(
-    raw: base::RawEntryMut<'a, K, V, S>,
-) -> RawEntryMut<'a, K, V, S> {
+fn map_raw_entry<'a, K, V, S>(raw: base::RawEntryMut<'a, K, V, S>) -> RawEntryMut<'a, K, V, S> {
     match raw {
         base::RawEntryMut::Occupied(base) => RawEntryMut::Occupied(RawOccupiedEntryMut { base }),
         base::RawEntryMut::Vacant(base) => RawEntryMut::Vacant(RawVacantEntryMut { base }),
