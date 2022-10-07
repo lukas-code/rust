@@ -359,6 +359,7 @@ fn align_offset_zst() {
 }
 
 #[test]
+#[cfg(not(bootstrap))]
 fn align_offset_zst_const() {
     const {
         // For pointers of stride = 0, the pointer is already aligned or it cannot be aligned at
@@ -396,6 +397,7 @@ fn align_offset_stride_one() {
 }
 
 #[test]
+#[cfg(not(bootstrap))]
 fn align_offset_stride_one_const() {
     const {
         // For pointers of stride = 1, the pointer can always be aligned. The offset is equal to
@@ -491,6 +493,7 @@ fn align_offset_various_strides() {
 }
 
 #[test]
+#[cfg(not(bootstrap))]
 fn align_offset_various_strides_const() {
     const unsafe fn test_stride<T>(ptr: *const T, numptr: usize, align: usize) {
         let mut expected = usize::MAX;
@@ -554,6 +557,7 @@ fn align_offset_various_strides_const() {
 }
 
 #[test]
+#[cfg(not(bootstrap))]
 fn align_offset_with_provenance_const() {
     const {
         let data = 42;
@@ -633,6 +637,7 @@ fn is_aligned() {
 }
 
 #[test]
+#[cfg(not(bootstrap))]
 fn is_aligned_const() {
     const {
         let data = 42;

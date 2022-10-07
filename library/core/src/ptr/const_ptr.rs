@@ -1384,6 +1384,7 @@ impl<T: ?Sized> *const T {
     pub const fn is_aligned_to(self, align: usize) -> bool {
         assert!(align.is_power_of_two(), "is_aligned_to: align is not a power-of-two");
 
+        #[inline]
         fn runtime(ptr: *const u8, align: usize) -> bool {
             ptr.addr() & (align - 1) == 0
         }
