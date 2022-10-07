@@ -1618,6 +1618,20 @@ impl<T: ?Sized> *mut T {
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned", issue = "96284")]
+    #[rustc_const_unstable(feature = "const_pointer_is_aligned", issue = "none")]
+    #[cfg(not(bootstrap))]
+    pub const fn is_aligned(self) -> bool
+    where
+        T: Sized,
+    {
+        self.is_aligned_to(core::mem::align_of::<T>())
+    }
+
+    #[must_use]
+    #[inline]
+    #[unstable(feature = "pointer_is_aligned", issue = "96284")]
+    #[allow(missing_docs)]
+    #[cfg(bootstrap)]
     pub fn is_aligned(self) -> bool
     where
         T: Sized,
@@ -1636,6 +1650,28 @@ impl<T: ?Sized> *mut T {
     #[must_use]
     #[inline]
     #[unstable(feature = "pointer_is_aligned", issue = "96284")]
+    #[rustc_const_unstable(feature = "const_pointer_is_aligned", issue = "none")]
+    #[cfg(not(bootstrap))]
+    pub const fn is_aligned_to(self, align: usize) -> bool {
+        assert!(align.is_power_of_two(), "is_aligned_to: align is not a power-of-two");
+
+        fn runtime(ptr: *mut u8, align: usize) -> bool {
+            ptr.addr() & (align - 1) == 0
+        }
+
+        const fn comptime(ptr: *mut u8, align: usize) -> bool {
+            ptr.align_offset(align) == 0
+        }
+
+        // SAFETY: `ptr.align_offset(align)` returns 0 if and only if the pointer is already aligned.
+        unsafe { intrinsics::const_eval_select((self.cast::<u8>(), align), comptime, runtime) }
+    }
+
+    #[must_use]
+    #[inline]
+    #[unstable(feature = "pointer_is_aligned", issue = "96284")]
+    #[allow(missing_docs)]
+    #[cfg(bootstrap)]
     pub fn is_aligned_to(self, align: usize) -> bool {
         if !align.is_power_of_two() {
             panic!("is_aligned_to: align is not a power-of-two");
