@@ -283,7 +283,8 @@ language_item_table! {
     MaybeUninit,             sym::maybe_uninit,        maybe_uninit,               Target::Union,          GenericRequirement::None;
 
     /// Align offset for stride != 1; must not panic.
-    AlignOffset,             sym::align_offset,        align_offset_fn,            Target::Fn,             GenericRequirement::None;
+    AlignOffset,             sym::align_offset,        align_offset_fn,            Target::Fn,             GenericRequirement::Exact(1);
+    ConstAlignOffset,        sym::const_align_offset,  const_align_offset_fn,      Target::Fn,             GenericRequirement::Exact(1);
 
     Termination,             sym::termination,         termination,                Target::Trait,          GenericRequirement::None;
 

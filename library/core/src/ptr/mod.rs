@@ -1554,20 +1554,46 @@ pub unsafe fn write_volatile<T>(dst: *mut T, src: T) {
 
 /// Align pointer `p`.
 ///
-/// Calculate offset (in terms of elements of `stride` stride) that has to be applied
+/// Calculate offset (in terms of elements of `size_of::<T>()` stride) that has to be applied
 /// to pointer `p` so that pointer `p` would get aligned to `a`.
+///
+/// # Safety
+/// `a` must be a power of two.
+#[lang = "align_offset"]
+#[rustc_do_not_const_check]
+#[cfg(not(bootstrap))]
+pub(crate) const unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
+    // SAFETY: Caller ensures that `a` is a power of two.
+    unsafe { const_align_offset::<T>(p.addr(), a) }
+}
+
+#[lang = "align_offset"]
+#[cfg(bootstrap)]
+pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
+    // SAFETY: Caller ensures that `a` is a power of two.
+    unsafe { const_align_offset::<T>(p.addr(), a) }
+}
+
+/// Align address `addr`.
+///
+/// Calculate offset (in terms of elements of `size_of::<T>()` stride) that has to be applied
+/// to address `addr` so that `addr` would get aligned to `a`.
 ///
 /// Note: This implementation has been carefully tailored to not panic. It is UB for this to panic.
 /// The only real change that can be made here is change of `INV_TABLE_MOD_16` and associated
 /// constants.
+///
+/// # Safety
+/// `a` must be a power of two.
 ///
 /// If we ever decide to make it possible to call the intrinsic with `a` that is not a
 /// power-of-two, it will probably be more prudent to just change to a naive implementation rather
 /// than trying to adapt this to accommodate that change.
 ///
 /// Any questions go to @nagisa.
-#[lang = "align_offset"]
-pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
+#[cfg_attr(not(bootstrap), lang = "const_align_offset")]
+#[rustc_allow_const_fn_unstable(const_exact_div)]
+pub(crate) const unsafe fn const_align_offset<T: Sized>(addr: usize, a: usize) -> usize {
     // FIXME(#75598): Direct use of these intrinsics improves codegen significantly at opt-level <=
     // 1, where the method versions of these operations are not inlined.
     use intrinsics::{
@@ -1584,7 +1610,7 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
     ///
     /// Implementation of this function shall not panic. Ever.
     #[inline]
-    unsafe fn mod_inv(x: usize, m: usize) -> usize {
+    const unsafe fn mod_inv(x: usize, m: usize) -> usize {
         /// Multiplicative modular inverse table modulo 2⁴ = 16.
         ///
         /// Note, that this table does not contain values where inverse does not exist (i.e., for
@@ -1624,7 +1650,6 @@ pub(crate) unsafe fn align_offset<T: Sized>(p: *const T, a: usize) -> usize {
         }
     }
 
-    let addr = p.addr();
     let stride = mem::size_of::<T>();
     // SAFETY: `a` is a power-of-two, therefore non-zero.
     let a_minus_one = unsafe { unchecked_sub(a, 1) };
