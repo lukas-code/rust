@@ -1,11 +1,12 @@
 use rustc_hir::def::DefKind;
 use rustc_middle::mir;
 use rustc_middle::mir::interpret::PointerArithmetic;
-use rustc_middle::ty::layout::{FnAbiOf, LayoutOf};
+use rustc_middle::ty::layout::FnAbiOf;
 use rustc_middle::ty::{self, Ty, TyCtxt};
 use std::borrow::Borrow;
 use std::collections::hash_map::Entry;
 use std::hash::Hash;
+use std::ops::ControlFlow;
 
 use rustc_data_structures::fx::FxHashMap;
 use std::fmt;
@@ -147,9 +148,10 @@ impl interpret::MayLeak for ! {
 }
 
 impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
-    /// "Intercept" a function call to a panic-related function
-    /// because we have something special to do for it.
-    /// If this returns successfully (`Ok`), the function should just be evaluated normally.
+    /// "Intercept" a function call, because we have something special to do for it.
+    /// All `#[rustc_do_not_const_check]` functions should be hooked here.
+    /// If this returns `Some`, then evaluation should continue with that function.
+    /// Otherwise, the function call has been handled and the function has returned.
     fn hook_special_const_fn(
         &mut self,
         instance: ty::Instance<'tcx>,
@@ -158,7 +160,6 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
         dest: &PlaceTy<'tcx>,
         ret: Option<mir::BasicBlock>,
     ) -> InterpResult<'tcx, Option<ty::Instance<'tcx>>> {
-        // All `#[rustc_do_not_const_check]` functions should be hooked here.
         let def_id = instance.def_id();
 
         if Some(def_id) == self.tcx.lang_items().panic_display()
@@ -192,34 +193,27 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
 
             return Ok(Some(new_instance));
         } else if Some(def_id) == self.tcx.lang_items().align_offset_fn() {
-            // For align_offset, we either call const_align_offset or return usize::MAX directly.
-
-            let Some(const_def_id) = self.tcx.lang_items().const_align_offset_fn() else {
-                bug!("`const_align_offset` must be defined to call `align_offset` in const eval")
-            };
-            let const_instance = ty::Instance::resolve(
-                *self.tcx,
-                ty::ParamEnv::reveal_all(),
-                const_def_id,
-                instance.substs,
-            )
-            .unwrap()
-            .unwrap();
-
-            self.align_offset(const_instance, args, dest, ret)?;
-
-            return Ok(None);
+            // For align_offset, we replace the function call if the pointer has no address.
+            match self.align_offset(instance, args, dest, ret)? {
+                ControlFlow::Continue(()) => return Ok(Some(instance)),
+                ControlFlow::Break(()) => return Ok(None),
+            }
         }
         Ok(Some(instance))
     }
 
+    /// `align_offset(ptr, target_align)` needs special handling in const eval, because the pointer
+    /// may not have an address.
+    ///
+    /// If the pointer does have a known address we return `CONTINUE` and the function call should
+    /// proceed as normal. Otherwise we will replace the function call and return `BREAK`.
     fn align_offset(
         &mut self,
-        const_instance: ty::Instance<'tcx>,
+        instance: ty::Instance<'tcx>,
         args: &[OpTy<'tcx>],
         dest: &PlaceTy<'tcx>,
         ret: Option<mir::BasicBlock>,
-    ) -> InterpResult<'tcx> {
+    ) -> InterpResult<'tcx, ControlFlow<()>> {
         assert_eq!(args.len(), 2);
 
         let ptr = self.read_pointer(&args[0])?;
@@ -229,36 +223,40 @@ impl<'mir, 'tcx: 'mir> CompileTimeEvalContext<'mir, 'tcx> {
             throw_ub_format!("`align_offset` called with non-power-of-two align: {}", target_align);
         }
 
-        let addr = match self.ptr_try_get_alloc_id(ptr) {
+        match self.ptr_try_get_alloc_id(ptr) {
             Ok((alloc_id, offset, _extra)) => {
                 let (_size, alloc_align, _kind) = self.get_alloc_info(alloc_id);
 
-                if target_align > alloc_align.bytes() {
+                if target_align <= alloc_align.bytes() {
+                    // Extract the address relative to the allocation base that is definitely
+                    // sufficiently aligned and call `align_offset` again.
+                    let addr = ImmTy::from_uint(offset.bytes(), args[0].layout).into();
+                    let align = ImmTy::from_uint(target_align, args[1].layout).into();
+
+                    let fn_abi = self.fn_abi_of_instance(instance, ty::List::empty())?;
+                    self.eval_fn_call(
+                        FnVal::Instance(instance),
+                        (CallAbi::Rust, fn_abi),
+                        &[addr, align],
+                        false,
+                        dest,
+                        ret,
+                        StackPopUnwind::NotAllowed,
+                    )?;
+                    Ok(ControlFlow::BREAK)
+                } else {
+                    // Not alignable in const, return `usize::MAX`.
                     let usize_max = Scalar::from_machine_usize(self.machine_usize_max(), self);
                     self.write_scalar(usize_max, dest)?;
                     self.return_to_block(ret)?;
-                    return Ok(());
-                } else {
-                    offset.bytes()
+                    Ok(ControlFlow::BREAK)
                 }
             }
-            Err(addr) => addr,
-        };
-
-        let usize_layout = self.layout_of(self.tcx.types.usize)?;
-        let addr = ImmTy::from_uint(addr, usize_layout).into();
-        let align = ImmTy::from_uint(target_align, usize_layout).into();
-
-        let fn_abi = self.fn_abi_of_instance(const_instance, ty::List::empty())?;
-        self.eval_fn_call(
-            FnVal::Instance(const_instance),
-            (CallAbi::Rust, fn_abi),
-            &[addr, align],
-            false,
-            dest,
-            ret,
-            StackPopUnwind::NotAllowed,
-        )
+            Err(_addr) => {
+                // The pointer has an address, continue with function call.
+                Ok(ControlFlow::CONTINUE)
+            }
+        }
     }
 
     /// See documentation on the `ptr_guaranteed_cmp` intrinsic.

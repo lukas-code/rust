@@ -510,7 +510,6 @@ symbols! {
         concat_macro,
         conservative_impl_trait,
         console,
-        const_align_offset,
         const_allocate,
         const_async_blocks,
         const_compare_raw_pointers,
