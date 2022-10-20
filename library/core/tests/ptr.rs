@@ -657,6 +657,18 @@ fn is_aligned_const() {
 }
 
 #[test]
+#[cfg(bootstrap)]
+fn is_aligned_const() {
+    const {
+        let data = 42;
+        let ptr: *const i32 = &data;
+        // The bootstrap compiler always returns false for is_aligned
+        assert!(!ptr.is_aligned());
+        assert!(!ptr.is_aligned_to(1));
+    }
+}
+
+#[test]
 fn offset_from() {
     let mut a = [0; 5];
     let ptr1: *mut i32 = &mut a[1];

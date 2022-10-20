@@ -17,7 +17,7 @@
 #![feature(const_nonnull_new)]
 #![feature(const_num_from_num)]
 #![feature(const_pointer_byte_offsets)]
-#![cfg_attr(not(bootstrap), feature(const_pointer_is_aligned))]
+#![feature(const_pointer_is_aligned)]
 #![feature(const_ptr_as_ref)]
 #![feature(const_ptr_read)]
 #![feature(const_ptr_write)]
