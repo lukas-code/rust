@@ -1390,7 +1390,7 @@ where
 /// let iter = map.iter();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, K: 'a, V: 'a> {
+pub struct Iter<'a, K, V> {
     base: base::Iter<'a, K, V>,
 }
 
@@ -1428,7 +1428,7 @@ impl<K: Debug, V: Debug> fmt::Debug for Iter<'_, K, V> {
 /// let iter = map.iter_mut();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct IterMut<'a, K: 'a, V: 'a> {
+pub struct IterMut<'a, K, V> {
     base: base::IterMut<'a, K, V>,
 }
 
@@ -1489,7 +1489,7 @@ impl<K, V> IntoIter<K, V> {
 /// let iter_keys = map.keys();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Keys<'a, K: 'a, V: 'a> {
+pub struct Keys<'a, K, V> {
     inner: Iter<'a, K, V>,
 }
 
@@ -1527,7 +1527,7 @@ impl<K: Debug, V> fmt::Debug for Keys<'_, K, V> {
 /// let iter_values = map.values();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Values<'a, K: 'a, V: 'a> {
+pub struct Values<'a, K, V> {
     inner: Iter<'a, K, V>,
 }
 
@@ -1565,7 +1565,7 @@ impl<K, V: Debug> fmt::Debug for Values<'_, K, V> {
 /// let iter = map.drain();
 /// ```
 #[stable(feature = "drain", since = "1.6.0")]
-pub struct Drain<'a, K: 'a, V: 'a> {
+pub struct Drain<'a, K, V> {
     base: base::Drain<'a, K, V>,
 }
 
@@ -1621,7 +1621,7 @@ where
 /// let iter_values = map.values_mut();
 /// ```
 #[stable(feature = "map_values_mut", since = "1.10.0")]
-pub struct ValuesMut<'a, K: 'a, V: 'a> {
+pub struct ValuesMut<'a, K, V> {
     inner: IterMut<'a, K, V>,
 }
 
@@ -1673,7 +1673,7 @@ pub struct IntoValues<K, V> {
 ///
 /// See the [`HashMap::raw_entry_mut`] docs for usage examples.
 #[unstable(feature = "hash_raw_entry", issue = "56167")]
-pub struct RawEntryBuilderMut<'a, K: 'a, V: 'a, S: 'a> {
+pub struct RawEntryBuilderMut<'a, K, V, S> {
     map: &'a mut HashMap<K, V, S>,
 }
 
@@ -1686,7 +1686,7 @@ pub struct RawEntryBuilderMut<'a, K: 'a, V: 'a, S: 'a> {
 ///
 /// [`raw_entry_mut`]: HashMap::raw_entry_mut
 #[unstable(feature = "hash_raw_entry", issue = "56167")]
-pub enum RawEntryMut<'a, K: 'a, V: 'a, S: 'a> {
+pub enum RawEntryMut<'a, K, V, S> {
     /// An occupied entry.
     Occupied(RawOccupiedEntryMut<'a, K, V, S>),
     /// A vacant entry.
@@ -1696,14 +1696,14 @@ pub enum RawEntryMut<'a, K: 'a, V: 'a, S: 'a> {
 /// A view into an occupied entry in a `HashMap`.
 /// It is part of the [`RawEntryMut`] enum.
 #[unstable(feature = "hash_raw_entry", issue = "56167")]
-pub struct RawOccupiedEntryMut<'a, K: 'a, V: 'a, S: 'a> {
+pub struct RawOccupiedEntryMut<'a, K, V, S> {
     base: base::RawOccupiedEntryMut<'a, K, V, S>,
 }
 
 /// A view into a vacant entry in a `HashMap`.
 /// It is part of the [`RawEntryMut`] enum.
 #[unstable(feature = "hash_raw_entry", issue = "56167")]
-pub struct RawVacantEntryMut<'a, K: 'a, V: 'a, S: 'a> {
+pub struct RawVacantEntryMut<'a, K, V, S> {
     base: base::RawVacantEntryMut<'a, K, V, S>,
 }
 
@@ -1711,7 +1711,7 @@ pub struct RawVacantEntryMut<'a, K: 'a, V: 'a, S: 'a> {
 ///
 /// See the [`HashMap::raw_entry`] docs for usage examples.
 #[unstable(feature = "hash_raw_entry", issue = "56167")]
-pub struct RawEntryBuilder<'a, K: 'a, V: 'a, S: 'a> {
+pub struct RawEntryBuilder<'a, K, V, S> {
     map: &'a HashMap<K, V, S>,
 }
 
@@ -2074,7 +2074,7 @@ impl<K, V, S> Debug for RawEntryBuilder<'_, K, V, S> {
 /// [`entry`]: HashMap::entry
 #[stable(feature = "rust1", since = "1.0.0")]
 #[cfg_attr(not(test), rustc_diagnostic_item = "HashMapEntry")]
-pub enum Entry<'a, K: 'a, V: 'a> {
+pub enum Entry<'a, K, V> {
     /// An occupied entry.
     #[stable(feature = "rust1", since = "1.0.0")]
     Occupied(#[stable(feature = "rust1", since = "1.0.0")] OccupiedEntry<'a, K, V>),
@@ -2097,7 +2097,7 @@ impl<K: Debug, V: Debug> Debug for Entry<'_, K, V> {
 /// A view into an occupied entry in a `HashMap`.
 /// It is part of the [`Entry`] enum.
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct OccupiedEntry<'a, K: 'a, V: 'a> {
+pub struct OccupiedEntry<'a, K, V> {
     base: base::RustcOccupiedEntry<'a, K, V>,
 }
 
@@ -2114,7 +2114,7 @@ impl<K: Debug, V: Debug> Debug for OccupiedEntry<'_, K, V> {
 /// A view into a vacant entry in a `HashMap`.
 /// It is part of the [`Entry`] enum.
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct VacantEntry<'a, K: 'a, V: 'a> {
+pub struct VacantEntry<'a, K, V> {
     base: base::RustcVacantEntry<'a, K, V>,
 }
 
@@ -2129,7 +2129,7 @@ impl<K: Debug, V> Debug for VacantEntry<'_, K, V> {
 ///
 /// Contains the occupied entry, and the value that was not inserted.
 #[unstable(feature = "map_try_insert", issue = "82766")]
-pub struct OccupiedError<'a, K: 'a, V: 'a> {
+pub struct OccupiedError<'a, K, V> {
     /// The entry in the map that was already occupied.
     pub entry: OccupiedEntry<'a, K, V>,
     /// The value which was not inserted, because the entry was already occupied.
@@ -2926,7 +2926,7 @@ impl<'a, K, V> OccupiedEntry<'a, K, V> {
     }
 }
 
-impl<'a, K: 'a, V: 'a> VacantEntry<'a, K, V> {
+impl<'a, K, V> VacantEntry<'a, K, V> {
     /// Gets a reference to the key that would be used when inserting a value
     /// through the `VacantEntry`.
     ///
@@ -3217,7 +3217,7 @@ impl fmt::Debug for RandomState {
 }
 
 #[inline]
-fn map_entry<'a, K: 'a, V: 'a>(raw: base::RustcEntry<'a, K, V>) -> Entry<'a, K, V> {
+fn map_entry<'a, K, V>(raw: base::RustcEntry<'a, K, V>) -> Entry<'a, K, V> {
     match raw {
         base::RustcEntry::Occupied(base) => Entry::Occupied(OccupiedEntry { base }),
         base::RustcEntry::Vacant(base) => Entry::Vacant(VacantEntry { base }),
@@ -3237,7 +3237,7 @@ pub(super) fn map_try_reserve_error(err: hashbrown::TryReserveError) -> TryReser
 }
 
 #[inline]
-fn map_raw_entry<'a, K: 'a, V: 'a, S: 'a>(
+fn map_raw_entry<'a, K, V, S>(
     raw: base::RawEntryMut<'a, K, V, S>,
 ) -> RawEntryMut<'a, K, V, S> {
     match raw {

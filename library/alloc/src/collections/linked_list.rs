@@ -66,7 +66,7 @@ struct Node<T> {
 /// documentation for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
     len: usize,
@@ -102,7 +102,7 @@ impl<T> Clone for Iter<'_, T> {
 /// documentation for more.
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T> {
     head: Option<NonNull<Node<T>>>,
     tail: Option<NonNull<Node<T>>>,
     len: usize,
@@ -1139,7 +1139,7 @@ impl<T> FusedIterator for IterMut<'_, T> {}
 ///
 /// When created, cursors start at the front of the list, or the "ghost" non-element if the list is empty.
 #[unstable(feature = "linked_list_cursors", issue = "58533")]
-pub struct Cursor<'a, T: 'a> {
+pub struct Cursor<'a, T> {
     index: usize,
     current: Option<NonNull<Node<T>>>,
     list: &'a LinkedList<T>,
@@ -1171,7 +1171,7 @@ impl<T: fmt::Debug> fmt::Debug for Cursor<'_, T> {
 /// To accommodate this, there is a "ghost" non-element that yields `None` between the head and
 /// tail of the list.
 #[unstable(feature = "linked_list_cursors", issue = "58533")]
-pub struct CursorMut<'a, T: 'a> {
+pub struct CursorMut<'a, T> {
     index: usize,
     current: Option<NonNull<Node<T>>>,
     list: &'a mut LinkedList<T>,
@@ -1702,7 +1702,7 @@ impl<'a, T> CursorMut<'a, T> {
 
 /// An iterator produced by calling `drain_filter` on LinkedList.
 #[unstable(feature = "drain_filter", reason = "recently added", issue = "43244")]
-pub struct DrainFilter<'a, T: 'a, F: 'a>
+pub struct DrainFilter<'a, T, F: 'a>
 where
     F: FnMut(&mut T) -> bool,
 {

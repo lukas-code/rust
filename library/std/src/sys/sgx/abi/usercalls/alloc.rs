@@ -720,7 +720,7 @@ where
 ///
 /// This struct is created by the `iter` method on `UserRef<[T]>`.
 #[unstable(feature = "sgx_platform", issue = "56975")]
-pub struct Iter<'a, T: 'a + UserSafe>(slice::Iter<'a, T>);
+pub struct Iter<'a, T: UserSafe>(slice::Iter<'a, T>);
 
 #[unstable(feature = "sgx_platform", issue = "56975")]
 impl<'a, T: UserSafe> Iterator for Iter<'a, T> {
@@ -736,7 +736,7 @@ impl<'a, T: UserSafe> Iterator for Iter<'a, T> {
 ///
 /// This struct is created by the `iter_mut` method on `UserRef<[T]>`.
 #[unstable(feature = "sgx_platform", issue = "56975")]
-pub struct IterMut<'a, T: 'a + UserSafe>(slice::IterMut<'a, T>);
+pub struct IterMut<'a, T: UserSafe>(slice::IterMut<'a, T>);
 
 #[unstable(feature = "sgx_platform", issue = "56975")]
 impl<'a, T: UserSafe> Iterator for IterMut<'a, T> {

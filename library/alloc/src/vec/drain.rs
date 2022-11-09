@@ -21,7 +21,7 @@ use super::Vec;
 #[stable(feature = "drain", since = "1.6.0")]
 pub struct Drain<
     'a,
-    T: 'a,
+    T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator + 'a = Global,
 > {
     /// Index of tail to preserve

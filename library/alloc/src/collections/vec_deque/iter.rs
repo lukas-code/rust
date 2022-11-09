@@ -12,7 +12,7 @@ use super::{count, wrap_index, RingSlices};
 ///
 /// [`iter`]: super::VecDeque::iter
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     ring: &'a [MaybeUninit<T>],
     tail: usize,
     head: usize,

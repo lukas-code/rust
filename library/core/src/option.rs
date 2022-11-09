@@ -2079,7 +2079,7 @@ unsafe impl<A> TrustedLen for Item<A> {}
 /// This `struct` is created by the [`Option::iter`] function.
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Debug)]
-pub struct Iter<'a, A: 'a> {
+pub struct Iter<'a, A> {
     inner: Item<&'a A>,
 }
 
@@ -2129,7 +2129,7 @@ impl<A> Clone for Iter<'_, A> {
 /// This `struct` is created by the [`Option::iter_mut`] function.
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Debug)]
-pub struct IterMut<'a, A: 'a> {
+pub struct IterMut<'a, A> {
     inner: Item<&'a mut A>,
 }
 

@@ -193,7 +193,7 @@ unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}
 #[stable(feature = "rust1", since = "1.0.0")]
 #[clippy::has_significant_drop]
 #[cfg_attr(not(test), rustc_diagnostic_item = "MutexGuard")]
-pub struct MutexGuard<'a, T: ?Sized + 'a> {
+pub struct MutexGuard<'a, T: ?Sized> {
     lock: &'a Mutex<T>,
     poison: poison::Guard,
 }

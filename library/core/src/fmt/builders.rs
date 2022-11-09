@@ -76,7 +76,7 @@ impl fmt::Write for PadAdapter<'_, '_> {
 #[must_use = "must eventually call `finish()` on Debug builders"]
 #[allow(missing_debug_implementations)]
 #[stable(feature = "debug_builders", since = "1.2.0")]
-pub struct DebugStruct<'a, 'b: 'a> {
+pub struct DebugStruct<'a, 'b> {
     fmt: &'a mut fmt::Formatter<'b>,
     result: fmt::Result,
     has_fields: bool,
@@ -265,7 +265,7 @@ impl<'a, 'b: 'a> DebugStruct<'a, 'b> {
 #[must_use = "must eventually call `finish()` on Debug builders"]
 #[allow(missing_debug_implementations)]
 #[stable(feature = "debug_builders", since = "1.2.0")]
-pub struct DebugTuple<'a, 'b: 'a> {
+pub struct DebugTuple<'a, 'b> {
     fmt: &'a mut fmt::Formatter<'b>,
     result: fmt::Result,
     fields: usize,
@@ -369,7 +369,7 @@ impl<'a, 'b: 'a> DebugTuple<'a, 'b> {
     }
 }
 
-struct DebugInner<'a, 'b: 'a> {
+struct DebugInner<'a, 'b> {
     fmt: &'a mut fmt::Formatter<'b>,
     result: fmt::Result,
     has_fields: bool,
@@ -431,7 +431,7 @@ impl<'a, 'b: 'a> DebugInner<'a, 'b> {
 #[must_use = "must eventually call `finish()` on Debug builders"]
 #[allow(missing_debug_implementations)]
 #[stable(feature = "debug_builders", since = "1.2.0")]
-pub struct DebugSet<'a, 'b: 'a> {
+pub struct DebugSet<'a, 'b> {
     inner: DebugInner<'a, 'b>,
 }
 
@@ -561,7 +561,7 @@ impl<'a, 'b: 'a> DebugSet<'a, 'b> {
 #[must_use = "must eventually call `finish()` on Debug builders"]
 #[allow(missing_debug_implementations)]
 #[stable(feature = "debug_builders", since = "1.2.0")]
-pub struct DebugList<'a, 'b: 'a> {
+pub struct DebugList<'a, 'b> {
     inner: DebugInner<'a, 'b>,
 }
 
@@ -691,7 +691,7 @@ impl<'a, 'b: 'a> DebugList<'a, 'b> {
 #[must_use = "must eventually call `finish()` on Debug builders"]
 #[allow(missing_debug_implementations)]
 #[stable(feature = "debug_builders", since = "1.2.0")]
-pub struct DebugMap<'a, 'b: 'a> {
+pub struct DebugMap<'a, 'b> {
     fmt: &'a mut fmt::Formatter<'b>,
     result: fmt::Result,
     has_fields: bool,

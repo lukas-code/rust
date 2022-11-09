@@ -1269,7 +1269,7 @@ where
 /// let mut iter = a.iter();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, K: 'a> {
+pub struct Iter<'a, K> {
     base: base::Iter<'a, K>,
 }
 
@@ -1312,7 +1312,7 @@ pub struct IntoIter<K> {
 /// let mut drain = a.drain();
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Drain<'a, K: 'a> {
+pub struct Drain<'a, K> {
     base: base::Drain<'a, K>,
 }
 
@@ -1361,7 +1361,7 @@ where
 #[must_use = "this returns the intersection as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Intersection<'a, T: 'a, S: 'a> {
+pub struct Intersection<'a, T, S> {
     // iterator of the first set
     iter: Iter<'a, T>,
     // the second set
@@ -1388,7 +1388,7 @@ pub struct Intersection<'a, T: 'a, S: 'a> {
 #[must_use = "this returns the difference as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Difference<'a, T: 'a, S: 'a> {
+pub struct Difference<'a, T, S> {
     // iterator of the first set
     iter: Iter<'a, T>,
     // the second set
@@ -1415,7 +1415,7 @@ pub struct Difference<'a, T: 'a, S: 'a> {
 #[must_use = "this returns the difference as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct SymmetricDifference<'a, T: 'a, S: 'a> {
+pub struct SymmetricDifference<'a, T, S> {
     iter: Chain<Difference<'a, T, S>, Difference<'a, T, S>>,
 }
 
@@ -1439,7 +1439,7 @@ pub struct SymmetricDifference<'a, T: 'a, S: 'a> {
 #[must_use = "this returns the union as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Union<'a, T: 'a, S: 'a> {
+pub struct Union<'a, T, S> {
     iter: Chain<Iter<'a, T>, Difference<'a, T, S>>,
 }
 

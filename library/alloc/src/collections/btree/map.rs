@@ -369,7 +369,7 @@ impl<K: fmt::Debug, V: fmt::Debug> fmt::Debug for Iter<'_, K, V> {
 ///
 /// [`iter_mut`]: BTreeMap::iter_mut
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct IterMut<'a, K: 'a, V: 'a> {
+pub struct IterMut<'a, K, V> {
     range: LazyLeafRange<marker::ValMut<'a>, K, V>,
     length: usize,
 
@@ -547,7 +547,7 @@ impl<K: fmt::Debug, V: fmt::Debug> fmt::Debug for Range<'_, K, V> {
 /// [`range_mut`]: BTreeMap::range_mut
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "btree_range", since = "1.17.0")]
-pub struct RangeMut<'a, K: 'a, V: 'a> {
+pub struct RangeMut<'a, K, V> {
     inner: LeafRange<marker::ValMut<'a>, K, V>,
 
     // Be invariant in `K` and `V`

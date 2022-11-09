@@ -72,7 +72,7 @@ pub enum NotifiedTcs {
 
 /// An RAII guard that will notify a set of target threads as well as unlock
 /// a mutex on drop.
-pub struct WaitGuard<'a, T: 'a> {
+pub struct WaitGuard<'a, T> {
     mutex_guard: Option<SpinMutexGuard<'a, WaitVariable<T>>>,
     notified_tcs: NotifiedTcs,
 }

@@ -176,7 +176,7 @@ where
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
 #[cfg_attr(not(test), rustc_diagnostic_item = "Cow")]
-pub enum Cow<'a, B: ?Sized + 'a>
+pub enum Cow<'a, B: ?Sized>
 where
     B: ToOwned,
 {

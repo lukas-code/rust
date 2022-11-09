@@ -18,7 +18,7 @@ pub struct SpinMutex<T> {
 unsafe impl<T: Send> Send for SpinMutex<T> {}
 unsafe impl<T: Send> Sync for SpinMutex<T> {}
 
-pub struct SpinMutexGuard<'a, T: 'a> {
+pub struct SpinMutexGuard<'a, T> {
     mutex: &'a SpinMutex<T>,
 }
 

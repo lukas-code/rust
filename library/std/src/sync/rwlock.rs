@@ -133,7 +133,7 @@ unsafe impl<T: ?Sized + Sync> Sync for RwLockReadGuard<'_, T> {}
 #[stable(feature = "rust1", since = "1.0.0")]
 #[clippy::has_significant_drop]
 #[cfg_attr(not(test), rustc_diagnostic_item = "RwLockWriteGuard")]
-pub struct RwLockWriteGuard<'a, T: ?Sized + 'a> {
+pub struct RwLockWriteGuard<'a, T: ?Sized> {
     lock: &'a RwLock<T>,
     poison: poison::Guard,
 }

@@ -1891,7 +1891,7 @@ impl<'a, T, E> IntoIterator for &'a mut Result<T, E> {
 /// Created by [`Result::iter`].
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     inner: Option<&'a T>,
 }
 
@@ -1940,7 +1940,7 @@ impl<T> Clone for Iter<'_, T> {
 /// Created by [`Result::iter_mut`].
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T> {
     inner: Option<&'a mut T>,
 }
 

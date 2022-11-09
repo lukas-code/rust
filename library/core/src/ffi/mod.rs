@@ -347,7 +347,7 @@ pub struct VaListImpl<'f> {
               all supported platforms",
     issue = "44930"
 )]
-pub struct VaList<'a, 'f: 'a> {
+pub struct VaList<'a, 'f> {
     #[cfg(any(
         all(
             not(target_arch = "aarch64"),

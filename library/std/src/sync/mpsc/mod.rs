@@ -381,7 +381,7 @@ impl<T> !Sync for Receiver<T> {}
 /// ```
 #[stable(feature = "rust1", since = "1.0.0")]
 #[derive(Debug)]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     rx: &'a Receiver<T>,
 }
 
@@ -424,7 +424,7 @@ pub struct Iter<'a, T: 'a> {
 /// ```
 #[stable(feature = "receiver_try_iter", since = "1.15.0")]
 #[derive(Debug)]
-pub struct TryIter<'a, T: 'a> {
+pub struct TryIter<'a, T> {
     rx: &'a Receiver<T>,
 }
 

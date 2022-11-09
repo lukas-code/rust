@@ -63,7 +63,7 @@ fn size_from_ptr<T>(_: *const T) -> usize {
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     ptr: NonNull<T>,
     end: *const T, // If T is a ZST, this is actually ptr+len.  This encoding is picked so that
     // ptr == end is a quick test for the Iterator being empty, that works
@@ -184,7 +184,7 @@ impl<T> AsRef<[T]> for Iter<'_, T> {
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T> {
     ptr: NonNull<T>,
     end: *mut T, // If T is a ZST, this is actually ptr+len.  This encoding is picked so that
     // ptr == end is a quick test for the Iterator being empty, that works
@@ -389,7 +389,7 @@ pub(super) trait SplitIter: DoubleEndedIterator {
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct Split<'a, T: 'a, P>
+pub struct Split<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -534,7 +534,7 @@ impl<T, P> FusedIterator for Split<'_, T, P> where P: FnMut(&T) -> bool {}
 /// [slices]: slice
 #[stable(feature = "split_inclusive", since = "1.51.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct SplitInclusive<'a, T: 'a, P>
+pub struct SplitInclusive<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -655,7 +655,7 @@ impl<T, P> FusedIterator for SplitInclusive<'_, T, P> where P: FnMut(&T) -> bool
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct SplitMut<'a, T: 'a, P>
+pub struct SplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -784,7 +784,7 @@ impl<T, P> FusedIterator for SplitMut<'_, T, P> where P: FnMut(&T) -> bool {}
 /// [slices]: slice
 #[stable(feature = "split_inclusive", since = "1.51.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct SplitInclusiveMut<'a, T: 'a, P>
+pub struct SplitInclusiveMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -908,7 +908,7 @@ impl<T, P> FusedIterator for SplitInclusiveMut<'_, T, P> where P: FnMut(&T) -> b
 /// [slices]: slice
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RSplit<'a, T: 'a, P>
+pub struct RSplit<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1005,7 +1005,7 @@ impl<T, P> FusedIterator for RSplit<'_, T, P> where P: FnMut(&T) -> bool {}
 /// [slices]: slice
 #[stable(feature = "slice_rsplit", since = "1.27.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RSplitMut<'a, T: 'a, P>
+pub struct RSplitMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1128,7 +1128,7 @@ impl<T, I: SplitIter<Item = T>> Iterator for GenericSplitN<I> {
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct SplitN<'a, T: 'a, P>
+pub struct SplitN<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1169,7 +1169,7 @@ where
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RSplitN<'a, T: 'a, P>
+pub struct RSplitN<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1209,7 +1209,7 @@ where
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct SplitNMut<'a, T: 'a, P>
+pub struct SplitNMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1250,7 +1250,7 @@ where
 /// [slices]: slice
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RSplitNMut<'a, T: 'a, P>
+pub struct RSplitNMut<'a, T, P>
 where
     P: FnMut(&T) -> bool,
 {
@@ -1295,7 +1295,7 @@ forward_iterator! { RSplitNMut: T, &'a mut [T] }
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct Windows<'a, T: 'a> {
+pub struct Windows<'a, T> {
     v: &'a [T],
     size: NonZeroUsize,
 }
@@ -1443,7 +1443,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for Windows<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct Chunks<'a, T: 'a> {
+pub struct Chunks<'a, T> {
     v: &'a [T],
     chunk_size: usize,
 }
@@ -1626,7 +1626,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for Chunks<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ChunksMut<'a, T: 'a> {
+pub struct ChunksMut<'a, T> {
     /// # Safety
     /// This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
     /// those requirements would mean that we could instead use a `&mut [T]` here, but we cannot
@@ -1815,7 +1815,7 @@ unsafe impl<T> Sync for ChunksMut<'_, T> where T: Sync {}
 #[derive(Debug)]
 #[stable(feature = "chunks_exact", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ChunksExact<'a, T: 'a> {
+pub struct ChunksExact<'a, T> {
     v: &'a [T],
     rem: &'a [T],
     chunk_size: usize,
@@ -1974,7 +1974,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for ChunksExact<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "chunks_exact", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ChunksExactMut<'a, T: 'a> {
+pub struct ChunksExactMut<'a, T> {
     /// # Safety
     /// This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
     /// those requirements would mean that we could instead use a `&mut [T]` here, but we cannot
@@ -2144,7 +2144,7 @@ unsafe impl<T> Sync for ChunksExactMut<'_, T> where T: Sync {}
 #[derive(Debug, Clone, Copy)]
 #[unstable(feature = "array_windows", issue = "75027")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ArrayWindows<'a, T: 'a, const N: usize> {
+pub struct ArrayWindows<'a, T, const N: usize> {
     slice_head: *const T,
     num: usize,
     marker: PhantomData<&'a [T; N]>,
@@ -2267,7 +2267,7 @@ impl<T, const N: usize> ExactSizeIterator for ArrayWindows<'_, T, N> {
 #[derive(Debug)]
 #[unstable(feature = "array_chunks", issue = "74985")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ArrayChunks<'a, T: 'a, const N: usize> {
+pub struct ArrayChunks<'a, T, const N: usize> {
     iter: Iter<'a, [T; N]>,
     rem: &'a [T],
 }
@@ -2393,7 +2393,7 @@ unsafe impl<'a, T, const N: usize> TrustedRandomAccessNoCoerce for ArrayChunks<'
 #[derive(Debug)]
 #[unstable(feature = "array_chunks", issue = "74985")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct ArrayChunksMut<'a, T: 'a, const N: usize> {
+pub struct ArrayChunksMut<'a, T, const N: usize> {
     iter: IterMut<'a, [T; N]>,
     rem: &'a mut [T],
 }
@@ -2507,7 +2507,7 @@ unsafe impl<'a, T, const N: usize> TrustedRandomAccessNoCoerce for ArrayChunksMu
 #[derive(Debug)]
 #[stable(feature = "rchunks", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RChunks<'a, T: 'a> {
+pub struct RChunks<'a, T> {
     v: &'a [T],
     chunk_size: usize,
 }
@@ -2680,7 +2680,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for RChunks<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rchunks", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RChunksMut<'a, T: 'a> {
+pub struct RChunksMut<'a, T> {
     /// # Safety
     /// This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
     /// those requirements would mean that we could instead use a `&mut [T]` here, but we cannot
@@ -2874,7 +2874,7 @@ unsafe impl<T> Sync for RChunksMut<'_, T> where T: Sync {}
 #[derive(Debug)]
 #[stable(feature = "rchunks", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RChunksExact<'a, T: 'a> {
+pub struct RChunksExact<'a, T> {
     v: &'a [T],
     rem: &'a [T],
     chunk_size: usize,
@@ -3036,7 +3036,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for RChunksExact<'a, T> {
 #[derive(Debug)]
 #[stable(feature = "rchunks", since = "1.31.0")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct RChunksExactMut<'a, T: 'a> {
+pub struct RChunksExactMut<'a, T> {
     /// # Safety
     /// This slice pointer must point at a valid region of `T` with at least length `v.len()`. Normally,
     /// those requirements would mean that we could instead use a `&mut [T]` here, but we cannot
@@ -3219,7 +3219,7 @@ unsafe impl<'a, T> TrustedRandomAccessNoCoerce for IterMut<'a, T> {
 /// [slices]: slice
 #[unstable(feature = "slice_group_by", issue = "80552")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct GroupBy<'a, T: 'a, P> {
+pub struct GroupBy<'a, T, P> {
     slice: &'a [T],
     predicate: P,
 }
@@ -3306,7 +3306,7 @@ impl<'a, T: 'a + fmt::Debug, P> fmt::Debug for GroupBy<'a, T, P> {
 /// [slices]: slice
 #[unstable(feature = "slice_group_by", issue = "80552")]
 #[must_use = "iterators are lazy and do nothing unless consumed"]
-pub struct GroupByMut<'a, T: 'a, P> {
+pub struct GroupByMut<'a, T, P> {
     slice: &'a mut [T],
     predicate: P,
 }

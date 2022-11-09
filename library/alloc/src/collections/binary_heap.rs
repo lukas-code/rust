@@ -277,7 +277,7 @@ pub struct BinaryHeap<T> {
 ///
 /// [`peek_mut`]: BinaryHeap::peek_mut
 #[stable(feature = "binary_heap_peek_mut", since = "1.12.0")]
-pub struct PeekMut<'a, T: 'a + Ord> {
+pub struct PeekMut<'a, T: Ord> {
     heap: &'a mut BinaryHeap<T>,
     sift: bool,
 }
@@ -1226,7 +1226,7 @@ impl<T> BinaryHeap<T> {
 /// (because it was moved from or duplicated).
 /// In drop, `Hole` will restore the slice by filling the hole
 /// position with the value that was originally removed.
-struct Hole<'a, T: 'a> {
+struct Hole<'a, T> {
     data: &'a mut [T],
     elt: ManuallyDrop<T>,
     pos: usize,
@@ -1301,7 +1301,7 @@ impl<T> Drop for Hole<'_, T> {
 /// [`iter`]: BinaryHeap::iter
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     iter: slice::Iter<'a, T>,
 }
 
@@ -1476,7 +1476,7 @@ unsafe impl<T: Ord> TrustedLen for IntoIterSorted<T> {}
 /// [`drain`]: BinaryHeap::drain
 #[stable(feature = "drain", since = "1.6.0")]
 #[derive(Debug)]
-pub struct Drain<'a, T: 'a> {
+pub struct Drain<'a, T> {
     iter: vec::Drain<'a, T>,
 }
 

@@ -64,7 +64,7 @@ impl<T> RefUnwindSafe for ReentrantMutex<T> {}
 /// rules. Use interior mutability (usually `RefCell`) in order to mutate the
 /// guarded data.
 #[must_use = "if unused the ReentrantMutex will immediately unlock"]
-pub struct ReentrantMutexGuard<'a, T: 'a> {
+pub struct ReentrantMutexGuard<'a, T> {
     lock: &'a ReentrantMutex<T>,
 }
 

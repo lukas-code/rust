@@ -11,7 +11,7 @@ use super::{count, wrap_index, RingSlices};
 ///
 /// [`iter_mut`]: super::VecDeque::iter_mut
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct IterMut<'a, T: 'a> {
+pub struct IterMut<'a, T> {
     // Internal safety invariant: the entire slice is dereferenceable.
     ring: *mut [T],
     tail: usize,

@@ -1709,7 +1709,7 @@ impl<'b> BorrowRefMut<'b> {
 /// See the [module-level documentation](self) for more.
 #[stable(feature = "rust1", since = "1.0.0")]
 #[must_not_suspend = "holding a RefMut across suspend points can cause BorrowErrors"]
-pub struct RefMut<'b, T: ?Sized + 'b> {
+pub struct RefMut<'b, T: ?Sized> {
     // NB: we use a pointer instead of `&'b mut T` to avoid `noalias` violations, because a
     // `RefMut` argument doesn't hold exclusivity for its whole scope, only until it drops.
     value: NonNull<T>,

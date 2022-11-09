@@ -135,7 +135,7 @@ impl<T: Clone, A: Allocator + Clone> Clone for BTreeSet<T, A> {
 /// [`iter`]: BTreeSet::iter
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Iter<'a, T: 'a> {
+pub struct Iter<'a, T> {
     iter: Keys<'a, T, SetValZST>,
 }
 
@@ -171,7 +171,7 @@ pub struct IntoIter<
 #[must_use = "iterators are lazy and do nothing unless consumed"]
 #[derive(Debug)]
 #[stable(feature = "btree_range", since = "1.17.0")]
-pub struct Range<'a, T: 'a> {
+pub struct Range<'a, T> {
     iter: super::map::Range<'a, T, SetValZST>,
 }
 
@@ -186,12 +186,12 @@ pub struct Range<'a, T: 'a> {
 #[stable(feature = "rust1", since = "1.0.0")]
 pub struct Difference<
     'a,
-    T: 'a,
+    T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator + Clone = Global,
 > {
     inner: DifferenceInner<'a, T, A>,
 }
-enum DifferenceInner<'a, T: 'a, A: Allocator + Clone> {
+enum DifferenceInner<'a, T, A: Allocator + Clone> {
     Stitch {
         // iterate all of `self` and some of `other`, spotting matches along the way
         self_iter: Iter<'a, T>,
@@ -240,7 +240,7 @@ impl<T: fmt::Debug, A: Allocator + Clone> fmt::Debug for Difference<'_, T, A> {
 #[must_use = "this returns the difference as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct SymmetricDifference<'a, T: 'a>(MergeIterInner<Iter<'a, T>>);
+pub struct SymmetricDifference<'a, T>(MergeIterInner<Iter<'a, T>>);
 
 #[stable(feature = "collection_debug", since = "1.17.0")]
 impl<T: fmt::Debug> fmt::Debug for SymmetricDifference<'_, T> {
@@ -260,12 +260,12 @@ impl<T: fmt::Debug> fmt::Debug for SymmetricDifference<'_, T> {
 #[stable(feature = "rust1", since = "1.0.0")]
 pub struct Intersection<
     'a,
-    T: 'a,
+    T,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator + Clone = Global,
 > {
     inner: IntersectionInner<'a, T, A>,
 }
-enum IntersectionInner<'a, T: 'a, A: Allocator + Clone> {
+enum IntersectionInner<'a, T, A: Allocator + Clone> {
     Stitch {
         // iterate similarly sized sets jointly, spotting matches along the way
         a: Iter<'a, T>,
@@ -312,7 +312,7 @@ impl<T: Debug, A: Allocator + Clone> Debug for Intersection<'_, T, A> {
 #[must_use = "this returns the union as an iterator, \
               without modifying either input set"]
 #[stable(feature = "rust1", since = "1.0.0")]
-pub struct Union<'a, T: 'a>(MergeIterInner<Iter<'a, T>>);
+pub struct Union<'a, T>(MergeIterInner<Iter<'a, T>>);
 
 #[stable(feature = "collection_debug", since = "1.17.0")]
 impl<T: fmt::Debug> fmt::Debug for Union<'_, T> {
@@ -1290,7 +1290,6 @@ pub struct DrainFilter<
     F,
     #[unstable(feature = "allocator_api", issue = "32838")] A: Allocator + Clone = Global,
 > where
-    T: 'a,
     F: 'a + FnMut(&T) -> bool,
 {
     pred: F,
