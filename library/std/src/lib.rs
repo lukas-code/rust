@@ -217,7 +217,6 @@
 #![warn(deprecated_in_future)]
 #![warn(missing_docs)]
 #![warn(missing_debug_implementations)]
-#![allow(explicit_outlives_requirements)]
 #![allow(unused_lifetimes)]
 #![deny(rustc::existing_doc_keyword)]
 // Ensure that std can be linked against panic_abort despite compiled with `-C panic=unwind`

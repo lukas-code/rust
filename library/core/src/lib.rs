@@ -92,7 +92,6 @@
 #![warn(deprecated_in_future)]
 #![warn(missing_debug_implementations)]
 #![warn(missing_docs)]
-#![allow(explicit_outlives_requirements)]
 #![allow(incomplete_features)]
 //
 // Library features:
