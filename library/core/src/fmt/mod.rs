@@ -2283,12 +2283,12 @@ impl<'a> Formatter<'a> {
     /// ```rust
     /// use std::fmt;
     ///
-    /// struct Arm<'a, L: 'a, R: 'a>(&'a (L, R));
-    /// struct Table<'a, K: 'a, V: 'a>(&'a [(K, V)], V);
+    /// struct Arm<'a, L, R>(&'a (L, R));
+    /// struct Table<'a, K, V>(&'a [(K, V)], V);
     ///
     /// impl<'a, L, R> fmt::Debug for Arm<'a, L, R>
     /// where
-    ///     L: 'a + fmt::Debug, R: 'a + fmt::Debug
+    ///     L: fmt::Debug, R: fmt::Debug
     /// {
     ///     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
     ///         L::fmt(&(self.0).0, fmt)?;
@@ -2299,7 +2299,7 @@ impl<'a> Formatter<'a> {
     ///
     /// impl<'a, K, V> fmt::Debug for Table<'a, K, V>
     /// where
-    ///     K: 'a + fmt::Debug, V: 'a + fmt::Debug
+    ///     K: fmt::Debug, V: fmt::Debug
     /// {
     ///     fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
     ///         fmt.debug_set()
