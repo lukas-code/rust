@@ -73,15 +73,15 @@ x--expand-yaml-anchors--remove:
     env: {}
 
   - &job-linux-xl
-    os: ubuntu-20.04-xl
+    os: ubuntu-20.04
     <<: *base-job
 
   - &job-macos-xl
-    os: macos-12-xl
+    os: macos-12
     <<: *base-job
 
   - &job-windows-xl
-    os: windows-latest-xl
+    os: windows-latest
     <<: *base-job
 
   - &job-aarch64-linux
@@ -101,7 +101,7 @@ x--expand-yaml-anchors--remove:
       - name: checkout the source code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       # Rust Log Analyzer can't currently detect the PR number of a GitHub
       # Actions build on its own, so a hint in the log message is needed to
@@ -308,8 +308,9 @@ jobs:
     name: auto
     env:
       <<: [*shared-ci-variables, *prod-variables]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'rust-lang-ci/rust'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/auto' && github.repository == 'lukas-code/rust'
     strategy:
+      fail-fast: false
       matrix:
         include:
           #############################
