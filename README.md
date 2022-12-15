@@ -1,4 +1,4 @@
-# The Rust Programming Language
+# test
 
 This is the main source code repository for [Rust]. It contains the compiler,
 standard library, and documentation.
