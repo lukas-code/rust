@@ -374,3 +374,38 @@ warning: this URL is not a hyperlink
 
 warning: 2 warnings emitted
 ```
+
+## `unescaped_backticks`
+
+This lint **warns by default**. It detects backticks (\`) that are not escaped.
+This usually means broken inline code. For example:
+
+```rust
+#![warn(rustdoc::unescaped_backticks)] // note: unnecessary - warns by default.
+
+/// Addition is commutative, which means that `add(a, b) is the same as `add(b, a)`.
+pub fn add(a: i32, b: i32) -> i32 { a + b }
+```
+
+Which will give:
+
+```text
+warning: unescaped backtick
+ --> src/lib.rs:1:83
+  |
+1 | /// Addition is commutative, which means that `add(a, b) is the same as `add(b, a)`.
+  |                                                                                   ^
+  |
+  = help: the opening or closing backtick of an inline code may be missing
+  = note: `#[warn(rustdoc::unescaped_backticks)]` on by default
+help: a previous inline code might be longer than expected
+  |
+1 | /// Addition is commutative, which means that `add(a, b)` is the same as `add(b, a)`.
+  |                                                         +
+help: if you meant to use a literal backtick, escape it
+  |
+1 | /// Addition is commutative, which means that `add(a, b) is the same as `add(b, a)\`.
+  |                                                                                   +
+
+warning: 1 warning emitted
+```
