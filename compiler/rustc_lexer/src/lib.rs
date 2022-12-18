@@ -174,7 +174,7 @@ pub enum DocStyle {
 pub enum LiteralKind {
     /// "12_u8", "0o100", "0b120i99", "1f32".
     Int { base: Base, empty_int: bool },
-    /// "12.34f32", "1e3", but not "1f32`.
+    /// "12.34f32", "1e3", but not "1f32".
     Float { base: Base, empty_exponent: bool },
     /// "'a'", "'\\'", "'''", "';"
     Char { terminated: bool },

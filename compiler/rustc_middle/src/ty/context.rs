@@ -2368,7 +2368,7 @@ impl<'tcx> TyCtxtAt<'tcx> {
         self.tcx.ty_error_with_message(self.span, "TyKind::Error constructed but no error reported")
     }
 
-    /// Constructs a `TyKind::Error` type and registers a `delay_span_bug` with the given `msg to
+    /// Constructs a `TyKind::Error` type and registers a `delay_span_bug` with the given `msg` to
     /// ensure it gets used.
     #[track_caller]
     pub fn ty_error_with_message(self, msg: &str) -> Ty<'tcx> {

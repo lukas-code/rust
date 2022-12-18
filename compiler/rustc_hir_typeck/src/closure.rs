@@ -372,8 +372,8 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
     /// ```
     ///
     /// Here:
-    /// - E would be `fn(&u32) -> &u32`.
-    /// - S would be `fn(&u32) ->
+    /// - E would be `fn(&u32) -> &u32`
+    /// - S would be `fn(&u32) ->`
     /// - E' is `&'!0 u32 -> &'!0 u32`
     /// - S' is `&'?0 u32 -> ?T`
     ///
