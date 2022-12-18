@@ -1676,6 +1676,7 @@ pub mod marker {
         // happens using the result of `borrow_mut`.
         // By disabling traversal, and only creating new references to roots,
         // we know that every reference of the `Owned` type is to a root node.
+        #[cfg(not(doc))]
         const TRAVERSAL_PERMIT: () = panic!();
     }
     impl BorrowType for Dying {}
