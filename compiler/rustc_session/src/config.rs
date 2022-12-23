@@ -1467,10 +1467,14 @@ pub fn get_cmd_lint_options(
         .map(|(_, lint_name, level)| (lint_name, level))
         .collect();
 
-    let lint_cap = matches.opt_str("cap-lints").map(|cap| {
+    let mut lint_cap = matches.opt_str("cap-lints").map(|cap| {
         lint::Level::from_str(&cap)
             .unwrap_or_else(|| early_error(error_format, &format!("unknown lint level: `{cap}`")))
     });
+
+    if let Some(lint::Allow) = lint_cap {
+        lint_cap = Some(lint::Warn);
+    }
 
     (lint_opts, describe_lints, lint_cap)
 }
