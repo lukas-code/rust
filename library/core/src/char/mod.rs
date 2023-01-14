@@ -87,21 +87,31 @@ const MAX_THREE_B: u32 = 0x10000;
 */
 
 /// The highest valid code point a `char` can have, `'\u{10FFFF}'`. Use [`char::MAX`] instead.
+#[deprecated(since = "TBD", note = "replaced by the `MAX` associated constant on `char`")]
 #[stable(feature = "rust1", since = "1.0.0")]
 pub const MAX: char = char::MAX;
 
 /// `U+FFFD REPLACEMENT CHARACTER` (�) is used in Unicode to represent a
 /// decoding error. Use [`char::REPLACEMENT_CHARACTER`] instead.
+#[deprecated(
+    since = "TBD",
+    note = "replaced by the `REPLACEMENT_CHARACTER` associated constant on `char`"
+)]
 #[stable(feature = "decode_utf16", since = "1.9.0")]
 pub const REPLACEMENT_CHARACTER: char = char::REPLACEMENT_CHARACTER;
 
 /// The version of [Unicode](https://www.unicode.org/) that the Unicode parts of
 /// `char` and `str` methods are based on. Use [`char::UNICODE_VERSION`] instead.
+#[deprecated(
+    since = "TBD",
+    note = "replaced by the `UNICODE_VERSION` associated constant on `char`"
+)]
 #[stable(feature = "unicode_version", since = "1.45.0")]
 pub const UNICODE_VERSION: (u8, u8, u8) = char::UNICODE_VERSION;
 
 /// Creates an iterator over the UTF-16 encoded code points in `iter`, returning
 /// unpaired surrogates as `Err`s. Use [`char::decode_utf16`] instead.
+#[deprecated(since = "TBD", note = "replaced by the `decode_utf16` associated function on `char`")]
 #[stable(feature = "decode_utf16", since = "1.9.0")]
 #[inline]
 pub fn decode_utf16<I: IntoIterator<Item = u16>>(iter: I) -> DecodeUtf16<I::IntoIter> {
@@ -109,6 +119,7 @@ pub fn decode_utf16<I: IntoIterator<Item = u16>>(iter: I) -> DecodeUtf16<I::Into
 }
 
 /// Converts a `u32` to a `char`. Use [`char::from_u32`] instead.
+#[deprecated(since = "TBD", note = "replaced by the `from_u32` associated function on `char`")]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
 #[must_use]
@@ -119,6 +130,10 @@ pub const fn from_u32(i: u32) -> Option<char> {
 
 /// Converts a `u32` to a `char`, ignoring validity. Use [`char::from_u32_unchecked`].
 /// instead.
+#[deprecated(
+    since = "TBD",
+    note = "replaced by the `from_u32_unchecked` associated function on `char`"
+)]
 #[stable(feature = "char_from_unchecked", since = "1.5.0")]
 #[rustc_const_unstable(feature = "const_char_from_u32_unchecked", issue = "89259")]
 #[must_use]
@@ -129,6 +144,7 @@ pub const unsafe fn from_u32_unchecked(i: u32) -> char {
 }
 
 /// Converts a digit in the given radix to a `char`. Use [`char::from_digit`] instead.
+#[deprecated(since = "TBD", note = "replaced by the `from_digit` associated function on `char`")]
 #[stable(feature = "rust1", since = "1.0.0")]
 #[rustc_const_stable(feature = "const_char_convert", since = "1.67.0")]
 #[must_use]
