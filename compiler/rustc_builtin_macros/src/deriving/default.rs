@@ -140,16 +140,13 @@ fn extract_default_variant<'a>(
             diag.note("only one variant can be default");
             for variant in &default_variants {
                 // Suggest making each variant already tagged default.
-                let suggestion = default_variants
-                    .iter()
-                    .filter_map(|v| {
-                        if v.span == variant.span {
-                            None
-                        } else {
-                            Some((cx.sess.find_by_name(&v.attrs, kw::Default)?.span, String::new()))
-                        }
-                    })
-                    .collect();
+                let suggestion = default_variants.iter().filter_map(|v| {
+                    if v.span == variant.span {
+                        None
+                    } else {
+                        Some((cx.sess.find_by_name(&v.attrs, kw::Default)?.span, String::new()))
+                    }
+                });
 
                 diag.tool_only_multipart_suggestion(
                     &format!("make `{}` default", variant.ident),
@@ -211,7 +208,7 @@ fn validate_default_attribute(
                 // repetitive `.span_help` call above.
                 .tool_only_multipart_suggestion(
                     suggestion_text,
-                    rest.iter().map(|attr| (attr.span, String::new())).collect(),
+                    rest.iter().map(|attr| (attr.span, String::new())),
                     Applicability::MachineApplicable,
                 )
                 .emit();

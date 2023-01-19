@@ -270,10 +270,7 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                 }) => {
                     diag.multipart_suggestion_verbose(
                         "consider `await`ing on the `Future`",
-                        prior_arms
-                            .iter()
-                            .map(|arm| (arm.shrink_to_hi(), ".await".to_string()))
-                            .collect(),
+                        prior_arms.iter().map(|arm| (arm.shrink_to_hi(), ".await".to_string())),
                         Applicability::MaybeIncorrect,
                     );
                 }

@@ -625,19 +625,19 @@ impl<'a, G: EmissionGuarantee> DiagnosticBuilder<'a, G> {
     forward!(pub fn multipart_suggestion(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self);
     forward!(pub fn multipart_suggestion_verbose(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self);
     forward!(pub fn tool_only_multipart_suggestion(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self);
     forward!(pub fn span_suggestion(
@@ -657,7 +657,7 @@ impl<'a, G: EmissionGuarantee> DiagnosticBuilder<'a, G> {
     forward!(pub fn multipart_suggestions(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestions: impl IntoIterator<Item = Vec<(Span, String)>>,
+        suggestions: impl IntoIterator<Item = impl IntoIterator<Item = (Span, String)>>,
         applicability: Applicability,
     ) -> &mut Self);
     forward!(pub fn span_suggestion_short(

@@ -632,7 +632,7 @@ pub trait LintContext: Sized {
                     if !spans.is_empty() {
                         db.multipart_suggestion_with_style(
                             "if their presence wasn't intentional, you can remove them",
-                            spans.into_iter().map(|(_, span)| (span, "".to_string())).collect(),
+                            spans.into_iter().map(|(_, span)| (span, "".to_string())),
                             Applicability::MachineApplicable,
                             SuggestionStyle::HideCodeAlways,
                         );

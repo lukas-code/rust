@@ -233,8 +233,7 @@ impl<'tcx> LateLintPass<'tcx> for Ptr {
                                 r.expr_span,
                                 format!("{}{}", snippet_opt(cx, r.self_span).unwrap(), r.replacement),
                             )
-                        }))
-                        .collect(),
+                        })),
                     Applicability::Unspecified,
                 );
             });

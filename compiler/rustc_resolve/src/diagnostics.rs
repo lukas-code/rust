@@ -1612,7 +1612,7 @@ impl<'a> Resolver<'a> {
                         "consider making the field{} publicly accessible",
                         pluralize!(fields.len())
                     ),
-                    fields.iter().map(|span| (*span, "pub ".to_string())).collect(),
+                    fields.iter().map(|span| (*span, "pub ".to_string())),
                     Applicability::MaybeIncorrect,
                 );
             }

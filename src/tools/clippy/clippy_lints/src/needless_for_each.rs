@@ -92,8 +92,7 @@ impl<'tcx> LateLintPass<'tcx> for NeedlessForEach {
                             ret_collector
                                 .spans
                                 .into_iter()
-                                .map(|span| (span, "continue".to_string()))
-                                .collect(),
+                                .map(|span| (span, "continue".to_string())),
                         ),
                     )
                 };

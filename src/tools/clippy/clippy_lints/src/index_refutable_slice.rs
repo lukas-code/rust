@@ -164,8 +164,7 @@ fn lint_slice(cx: &LateContext<'_>, slice: &SliceLintInformation) {
                     slice
                         .pattern_spans
                         .iter()
-                        .map(|span| (*span, pat_sugg.clone()))
-                        .collect(),
+                        .map(|span| (*span, pat_sugg.clone())),
                     Applicability::MaybeIncorrect,
                 );
 
@@ -174,8 +173,7 @@ fn lint_slice(cx: &LateContext<'_>, slice: &SliceLintInformation) {
                     slice
                         .index_use
                         .iter()
-                        .map(|(index, span)| (*span, value_name(*index)))
-                        .collect(),
+                        .map(|(index, span)| (*span, value_name(*index))),
                     Applicability::MaybeIncorrect,
                 );
 

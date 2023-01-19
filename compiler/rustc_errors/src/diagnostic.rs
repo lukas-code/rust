@@ -595,7 +595,7 @@ impl Diagnostic {
     pub fn multipart_suggestion(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self {
         self.multipart_suggestion_with_style(
@@ -611,7 +611,7 @@ impl Diagnostic {
     pub fn multipart_suggestion_verbose(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self {
         self.multipart_suggestion_with_style(
@@ -625,7 +625,7 @@ impl Diagnostic {
     pub fn multipart_suggestion_with_style(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
         style: SuggestionStyle,
     ) -> &mut Self {
@@ -666,7 +666,7 @@ impl Diagnostic {
     pub fn tool_only_multipart_suggestion(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestion: Vec<(Span, String)>,
+        suggestion: impl IntoIterator<Item = (Span, String)>,
         applicability: Applicability,
     ) -> &mut Self {
         self.multipart_suggestion_with_style(
@@ -807,7 +807,7 @@ impl Diagnostic {
     pub fn multipart_suggestions(
         &mut self,
         msg: impl Into<SubdiagnosticMessage>,
-        suggestions: impl IntoIterator<Item = Vec<(Span, String)>>,
+        suggestions: impl IntoIterator<Item = impl IntoIterator<Item = (Span, String)>>,
         applicability: Applicability,
     ) -> &mut Self {
         let substitutions = suggestions

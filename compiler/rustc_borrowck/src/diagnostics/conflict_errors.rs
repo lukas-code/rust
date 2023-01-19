@@ -710,17 +710,14 @@ impl<'cx, 'tcx> MirBorrowckCtxt<'cx, 'tcx> {
         };
 
         let Some(borrow_level) = borrow_level else { return false; };
-        let sugg = move_sites
-            .iter()
-            .map(|move_site| {
-                let move_out = self.move_data.moves[(*move_site).moi];
-                let moved_place = &self.move_data.move_paths[move_out.path].place;
-                let move_spans = self.move_spans(moved_place.as_ref(), move_out.source);
-                let move_span = move_spans.args_or_use();
-                let suggestion = borrow_level.ref_prefix_str().to_owned();
-                (move_span.shrink_to_lo(), suggestion)
-            })
-            .collect();
+        let sugg = move_sites.iter().map(|move_site| {
+            let move_out = self.move_data.moves[(*move_site).moi];
+            let moved_place = &self.move_data.move_paths[move_out.path].place;
+            let move_spans = self.move_spans(moved_place.as_ref(), move_out.source);
+            let move_span = move_spans.args_or_use();
+            let suggestion = borrow_level.ref_prefix_str().to_owned();
+            (move_span.shrink_to_lo(), suggestion)
+        });
         err.multipart_suggestion_verbose(
             format!("consider {}borrowing {value_name}", borrow_level.mutably_str()),
             sugg,

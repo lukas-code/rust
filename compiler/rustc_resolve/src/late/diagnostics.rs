@@ -1464,7 +1464,7 @@ impl<'a: 'ast, 'ast> LateResolutionVisitor<'a, '_, 'ast> {
                                     "consider making the field{} publicly accessible",
                                     pluralize!(fields.len())
                                 ),
-                                fields.iter().map(|span| (*span, "pub ".to_string())).collect(),
+                                fields.iter().map(|span| (*span, "pub ".to_string())),
                                 Applicability::MaybeIncorrect,
                             );
                         }
@@ -2580,9 +2580,7 @@ impl<'a: 'ast, 'ast> LateResolutionVisitor<'a, '_, 'ast> {
                     |err, higher_ranked, span, message, intro_sugg| {
                         err.multipart_suggestion_verbose(
                             message,
-                            std::iter::once((span, intro_sugg))
-                                .chain(spans_suggs.iter().cloned())
-                                .collect(),
+                            std::iter::once((span, intro_sugg)).chain(spans_suggs.iter().cloned()),
                             Applicability::MaybeIncorrect,
                         );
                         higher_ranked

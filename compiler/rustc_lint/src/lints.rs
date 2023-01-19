@@ -701,19 +701,16 @@ impl AddToDiagnostic for HiddenUnicodeCodepointsDiagSub {
             HiddenUnicodeCodepointsDiagSub::Escape { spans } => {
                 diag.multipart_suggestion_with_style(
                     fluent::suggestion_remove,
-                    spans.iter().map(|(_, span)| (*span, "".to_string())).collect(),
+                    spans.iter().map(|(_, span)| (*span, "".to_string())),
                     Applicability::MachineApplicable,
                     SuggestionStyle::HideCodeAlways,
                 );
                 diag.multipart_suggestion(
                     fluent::suggestion_escape,
-                    spans
-                        .into_iter()
-                        .map(|(c, span)| {
-                            let c = format!("{:?}", c);
-                            (span, c[1..c.len() - 1].to_string())
-                        })
-                        .collect(),
+                    spans.into_iter().map(|(c, span)| {
+                        let c = format!("{:?}", c);
+                        (span, c[1..c.len() - 1].to_string())
+                    }),
                     Applicability::MachineApplicable,
                 );
             }

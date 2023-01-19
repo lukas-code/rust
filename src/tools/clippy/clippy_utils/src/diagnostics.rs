@@ -232,5 +232,5 @@ pub fn multispan_sugg_with_applicability<I>(
 ) where
     I: IntoIterator<Item = (Span, String)>,
 {
-    diag.multipart_suggestion(help_msg, sugg.into_iter().collect(), applicability);
+    diag.multipart_suggestion(help_msg, sugg, applicability);
 }

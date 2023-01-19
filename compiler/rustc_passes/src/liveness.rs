@@ -1605,18 +1605,15 @@ impl<'tcx> Liveness<'_, 'tcx> {
                     |lint| {
                         lint.multipart_suggestion(
                             "try removing the field",
-                            hir_ids_and_spans
-                                .iter()
-                                .map(|(_, pat_span, _)| {
-                                    let span = self
-                                        .ir
-                                        .tcx
-                                        .sess
-                                        .source_map()
-                                        .span_extend_to_next_char(*pat_span, ',', true);
-                                    (span.with_hi(BytePos(span.hi().0 + 1)), String::new())
-                                })
-                                .collect(),
+                            hir_ids_and_spans.iter().map(|(_, pat_span, _)| {
+                                let span = self
+                                    .ir
+                                    .tcx
+                                    .sess
+                                    .source_map()
+                                    .span_extend_to_next_char(*pat_span, ',', true);
+                                (span.with_hi(BytePos(span.hi().0 + 1)), String::new())
+                            }),
                             Applicability::MachineApplicable,
                         )
                     },
