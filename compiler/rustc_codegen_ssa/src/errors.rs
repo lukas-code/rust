@@ -524,7 +524,7 @@ pub enum AppleSdkRootError<'a> {
 #[derive(Diagnostic)]
 #[diag(codegen_ssa_read_file)]
 pub struct ReadFileError {
-    pub message: std::io::Error,
+    pub error: Error,
 }
 
 #[derive(Diagnostic)]
@@ -535,7 +535,7 @@ pub struct UnsupportedLinkSelfContained;
 #[diag(codegen_ssa_archive_build_failure)]
 // Public for rustc_codegen_llvm::back::archive
 pub struct ArchiveBuildFailure {
-    pub error: std::io::Error,
+    pub error: Error,
 }
 
 #[derive(Diagnostic)]

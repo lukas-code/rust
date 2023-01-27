@@ -376,7 +376,7 @@ fn link_rlib<'a>(
                 let lib_path =
                     find_native_static_library(filename.as_str(), true, &lib_search_paths, sess);
                 let src = read(lib_path)
-                    .map_err(|e| sess.emit_fatal(errors::ReadFileError { message: e }))?;
+                    .map_err(|error| sess.emit_fatal(errors::ReadFileError { error }))?;
                 let (data, _) = create_wrapper_file(sess, b".bundled_lib".to_vec(), &src);
                 let wrapper_file = emit_wrapper_file(sess, &data, tmpdir, filename.as_str());
                 packed_bundled_libs.push(wrapper_file);
