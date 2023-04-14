@@ -137,7 +137,15 @@ pub const fn panic(expr: &'static str) -> ! {
 #[cfg_attr(feature = "panic_immediate_abort", inline)]
 #[lang = "panic_nounwind"] // needed by codegen for non-unwinding panics
 #[rustc_nounwind]
+const fn lang_panic_nounwind(expr: &'static str) -> ! {
+    panic_nounwind(expr);
+}
+
+#[cfg_attr(not(feature = "panic_immediate_abort"), inline(never), cold)]
+#[cfg_attr(feature = "panic_immediate_abort", inline)]
+#[rustc_nounwind]
 #[rustc_const_unstable(feature = "core_panic", issue = "none")]
+#[track_caller]
 pub const fn panic_nounwind(expr: &'static str) -> ! {
     panic_nounwind_fmt(fmt::Arguments::new_const(&[expr]));
 }

@@ -374,6 +374,7 @@ use crate::hash;
 use crate::intrinsics::{
     self, assert_unsafe_precondition, is_aligned_and_not_null, is_nonoverlapping,
 };
+use crate::panic::debug_assert_nounwind;
 
 use crate::mem::{self, MaybeUninit};
 
@@ -1161,13 +1162,13 @@ pub const unsafe fn read<T>(src: *const T) -> T {
     // Future enhancements to MIR optimizations might well allow this to return
     // to the previous implementation, rather than using an intrinsic.
 
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(src),
+        "ptr::read requires that the pointer argument is aligned and non-null",
+    );
+
     // SAFETY: the caller must guarantee that `src` is valid for reads.
     unsafe {
-        assert_unsafe_precondition!(
-            "ptr::read requires that the pointer argument is aligned and non-null",
-            [T](src: *const T) => is_aligned_and_not_null(src)
-        );
-
         #[cfg(bootstrap)]
         {
             // We are calling the intrinsics directly to avoid function calls in the
@@ -1375,14 +1376,15 @@ pub const unsafe fn write<T>(dst: *mut T, src: T) {
         fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: usize);
     }
 
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(dst),
+        "ptr::write requires that the pointer argument is aligned and non-null",
+    );
+
     // SAFETY: the caller must guarantee that `dst` is valid for writes.
     // `dst` cannot overlap `src` because the caller has mutable access
     // to `dst` while `src` is owned by this function.
     unsafe {
-        assert_unsafe_precondition!(
-            "ptr::write requires that the pointer argument is aligned and non-null",
-            [T](dst: *mut T) => is_aligned_and_not_null(dst)
-        );
         copy_nonoverlapping(&src as *const T, dst, 1);
         intrinsics::forget(src);
     }
@@ -1544,14 +1546,13 @@ pub const unsafe fn write_unaligned<T>(dst: *mut T, src: T) {
 #[stable(feature = "volatile", since = "1.9.0")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub unsafe fn read_volatile<T>(src: *const T) -> T {
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(src),
+        "ptr::read_volatile requires that the pointer argument is aligned and non-null",
+    );
+
     // SAFETY: the caller must uphold the safety contract for `volatile_load`.
-    unsafe {
-        assert_unsafe_precondition!(
-            "ptr::read_volatile requires that the pointer argument is aligned and non-null",
-            [T](src: *const T) => is_aligned_and_not_null(src)
-        );
-        intrinsics::volatile_load(src)
-    }
+    unsafe { intrinsics::volatile_load(src) }
 }
 
 /// Performs a volatile write of a memory location with the given value without
@@ -1618,12 +1619,13 @@ pub unsafe fn read_volatile<T>(src: *const T) -> T {
 #[stable(feature = "volatile", since = "1.9.0")]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
 pub unsafe fn write_volatile<T>(dst: *mut T, src: T) {
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(dst),
+        "ptr::write_volatile requires that the pointer argument is aligned and non-null",
+    );
+
     // SAFETY: the caller must uphold the safety contract for `volatile_store`.
     unsafe {
-        assert_unsafe_precondition!(
-            "ptr::write_volatile requires that the pointer argument is aligned and non-null",
-            [T](dst: *mut T) => is_aligned_and_not_null(dst)
-        );
         intrinsics::volatile_store(dst, src);
     }
 }

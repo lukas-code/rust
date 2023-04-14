@@ -57,6 +57,7 @@
 use crate::marker::DiscriminantKind;
 use crate::marker::Tuple;
 use crate::mem;
+use crate::panic::debug_assert_nounwind;
 
 pub mod mir;
 
@@ -2500,13 +2501,15 @@ pub(crate) use assert_unsafe_precondition;
 
 /// Checks whether `ptr` is properly aligned with respect to
 /// `align_of::<T>()`.
-pub(crate) fn is_aligned_and_not_null<T>(ptr: *const T) -> bool {
+#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+pub(crate) const fn is_aligned_and_not_null<T>(ptr: *const T) -> bool {
     !ptr.is_null() && ptr.is_aligned()
 }
 
 /// Checks whether an allocation of `len` instances of `T` exceeds
 /// the maximum allowed allocation size.
-pub(crate) fn is_valid_allocation_size<T>(len: usize) -> bool {
+#[rustc_const_unstable(feature = "core_panic", issue = "none")]
+pub(crate) const fn is_valid_allocation_size<T>(len: usize) -> bool {
     let max_len = const {
         let size = crate::mem::size_of::<T>();
         if size == 0 { usize::MAX } else { isize::MAX as usize / size }
@@ -2707,6 +2710,7 @@ pub const unsafe fn copy_nonoverlapping<T>(src: *const T, dst: *mut T, count: us
 #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
 #[inline]
 #[cfg_attr(miri, track_caller)] // even without panics, this helps for Miri backtraces
+#[rustc_allow_const_fn_unstable(core_panic)]
 pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
     extern "rust-intrinsic" {
         #[rustc_const_stable(feature = "const_intrinsic_copy", since = "1.63.0")]
@@ -2714,15 +2718,13 @@ pub const unsafe fn copy<T>(src: *const T, dst: *mut T, count: usize) {
         fn copy<T>(src: *const T, dst: *mut T, count: usize);
     }
 
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(src) && is_aligned_and_not_null(dst),
+        "ptr::copy requires that both pointer arguments are aligned aligned and non-null",
+    );
+
     // SAFETY: the safety contract for `copy` must be upheld by the caller.
-    unsafe {
-        assert_unsafe_precondition!(
-            "ptr::copy requires that both pointer arguments are aligned aligned and non-null",
-            [T](src: *const T, dst: *mut T) =>
-            is_aligned_and_not_null(src) && is_aligned_and_not_null(dst)
-        );
-        copy(src, dst, count)
-    }
+    unsafe { copy(src, dst, count) }
 }
 
 /// Sets `count * size_of::<T>()` bytes of memory starting at `dst` to
@@ -2787,12 +2789,11 @@ pub const unsafe fn write_bytes<T>(dst: *mut T, val: u8, count: usize) {
         fn write_bytes<T>(dst: *mut T, val: u8, count: usize);
     }
 
+    debug_assert_nounwind!(
+        is_aligned_and_not_null(dst),
+        "ptr::write_bytes requires that the destination pointer is aligned and non-null",
+    );
+
     // SAFETY: the safety contract for `write_bytes` must be upheld by the caller.
-    unsafe {
-        assert_unsafe_precondition!(
-            "ptr::write_bytes requires that the destination pointer is aligned and non-null",
-            [T](dst: *mut T) => is_aligned_and_not_null(dst)
-        );
-        write_bytes(dst, val, count)
-    }
+    unsafe { write_bytes(dst, val, count) }
 }
