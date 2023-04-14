@@ -79,6 +79,7 @@ pub const fn panic_fmt(fmt: fmt::Arguments<'_>) -> ! {
 #[rustc_nounwind]
 #[rustc_const_unstable(feature = "core_panic", issue = "none")]
 pub const fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>) -> ! {
+    #[track_caller]
     fn runtime(fmt: fmt::Arguments<'_>) -> ! {
         if cfg!(feature = "panic_immediate_abort") {
             super::intrinsics::abort()
@@ -99,6 +100,7 @@ pub const fn panic_nounwind_fmt(fmt: fmt::Arguments<'_>) -> ! {
     }
 
     #[inline]
+    #[track_caller]
     const fn comptime(fmt: fmt::Arguments<'_>) -> ! {
         panic_fmt(fmt);
     }
