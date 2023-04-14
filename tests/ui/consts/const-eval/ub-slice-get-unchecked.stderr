@@ -8,7 +8,7 @@ note: inside `<std::ops::Range<usize> as SliceIndex<[()]>>::get_unchecked`
 note: inside `core::slice::<impl [()]>::get_unchecked::<std::ops::Range<usize>>`
   --> $SRC_DIR/core/src/slice/mod.rs:LL:COL
 note: inside `B`
-  --> $DIR/ub-slice-get-unchecked.rs:7:27
+  --> $DIR/ub-slice-get-unchecked.rs:8:27
    |
 LL | const B: &[()] = unsafe { A.get_unchecked(3..1) };
    |                           ^^^^^^^^^^^^^^^^^^^^^

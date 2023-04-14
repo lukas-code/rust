@@ -13,8 +13,6 @@ fn unwrap_unchecked(_1: Option<T>) -> T {
         scope 3 {
             scope 5 (inlined unreachable_unchecked) { // at $SRC_DIR/core/src/option.rs:LL:COL
                 scope 6 {
-                    scope 7 (inlined unreachable_unchecked::runtime) { // at $SRC_DIR/core/src/intrinsics.rs:LL:COL
-                    }
                 }
             }
         }
@@ -30,7 +28,7 @@ fn unwrap_unchecked(_1: Option<T>) -> T {
     }
 
     bb1: {
-        unreachable;                     // scope 6 at $SRC_DIR/core/src/intrinsics.rs:LL:COL
+        unreachable;                     // scope 5 at $SRC_DIR/core/src/panic.rs:LL:COL
     }
 
     bb2: {

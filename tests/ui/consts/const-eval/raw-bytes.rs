@@ -1,6 +1,7 @@
 // stderr-per-bitwidth
 // ignore-endian-big
 // ignore-tidy-linelength
+// ignore-debug debug assertions catch some UB too early
 // normalize-stderr-test "╾─*a(lloc)?[0-9]+(\+[a-z0-9]+)?─*╼" -> "╾ALLOC_ID$2╼"
 // normalize-stderr-test "alloc\d+" -> "allocN"
 #![feature(never_type, rustc_attrs, ptr_metadata, slice_from_ptr_range, const_slice_from_ptr_range)]

@@ -1,3 +1,4 @@
+// ignore-debug debug assertions produce different error message
 #![feature(const_slice_index)]
 
 const A: [(); 5] = [(), (), (), (), ()];

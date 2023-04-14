@@ -46,8 +46,6 @@
 +                 scope 11 {
 +                     scope 13 (inlined unreachable_unchecked) { // at $SRC_DIR/core/src/option.rs:LL:COL
 +                         scope 14 {
-+                             scope 15 (inlined unreachable_unchecked::runtime) { // at $SRC_DIR/core/src/intrinsics.rs:LL:COL
-+                             }
 +                         }
 +                     }
 +                 }
