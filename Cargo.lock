@@ -633,7 +633,7 @@ dependencies = [
  "declare_clippy_lint",
  "if_chain",
  "itertools",
- "pulldown-cmark",
+ "pulldown-cmark 0.9.2",
  "quine-mc_cluskey",
  "regex-syntax",
  "rustc-semver",
@@ -2162,7 +2162,7 @@ dependencies = [
  "memchr",
  "once_cell",
  "opener",
- "pulldown-cmark",
+ "pulldown-cmark 0.9.2",
  "regex",
  "serde",
  "serde_json",
@@ -2750,6 +2750,16 @@ name = "pulldown-cmark"
 version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2d9cc634bc78768157b5cbfe988ffcd1dcba95cd2b2f03a88316c08c6d00ed63"
+dependencies = [
+ "bitflags",
+ "memchr",
+ "unicase",
+]
+
+[[package]]
+name = "pulldown-cmark"
+version = "0.10.0"
+source = "git+https://github.com/lukas-code/pulldown-cmark.git?branch=0.10#16200aff472e6c8c9f22d0d59710441df46d521f"
 dependencies = [
  "bitflags",
  "memchr",
@@ -4090,7 +4100,7 @@ name = "rustc_resolve"
 version = "0.0.0"
 dependencies = [
  "bitflags",
- "pulldown-cmark",
+ "pulldown-cmark 0.10.0",
  "rustc_arena",
  "rustc_ast",
  "rustc_ast_pretty",
