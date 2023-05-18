@@ -4,7 +4,7 @@ use crate::core::DocContext;
 use crate::html::markdown::main_body_opts;
 use crate::passes::source_span_for_markdown_range;
 
-use pulldown_cmark::{BrokenLink, Event, LinkType, Parser, Tag};
+use pulldown_cmark::{BrokenLink, Event, LinkType, Parser, Tag, TagEnd};
 
 use std::iter::Peekable;
 use std::ops::Range;
@@ -138,7 +138,7 @@ pub(crate) fn visit_item(cx: &DocContext<'_>, item: &Item) {
                 Event::Html(text) if !in_code_block => {
                     extract_tags(&mut tags, &text, range, &mut is_in_comment, &report_diag)
                 }
-                Event::End(Tag::CodeBlock(_)) => in_code_block = false,
+                Event::End(TagEnd::CodeBlock) => in_code_block = false,
                 _ => {}
             }
         }

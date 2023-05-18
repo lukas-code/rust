@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 bitflags = "1.2.1"
-pulldown-cmark = { version = "0.9.2", default-features = false }
+# rustdoc imports pulldown-cmark from the sysroot and needs the "html" feature
+pulldown-cmark = { version = "0.10", default-features = false, features = ["html"] }
 rustc_arena = { path = "../rustc_arena" }
 rustc_ast = { path = "../rustc_ast" }
 rustc_ast_pretty = { path = "../rustc_ast_pretty" }

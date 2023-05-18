@@ -50,7 +50,7 @@ use crate::html::render::small_url_encode;
 use crate::html::toc::TocBuilder;
 
 use pulldown_cmark::{
-    html, BrokenLink, CodeBlockKind, CowStr, Event, LinkType, Options, Parser, Tag,
+    html, BrokenLink, CodeBlockKind, CowStr, Event, LinkType, Options, Parser, Tag, TagEnd,
 };
 
 #[cfg(test)]
@@ -230,7 +230,7 @@ impl<'a, I: Iterator<Item = Event<'a>>> Iterator for CodeBlocks<'_, 'a, I> {
         let mut original_text = String::new();
         for event in &mut self.inner {
             match event {
-                Event::End(Tag::CodeBlock(..)) => break,
+                Event::End(TagEnd::CodeBlock) => break,
                 Event::Text(ref s) => {
                     original_text.push_str(s);
                 }
@@ -365,14 +365,9 @@ impl<'a, I: Iterator<Item = Event<'a>>> Iterator for LinkReplacer<'a, I> {
                 }
             }
             // Now that we're done with the shortcut link, don't replace any more text.
-            Some(Event::End(Tag::Link(
-                LinkType::ShortcutUnknown | LinkType::CollapsedUnknown,
-                dest,
-                _,
-            ))) => {
-                debug!("saw end of shortcut link to {}", dest);
-                if self.links.iter().any(|link| *link.href == **dest) {
-                    assert!(self.shortcut_link.is_some(), "saw closing link without opening tag");
+            Some(Event::End(TagEnd::Link)) => {
+                if let Some(link) = self.shortcut_link {
+                    debug!("saw end of shortcut link to {}", link.href);
                     self.shortcut_link = None;
                 }
             }
@@ -456,9 +451,9 @@ impl<'a, I: Iterator<Item = Event<'a>>> Iterator for TableWrapper<'a, I> {
                 self.stored_events.push_back(Event::Start(Tag::Table(t)));
                 Event::Html(CowStr::Borrowed("<div>"))
             }
-            Event::End(Tag::Table(t)) => {
+            Event::End(TagEnd::Table) => {
                 self.stored_events.push_back(Event::Html(CowStr::Borrowed("</div>")));
-                Event::End(Tag::Table(t))
+                Event::End(TagEnd::Table)
             }
             e => e,
         })
@@ -498,12 +493,12 @@ impl<'a, 'b, 'ids, I: Iterator<Item = SpannedEvent<'a>>> Iterator
         }
 
         let event = self.inner.next();
-        if let Some((Event::Start(Tag::Heading(level, _, _)), _)) = event {
+        if let Some((Event::Start(Tag::Heading { level, .. }), _)) = event {
             let mut id = String::new();
             for event in &mut self.inner {
                 match &event.0 {
-                    Event::End(Tag::Heading(..)) => break,
-                    Event::Start(Tag::Link(_, _, _)) | Event::End(Tag::Link(..)) => {}
+                    Event::End(TagEnd::Heading { .. }) => break,
+                    Event::Start(Tag::Link(..)) | Event::End(TagEnd::Link) => {}
                     Event::Text(text) | Event::Code(text) => {
                         id.extend(text.chars().filter_map(slugify));
                         self.buf.push_back(event);
@@ -554,6 +549,13 @@ fn check_if_allowed_tag(t: &Tag<'_>) -> bool {
     matches!(t, Tag::Paragraph | Tag::Emphasis | Tag::Strong | Tag::Link(..) | Tag::BlockQuote)
 }
 
+fn check_if_allowed_tag_end(t: TagEnd) -> bool {
+    matches!(
+        t,
+        TagEnd::Paragraph | TagEnd::Emphasis | TagEnd::Strong | TagEnd::Link | TagEnd::BlockQuote
+    )
+}
+
 fn is_forbidden_tag(t: &Tag<'_>) -> bool {
     matches!(
         t,
@@ -563,6 +565,18 @@ fn is_forbidden_tag(t: &Tag<'_>) -> bool {
             | Tag::TableRow
             | Tag::TableCell
             | Tag::FootnoteDefinition(_)
+    )
+}
+
+fn is_forbidden_tag_end(t: TagEnd) -> bool {
+    matches!(
+        t,
+        TagEnd::CodeBlock
+            | TagEnd::Table
+            | TagEnd::TableHead
+            | TagEnd::TableRow
+            | TagEnd::TableCell
+            | TagEnd::FootnoteDefinition
     )
 }
 
@@ -587,14 +601,14 @@ impl<'a, I: Iterator<Item = Event<'a>>> Iterator for SummaryLine<'a, I> {
                     self.depth += 1;
                     check_if_allowed_tag(c)
                 }
-                Event::End(ref c) => {
-                    if is_forbidden_tag(c) {
+                Event::End(c) => {
+                    if is_forbidden_tag_end(c) {
                         self.skipped_tags += 1;
                         return None;
                     }
                     self.depth -= 1;
                     is_start = false;
-                    check_if_allowed_tag(c)
+                    check_if_allowed_tag_end(c)
                 }
                 Event::FootnoteReference(_) => {
                     self.skipped_tags += 1;
@@ -609,7 +623,7 @@ impl<'a, I: Iterator<Item = Event<'a>>> Iterator for SummaryLine<'a, I> {
                 if is_start {
                     Some(Event::Start(Tag::Paragraph))
                 } else {
-                    Some(Event::End(Tag::Paragraph))
+                    Some(Event::End(TagEnd::Paragraph))
                 }
             } else {
                 Some(event)
@@ -655,7 +669,7 @@ impl<'a, I: Iterator<Item = SpannedEvent<'a>>> Iterator for Footnotes<'a, I> {
                 Some((Event::Start(Tag::FootnoteDefinition(def)), _)) => {
                     let mut content = Vec::new();
                     for (event, _) in &mut self.inner {
-                        if let Event::End(Tag::FootnoteDefinition(..)) = event {
+                        if let Event::End(TagEnd::FootnoteDefinition) = event {
                             break;
                         }
                         content.push(event);
@@ -672,7 +686,7 @@ impl<'a, I: Iterator<Item = SpannedEvent<'a>>> Iterator for Footnotes<'a, I> {
                         for (mut content, id) in v {
                             write!(ret, "<li id=\"fn{}\">", id).unwrap();
                             let mut is_paragraph = false;
-                            if let Some(&Event::End(Tag::Paragraph)) = content.last() {
+                            if let Some(&Event::End(TagEnd::Paragraph)) = content.last() {
                                 content.pop();
                                 is_paragraph = true;
                             }
@@ -749,7 +763,7 @@ pub(crate) fn find_testable_code<T: doctest::Tester>(
                 tests.add_test(text, block_info, line);
                 prev_offset = offset.start;
             }
-            Event::Start(Tag::Heading(level, _, _)) => {
+            Event::Start(Tag::Heading { level, .. }) => {
                 register_header = Some(level as u32);
             }
             Event::Text(ref s) if register_header.is_some() => {
@@ -1053,7 +1067,7 @@ impl MarkdownItemInfo<'_> {
         let p = Footnotes::new(p);
         let p = TableWrapper::new(p.map(|(ev, _)| ev));
         let p = p.filter(|event| {
-            !matches!(event, Event::Start(Tag::Paragraph) | Event::End(Tag::Paragraph))
+            !matches!(event, Event::Start(Tag::Paragraph) | Event::End(TagEnd::Paragraph))
         });
         html::push_html(&mut s, p);
 
@@ -1083,7 +1097,7 @@ impl MarkdownSummaryLine<'_> {
         let mut s = String::new();
 
         let without_paragraphs = LinkReplacer::new(&mut summary, links).filter(|event| {
-            !matches!(event, Event::Start(Tag::Paragraph) | Event::End(Tag::Paragraph))
+            !matches!(event, Event::Start(Tag::Paragraph) | Event::End(TagEnd::Paragraph))
         });
 
         html::push_html(&mut s, without_paragraphs);
@@ -1155,8 +1169,8 @@ fn markdown_summary_with_limit(
                 _ => {}
             },
             Event::End(tag) => match tag {
-                Tag::Emphasis | Tag::Strong => buf.close_tag(),
-                Tag::Paragraph | Tag::Heading(..) => return ControlFlow::Break(()),
+                TagEnd::Emphasis | TagEnd::Strong => buf.close_tag(),
+                TagEnd::Paragraph | TagEnd::Heading { .. } => return ControlFlow::Break(()),
                 _ => {}
             },
             Event::HardBreak | Event::SoftBreak => buf.push(" ")?,
@@ -1216,8 +1230,8 @@ pub(crate) fn plain_text_summary(md: &str, link_names: &[RenderedLink]) -> Strin
             }
             Event::HardBreak | Event::SoftBreak => s.push(' '),
             Event::Start(Tag::CodeBlock(..)) => break,
-            Event::End(Tag::Paragraph) => break,
-            Event::End(Tag::Heading(..)) => break,
+            Event::End(TagEnd::Paragraph) => break,
+            Event::End(TagEnd::Heading { .. }) => break,
             _ => (),
         }
     }

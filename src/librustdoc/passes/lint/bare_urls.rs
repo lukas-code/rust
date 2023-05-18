@@ -6,10 +6,9 @@ use crate::core::DocContext;
 use crate::html::markdown::main_body_opts;
 use crate::passes::source_span_for_markdown_range;
 use core::ops::Range;
-use pulldown_cmark::{Event, Parser, Tag};
+use pulldown_cmark::{Event, Parser, Tag, TagEnd};
 use regex::Regex;
 use rustc_errors::Applicability;
-use std::mem;
 use std::sync::LazyLock;
 
 pub(super) fn visit_item(cx: &DocContext<'_>, item: &Item) {
@@ -40,12 +39,12 @@ pub(super) fn visit_item(cx: &DocContext<'_>, item: &Item) {
             match event {
                 Event::Text(s) => find_raw_urls(cx, &s, range, &report_diag),
                 // We don't want to check the text inside code blocks or links.
-                Event::Start(tag @ (Tag::CodeBlock(_) | Tag::Link(..))) => {
+                Event::Start(Tag::CodeBlock(_) | Tag::Link(..)) => {
                     while let Some((event, _)) = p.next() {
                         match event {
-                            Event::End(end)
-                                if mem::discriminant(&end) == mem::discriminant(&tag) =>
-                            {
+                            Event::End(TagEnd::CodeBlock | TagEnd::Link) => {
+                                // Code blocks can't contain any other tagged elements.
+                                // Links can't contain code blocks or other links.
                                 break;
                             }
                             _ => {}
