@@ -51,6 +51,12 @@ pub trait LayoutCalculator {
         kind: StructKind,
     ) -> Option<LayoutS> {
         let layout = univariant(self, dl, fields, repr, kind, NicheBias::Start);
+
+        if matches!(kind, StructKind::MaybeUnsized) {
+            // Don't compute an alternate layout for types that can be unsized, because
+            return layout;
+        }
+
         // Enums prefer niches close to the beginning or the end of the variants so that other (smaller)
         // data-carrying variants can be packed into the space after/before the niche.
         // If the default field ordering does not give us a niche at the front then we do a second

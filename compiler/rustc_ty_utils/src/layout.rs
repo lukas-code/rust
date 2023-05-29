@@ -425,8 +425,19 @@ fn layout_of_uncached<'tcx>(
                 ));
             }
 
-            tcx.mk_layout(
-                cx.layout_of_struct_or_enum(
+            let always_sized = {
+                let param_env = tcx.param_env(def.did());
+                def.is_struct()
+                    && match def.variants().iter().next().and_then(|x| x.fields.raw.last()) {
+                        Some(last_field) => {
+                            tcx.type_of(last_field.did).subst_identity().is_sized(tcx, param_env)
+                        }
+                        None => false,
+                    }
+            };
+
+            let layout = cx
+                .layout_of_struct_or_enum(
                     &def.repr(),
                     &variants,
                     def.is_enum(),
@@ -442,21 +453,67 @@ fn layout_of_uncached<'tcx>(
                             .variants()
                             .iter_enumerated()
                             .any(|(i, v)| v.discr != ty::VariantDiscr::Relative(i.as_u32())),
-                    {
-                        let param_env = tcx.param_env(def.did());
-                        def.is_struct()
-                            && match def.variants().iter().next().and_then(|x| x.fields.raw.last())
-                            {
-                                Some(last_field) => tcx
-                                    .type_of(last_field.did)
-                                    .subst_identity()
-                                    .is_sized(tcx, param_env),
-                                None => false,
-                            }
-                    },
+                    always_sized,
                 )
-                .ok_or(LayoutError::SizeOverflow(ty))?,
-            )
+                .ok_or(LayoutError::SizeOverflow(ty))?;
+
+            if def.is_struct() && !always_sized {
+                let mut variants_again = variants.clone();
+
+                let mut unit = univariant_uninterned(
+                    cx,
+                    ty,
+                    IndexSlice::empty(),
+                    &ReprOptions::default(),
+                    StructKind::AlwaysSized,
+                )
+                .unwrap();
+                match unit.abi {
+                    Abi::Aggregate { ref mut sized } => *sized = false,
+                    _ => bug!(),
+                }
+                let unit_interned = tcx.mk_layout(unit.clone());
+
+                if let Some(tail) = variants_again[FIRST_VARIANT].raw.last_mut() && *tail.0.0 != unit {
+                    *tail = unit_interned;
+
+                    let layout_again = cx.layout_of_struct_or_enum(
+                        &def.repr(),
+                        &variants_again,
+                        def.is_enum(),
+                        def.is_unsafe_cell(),
+                        tcx.layout_scalar_valid_range(def.did()),
+                        |min, max| Integer::repr_discr(tcx, ty, &def.repr(), min, max),
+                        def.is_enum()
+                            .then(|| def.discriminants(tcx).map(|(v, d)| (v, d.val as i128)))
+                            .into_iter()
+                            .flatten(),
+                        def.repr().inhibit_enum_layout_opt()
+                            || def
+                                .variants()
+                                .iter_enumerated()
+                                .any(|(i, v)| v.discr != ty::VariantDiscr::Relative(i.as_u32())),
+                        always_sized,
+                    )
+                    .unwrap();
+
+                    let mut fields1 = layout.fields.clone();
+                    let mut fields2 = layout_again.fields.clone();
+
+                    if let FieldsShape::Arbitrary { offsets: ref mut offsets1, .. } = fields1
+                    && let FieldsShape::Arbitrary { offsets: ref mut offsets2, .. } = fields2
+                    && let Some(last1) = offsets1.raw.last()
+                    && let Some(last2) = offsets1.raw.last() {
+                        assert!(last1 >= last2);
+                        offsets1.pop();
+                        offsets2.pop();
+                    }
+
+                    assert_eq!(fields1, fields2);
+                }
+            }
+
+            tcx.mk_layout(layout)
         }
 
         // Types with no meaningful known layout.
