@@ -16,7 +16,7 @@ use rustc_errors::{
 use rustc_hir as hir;
 use rustc_hir::def::{CtorOf, DefKind, Res};
 use rustc_hir::def_id::DefId;
-use rustc_hir::{ExprKind, Node, QPath};
+use rustc_hir::{AsyncGeneratorKind, ExprKind, GeneratorKind, Node, QPath};
 use rustc_hir_analysis::astconv::AstConv;
 use rustc_hir_analysis::check::intrinsicck::InlineAsmCtxt;
 use rustc_hir_analysis::check::potentially_plural_count;
@@ -362,7 +362,11 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
                     continue;
                 }
 
-                let is_closure = matches!(arg.kind, ExprKind::Closure { .. });
+                // Only typeck actual closures last, not desuagred async blocks.
+                let is_closure = matches!(
+                    arg.kind, ExprKind::Closure(c)
+                    if tcx.hir().body(c.body).generator_kind != Some(GeneratorKind::Async(AsyncGeneratorKind::Block))
+                );
                 if is_closure != check_closures {
                     continue;
                 }
