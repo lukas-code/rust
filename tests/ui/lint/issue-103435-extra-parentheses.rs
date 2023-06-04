@@ -16,3 +16,8 @@ fn main() {
     //~^ ERROR expected one of
     //~| ERROR unexpected parentheses surrounding
 }
+
+fn _foo() -> bool {
+    return(true);
+    //~^ ERROR unnecessary parentheses around `return` value
+}

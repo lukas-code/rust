@@ -57,5 +57,17 @@ LL -     if(2 == 1){}
 LL +     if 2 == 1 {}
    |
 
-error: aborting due to 5 previous errors
+error: unnecessary parentheses around `return` value
+  --> $DIR/issue-103435-extra-parentheses.rs:21:11
+   |
+LL |     return(true);
+   |           ^    ^
+   |
+help: remove these parentheses
+   |
+LL -     return(true);
+LL +     return true;
+   |
+
+error: aborting due to 6 previous errors
 

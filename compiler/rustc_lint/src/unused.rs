@@ -751,7 +751,7 @@ trait UnusedDelimLint {
             }
 
             Ret(Some(ref value)) => {
-                let left = e.span.lo() + rustc_span::BytePos(3);
+                let left = e.span.lo() + rustc_span::BytePos(6);
                 (value, UnusedDelimsCtx::ReturnValue, false, Some(left), None)
             }
 
