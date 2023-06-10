@@ -519,7 +519,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         // suggestions and labels are (more) correct when an arg is a
         // macro invocation.
         let normalize_span = |span: Span| -> Span {
-            let normalized_span = span.find_ancestor_inside(error_span).unwrap_or(span);
+            let normalized_span = span.find_ancestor_inside_same_ctxt(error_span).unwrap_or(span);
             // Sometimes macros mess up the spans, so do not normalize the
             // arg span to equal the error span, because that's less useful
             // than pointing out the arg expr in the wrong context.
@@ -1221,7 +1221,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
         if let Some(suggestion_text) = suggestion_text {
             let source_map = self.sess().source_map();
             let (mut suggestion, suggestion_span) =
-                if let Some(call_span) = full_call_span.find_ancestor_inside(error_span) {
+                if let Some(call_span) = full_call_span.find_ancestor_inside_same_ctxt(error_span) {
                     ("(".to_string(), call_span.shrink_to_hi().to(error_span.shrink_to_hi()))
                 } else {
                     (
