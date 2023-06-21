@@ -1,0 +1,73 @@
+- // MIR for `main::{closure#0}` before ConstProp
++ // MIR for `main::{closure#0}` after ConstProp
+  /* generator_layout = GeneratorLayout {
+      field_tys: {},
+      variant_fields: {
+          Unresumed(0): [],
+          Returned (1): [],
+          Panicked (2): [],
+      },
+      storage_conflicts: BitMatrix(0x0) {},
+  } */
+  
+  fn main::{closure#0}(_1: Pin<&mut [async fn body@$DIR/array_index_async.rs:9:21: 11:2]>, _2: &mut Context<'_>) -> Poll<()> {
+      debug _task_context => _9;
+      let mut _0: std::task::Poll<()>;
+      let _3: u32;
+      let mut _4: [u32; 4];
+      let _5: usize;
+      let mut _6: usize;
+      let mut _7: bool;
+      let mut _8: ();
+      let mut _9: &mut std::task::Context<'_>;
+      let mut _10: u32;
+      let mut _11: &mut [async fn body@$DIR/array_index_async.rs:9:21: 11:2];
+      let mut _12: &mut [async fn body@$DIR/array_index_async.rs:9:21: 11:2];
+      scope 1 {
+          debug x => _3;
+      }
+  
+      bb0: {
+          _11 = deref_copy (_1.0: &mut [async fn body@$DIR/array_index_async.rs:9:21: 11:2]);
+          _10 = discriminant((*_11));
+          switchInt(move _10) -> [0: bb1, 1: bb3, otherwise: bb4];
+      }
+  
+      bb1: {
+          _9 = move _2;
+          StorageLive(_3);
+          StorageLive(_4);
+          _4 = [const 0_u32, const 1_u32, const 2_u32, const 3_u32];
+          StorageLive(_5);
+          _5 = const 2_usize;
+-         _6 = Len(_4);
+-         _7 = Lt(_5, _6);
+-         assert(move _7, "index out of bounds: the length is {} but the index is {}", move _6, _5) -> [success: bb2, unwind unreachable];
++         _6 = const 4_usize;
++         _7 = const true;
++         assert(const true, "index out of bounds: the length is {} but the index is {}", move _6, _5) -> [success: bb2, unwind unreachable];
+      }
+  
+      bb2: {
+-         _3 = _4[_5];
++         _3 = const 2_u32;
+          StorageDead(_5);
+          StorageDead(_4);
+          _8 = const ();
+          StorageDead(_3);
+-         _0 = Poll::<()>::Ready(move _8);
++         _0 = const Poll::<()>::Ready(());
+          _12 = deref_copy (_1.0: &mut [async fn body@$DIR/array_index_async.rs:9:21: 11:2]);
+          discriminant((*_12)) = 1;
+          return;
+      }
+  
+      bb3: {
+          assert(const false, "`async fn` resumed after completion") -> bb3;
+      }
+  
+      bb4: {
+          unreachable;
+      }
+  }
+  

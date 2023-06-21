@@ -24,9 +24,7 @@ use rustc_span::Span;
 use rustc_target::abi::{HasDataLayout, Size, TargetDataLayout};
 use rustc_trait_selection::traits;
 
-use crate::const_prop::CanConstProp;
-use crate::const_prop::ConstPropMachine;
-use crate::const_prop::ConstPropMode;
+use crate::const_prop::{get_layout_for_const_prop, CanConstProp, ConstPropMachine, ConstPropMode};
 use crate::errors::AssertLint;
 use crate::MirLint;
 
@@ -52,14 +50,6 @@ impl<'tcx> MirLint<'tcx> for ConstProp {
         if !is_fn_like && !is_assoc_const {
             // skip anon_const/statics/consts because they'll be evaluated by miri anyway
             trace!("ConstProp skipped for {:?}", def_id);
-            return;
-        }
-
-        let is_generator = tcx.type_of(def_id.to_def_id()).subst_identity().is_generator();
-        // FIXME(welseywiser) const prop doesn't work on generators because of query cycles
-        // computing their layout.
-        if is_generator {
-            trace!("ConstProp skipped for generator {:?}", def_id);
             return;
         }
 
@@ -551,16 +541,13 @@ impl<'mir, 'tcx> ConstPropagator<'mir, 'tcx> {
     }
 
     fn ensure_not_propagated(&self, local: Local) {
-        if cfg!(debug_assertions) {
-            assert!(
-                self.get_const(local.into()).is_none()
-                    || self
-                        .layout_of(self.local_decls()[local].ty)
-                        .map_or(true, |layout| layout.is_zst()),
-                "failed to remove values for `{local:?}`, value={:?}",
-                self.get_const(local.into()),
-            )
-        }
+        debug_assert!(
+            get_layout_for_const_prop(self.tcx, self.param_env, self.local_decls()[local].ty)
+                .map_or(true, |layout| layout.is_zst())
+                || self.get_const(local.into()).is_none(),
+            "failed to remove values for `{local:?}`, value={:?}",
+            self.get_const(local.into()),
+        )
     }
 }
 

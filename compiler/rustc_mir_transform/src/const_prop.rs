@@ -87,14 +87,6 @@ impl<'tcx> MirPass<'tcx> for ConstProp {
             return;
         }
 
-        let is_generator = tcx.type_of(def_id.to_def_id()).subst_identity().is_generator();
-        // FIXME(welseywiser) const prop doesn't work on generators because of query cycles
-        // computing their layout.
-        if is_generator {
-            trace!("ConstProp skipped for generator {:?}", def_id);
-            return;
-        }
-
         trace!("ConstProp starting for {:?}", def_id);
 
         let dummy_body = &Body::new(
@@ -670,16 +662,13 @@ impl<'mir, 'tcx> ConstPropagator<'mir, 'tcx> {
     }
 
     fn ensure_not_propagated(&self, local: Local) {
-        if cfg!(debug_assertions) {
-            assert!(
-                self.get_const(local.into()).is_none()
-                    || self
-                        .layout_of(self.local_decls[local].ty)
-                        .map_or(true, |layout| layout.is_zst()),
-                "failed to remove values for `{local:?}`, value={:?}",
-                self.get_const(local.into()),
-            )
-        }
+        debug_assert!(
+            get_layout_for_const_prop(self.tcx, self.param_env, self.local_decls[local].ty)
+                .map_or(true, |layout| layout.is_zst())
+                || self.get_const(local.into()).is_none(),
+            "failed to remove values for `{local:?}`, value={:?}",
+            self.get_const(local.into()),
+        )
     }
 }
 
@@ -714,14 +703,13 @@ impl CanConstProp {
         };
         for (local, val) in cpv.can_const_prop.iter_enumerated_mut() {
             let ty = body.local_decls[local].ty;
-            match tcx.layout_of(param_env.and(ty)) {
-                Ok(layout) if layout.size < Size::from_bytes(MAX_ALLOC_LIMIT) => {}
+            if !get_layout_for_const_prop(tcx, param_env, ty)
+                .is_some_and(|layout| layout.size < Size::from_bytes(MAX_ALLOC_LIMIT))
+            {
                 // Either the layout fails to compute, then we can't use this local anyway
                 // or the local is too large, then we don't want to.
-                _ => {
-                    *val = ConstPropMode::NoPropagation;
-                    continue;
-                }
+                *val = ConstPropMode::NoPropagation;
+                continue;
             }
         }
         // Consider that arguments are assigned on entry.
@@ -991,4 +979,17 @@ impl<'tcx> MutVisitor<'tcx> for ConstPropagator<'_, 'tcx> {
             }
         }
     }
+}
+
+pub fn get_layout_for_const_prop<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    param_env: ParamEnv<'tcx>,
+    ty: Ty<'tcx>,
+) -> Option<TyAndLayout<'tcx>> {
+    let normalized_ty = tcx.try_normalize_erasing_regions(param_env, ty).ok()?;
+    if normalized_ty.is_generator() {
+        // We can't const propagate generators, because their size depends on the optimized mir.
+        return None;
+    }
+    tcx.layout_of(param_env.and(normalized_ty)).ok()
 }

@@ -50,6 +50,14 @@ print-type-size type: `std::mem::MaybeUninit<[async fn body@$DIR/async-awaiting-
 print-type-size     variant `MaybeUninit`: 1025 bytes
 print-type-size         field `.uninit`: 0 bytes
 print-type-size         field `.value`: 1025 bytes
+print-type-size type: `std::pin::Pin<&mut [async fn body@$DIR/async-awaiting-fut.rs:10:64: 19:2]>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::pin::Pin<&mut [async fn body@$DIR/async-awaiting-fut.rs:21:21: 24:2]>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::pin::Pin<&mut [async fn body@$DIR/async-awaiting-fut.rs:6:17: 6:19]>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
+print-type-size type: `std::pin::Pin<&mut [async fn body@$DIR/async-awaiting-fut.rs:8:35: 8:37]>`: 8 bytes, alignment: 8 bytes
+print-type-size     field `.pointer`: 8 bytes
 print-type-size type: `[async fn body@$DIR/async-awaiting-fut.rs:6:17: 6:19]`: 1 bytes, alignment: 1 bytes
 print-type-size     discriminant: 1 bytes
 print-type-size     variant `Unresumed`: 0 bytes

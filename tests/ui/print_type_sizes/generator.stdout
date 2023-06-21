@@ -8,3 +8,9 @@ print-type-size     variant `Returned`: 8192 bytes
 print-type-size         upvar `.array`: 8192 bytes
 print-type-size     variant `Panicked`: 8192 bytes
 print-type-size         upvar `.array`: 8192 bytes
+print-type-size type: `std::ops::GeneratorState<(), ()>`: 1 bytes, alignment: 1 bytes
+print-type-size     discriminant: 1 bytes
+print-type-size     variant `Yielded`: 0 bytes
+print-type-size         field `.0`: 0 bytes
+print-type-size     variant `Complete`: 0 bytes
+print-type-size         field `.0`: 0 bytes
