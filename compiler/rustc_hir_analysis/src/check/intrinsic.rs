@@ -463,6 +463,33 @@ pub fn check_intrinsic_type(tcx: TyCtxt<'_>, it: &hir::ForeignItem<'_>) {
                 (0, vec![tcx.mk_imm_ptr(tcx.mk_unit())], tcx.types.usize)
             }
 
+            sym::dyn_call_once => {
+                let fn_once_trait = tcx.require_lang_item(hir::LangItem::FnOnce, Some(it.span));
+                let fn_once_output =
+                    tcx.require_lang_item(hir::LangItem::FnOnceOutput, Some(it.span));
+                let substs_args = tcx.mk_substs(&[param(0).into()]);
+                let predicates = tcx.mk_poly_existential_predicates(&[
+                    ty::Binder::dummy(ty::ExistentialPredicate::Trait(ty::ExistentialTraitRef {
+                        def_id: fn_once_trait,
+                        substs: substs_args,
+                    })),
+                    ty::Binder::dummy(ty::ExistentialPredicate::Projection(
+                        ty::ExistentialProjection {
+                            def_id: fn_once_output,
+                            substs: ty::List::empty(),
+                            term: param(1).into(),
+                        },
+                    )),
+                ]);
+                let region = ty::Region::new_late_bound(
+                    tcx,
+                    ty::INNERMOST,
+                    ty::BoundRegion { var: ty::BoundVar::from_u32(0), kind: ty::BrAnon(None) },
+                );
+                let dyn_ptr = tcx.mk_imm_ptr(tcx.mk_dynamic(predicates, region, ty::DynKind::Dyn));
+                (2, vec![dyn_ptr, param(0)], param(1))
+            }
+
             other => {
                 tcx.sess.emit_err(UnrecognizedIntrinsicFunction { span: it.span, name: other });
                 return;

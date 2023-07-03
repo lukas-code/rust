@@ -1,6 +1,7 @@
 //! Lowers intrinsic calls
 
 use crate::{errors, MirPass};
+use rustc_hir::lang_items::LangItem;
 use rustc_middle::mir::*;
 use rustc_middle::ty::subst::SubstsRef;
 use rustc_middle::ty::{self, Ty, TyCtxt};
@@ -301,6 +302,34 @@ impl<'tcx> MirPass<'tcx> for LowerIntrinsics {
                         } else {
                             terminator.kind = TerminatorKind::Unreachable;
                         }
+                    }
+                    sym::dyn_call_once => {
+                        let [dyn_ptr, _] = args.as_slice() else {
+                            span_bug!(terminator.source_info.span, "Wrong number of arguments");
+                        };
+                        let dyn_place =
+                            if let Some(place) = dyn_ptr.place() && let Some(local) = place.as_local() {
+                                tcx.mk_place_deref(local.into())
+                            } else {
+                                span_bug!(terminator.source_info.span, "Only passing a local is supported");
+                            };
+
+                        let fn_once = tcx
+                            .require_lang_item(LangItem::FnOnce, Some(terminator.source_info.span));
+                        let call_once = tcx
+                            .associated_items(fn_once)
+                            .in_definition_order()
+                            .find(|it| it.kind == ty::AssocKind::Fn)
+                            .unwrap()
+                            .def_id;
+
+                        *func = Operand::function_handle(
+                            tcx,
+                            call_once,
+                            substs,
+                            terminator.source_info.span,
+                        );
+                        args[0] = Operand::Move(dyn_place);
                     }
                     _ if intrinsic_name.as_str().starts_with("simd_shuffle") => {
                         validate_simd_shuffle(tcx, args, terminator.source_info.span);

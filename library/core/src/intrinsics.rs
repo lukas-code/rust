@@ -2487,6 +2487,13 @@ extern "rust-intrinsic" {
     /// constructing an empty slice) is returned.
     #[rustc_nounwind]
     pub fn option_payload_ptr<T>(arg: *const Option<T>) -> *const T;
+
+    /// Calls a [`FnOnce`] closure trait object.
+    #[cfg(not(bootstrap))]
+    pub fn dyn_call_once<Args: Tuple, Ret>(
+        f: *const (dyn FnOnce<Args, Output = Ret> + '_),
+        args: Args,
+    ) -> Ret;
 }
 
 // Some functions are defined here because they accidentally got made

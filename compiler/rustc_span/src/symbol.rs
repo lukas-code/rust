@@ -651,6 +651,7 @@ symbols! {
         dropck_eyepatch,
         dropck_parametricity,
         dylib,
+        dyn_call_once,
         dyn_metadata,
         dyn_star,
         dyn_trait,
