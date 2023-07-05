@@ -20,6 +20,25 @@ help: you might have meant to use pattern matching
 LL |     if let x = 5 {}
    |        +++
 
+error[E0070]: invalid left-hand side of assignment
+  --> $DIR/if-let-typo.rs:14:28
+   |
+LL |     const _: () = if Ok(0) = Err(0) {};
+   |                         -  ^
+   |                         |
+   |                         cannot assign to this expression
+
+error[E0308]: mismatched types
+  --> $DIR/if-let-typo.rs:14:22
+   |
+LL |     const _: () = if Ok(0) = Err(0) {};
+   |                      ^^^^^^^^^^^^^^ expected `bool`, found `()`
+   |
+help: consider adding `let`
+   |
+LL |     const _: () = if let Ok(0) = Err(0) {};
+   |                      +++
+
 error[E0308]: mismatched types
   --> $DIR/if-let-typo.rs:4:8
    |
@@ -67,7 +86,18 @@ help: consider adding `let`
 LL |     if let Some(3) = foo {}
    |        +++
 
-error: aborting due to 7 previous errors
+error[E0308]: mismatched types
+  --> $DIR/if-let-typo.rs:13:22
+   |
+LL |     let _ = || while Some(_) = None {};
+   |                      ^^^^^^^^^^^^^^ expected `bool`, found `()`
+   |
+help: consider adding `let`
+   |
+LL |     let _ = || while let Some(_) = None {};
+   |                      +++
+
+error: aborting due to 10 previous errors
 
 Some errors have detailed explanations: E0070, E0308, E0425.
 For more information about an error, try `rustc --explain E0070`.
