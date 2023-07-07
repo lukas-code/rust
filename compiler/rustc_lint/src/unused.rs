@@ -664,12 +664,13 @@ trait UnusedDelimLint {
         let mut innermost = inner;
         loop {
             innermost = match &innermost.kind {
+                ExprKind::AddrOf(_kind, _mut, expr) => expr,
                 ExprKind::Unary(_op, expr) => expr,
                 ExprKind::Binary(_op, _lhs, rhs) => rhs,
                 ExprKind::AssignOp(_op, _lhs, rhs) => rhs,
                 ExprKind::Assign(_lhs, rhs, _span) => rhs,
 
-                ExprKind::Ret(_) | ExprKind::Yield(..) | ExprKind::Yeet(..) => return true,
+                ExprKind::Ret(None) | ExprKind::Yield(None) | ExprKind::Yeet(None) => return true,
 
                 ExprKind::Break(_label, None) => return false,
                 ExprKind::Break(_label, Some(break_expr)) => {

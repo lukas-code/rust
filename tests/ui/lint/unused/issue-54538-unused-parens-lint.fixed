@@ -1,14 +1,21 @@
 // run-rustfix
+// edition:2018
 
-#![feature(box_patterns, stmt_expr_attributes, yeet_expr)]
-
+#![feature(
+    box_patterns,
+    generators,
+    stmt_expr_attributes,
+    try_blocks,
+    yeet_expr,
+)]
 #![allow(
     dead_code,
     ellipsis_inclusive_range_patterns,
     irrefutable_let_patterns,
+    unreachable_code,
     unreachable_patterns,
     unused_mut,
-    unused_variables
+    unused_variables,
 )]
 #![deny(unused_parens)]
 
@@ -25,23 +32,25 @@ fn no_lint_attr() {
     let _x = #[allow(dead_code)] (1 + 2);
 }
 
-fn no_lint_yeet() -> Result<(), ()> {
-    #[allow(unreachable_code)]
-    if (do yeet) {}
+fn control_flow() {
+    if (return) {};
+    let _ = |_| if (yield) {};
+    let _: Result<(), ()> = try { if (do yeet) {} };
 
-    Ok(())
+    if return {} {}; //~ ERROR unnecessary parentheses
+    let _ = |_| if yield {} {}; //~ ERROR unnecessary parentheses
+    let _: Result<(), ()> = try { if do yeet {} {} }; //~ ERROR unnecessary parentheses
 }
 
 fn no_lint_ops() {
-    #![allow(unreachable_code, irrefutable_let_patterns)]
     if ((..{}) == ..{}) {}
     if (!return) {}
     loop { match (() = () = () = break {}) {} }
     while let () = (*&mut false |= true && return) {}
+    if (&(return) == &return) {}
 }
 
 fn lint_break_if_not_followed_by_block() {
-    #![allow(unreachable_code)]
     loop { if break {} } //~ ERROR unnecessary parentheses
     loop { if break ({ println!("hello") }) {} } //~ ERROR unnecessary parentheses
     loop { if (break { println!("hello") }) {} }
@@ -81,6 +90,21 @@ fn or_patterns_will_lint() {
 // Don't lint on `&(mut x)` because `&mut x` means something else (#55342).
 fn deref_mut_binding_no_lint() {
     let &(mut x) = &0;
+}
+
+fn struct_literal() {
+    #[derive(PartialEq, Default)]
+    struct Foo {}
+
+    if (Foo {} == Foo {}) {}
+    if (Foo::default() == Foo {}) {}
+    if (Foo {} == Foo::default()) {}
+    if Foo::default() == Foo::default() {} //~ ERROR unnecessary parentheses
+
+    // issue #113459
+    match (&Foo {}) {
+        &Foo {} => {}
+    }
 }
 
 fn main() {
