@@ -246,8 +246,6 @@ hir_analysis_start_not_track_caller = `start` is not allowed to be `#[track_call
 
 hir_analysis_static_specialize = cannot specialize on `'static` lifetime
 
-hir_analysis_substs_on_overridden_impl = could not resolve substs on overridden impl
-
 hir_analysis_tait_forward_compat = item constrains opaque type that is not in its signature
     .note = this item must mention the opaque type in its signature in order to be able to register hidden types
 

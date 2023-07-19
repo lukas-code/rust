@@ -10,36 +10,24 @@ note: impl is a specialization of this impl
 LL | impl<'a, T> Dance for T {}
    | ^^^^^^^^^^^^^^^^^^^^^^^
 
-error: could not resolve substs on overridden impl
-  --> $DIR/uncontstrained_lifetime.rs:12:1
-   |
-LL | impl Dance for bool {}
-   | ^^^^^^^^^^^^^^^^^^^
-
 error[E0207]: the type parameter `Unconstrained` is not constrained by the impl trait, self type, or predicates
-  --> $DIR/uncontstrained_lifetime.rs:20:10
+  --> $DIR/uncontstrained_lifetime.rs:19:10
    |
 LL | impl<'a, Unconstrained> X for [(); 0] {}
    |          ^^^^^^^^^^^^^ unconstrained type parameter
 
 error: specialization impl does not specialize any associated items
-  --> $DIR/uncontstrained_lifetime.rs:20:1
+  --> $DIR/uncontstrained_lifetime.rs:19:1
    |
 LL | impl<'a, Unconstrained> X for [(); 0] {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
 note: impl is a specialization of this impl
-  --> $DIR/uncontstrained_lifetime.rs:18:1
+  --> $DIR/uncontstrained_lifetime.rs:17:1
    |
 LL | impl<'a, const N: usize> X for [(); N] {}
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-error: could not resolve substs on overridden impl
-  --> $DIR/uncontstrained_lifetime.rs:20:1
-   |
-LL | impl<'a, Unconstrained> X for [(); 0] {}
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error: aborting due to 5 previous errors
+error: aborting due to 3 previous errors
 
 For more information about this error, try `rustc --explain E0207`.

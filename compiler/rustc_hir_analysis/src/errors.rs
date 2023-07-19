@@ -271,13 +271,6 @@ pub struct ManualImplementation {
 }
 
 #[derive(Diagnostic)]
-#[diag(hir_analysis_substs_on_overridden_impl)]
-pub struct SubstsOnOverriddenImpl {
-    #[primary_span]
-    pub span: Span,
-}
-
-#[derive(Diagnostic)]
 #[diag(hir_analysis_const_impl_for_non_const_trait)]
 pub struct ConstImplForNonConstTrait {
     #[primary_span]

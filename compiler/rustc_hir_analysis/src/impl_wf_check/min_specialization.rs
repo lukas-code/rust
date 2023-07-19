@@ -65,7 +65,6 @@
 //! cause use after frees with purely safe code in the same way as specializing
 //! on traits with methods can.
 
-use crate::errors::SubstsOnOverriddenImpl;
 use crate::{constrained_generic_params as cgp, errors};
 
 use rustc_data_structures::fx::FxHashSet;
@@ -205,7 +204,8 @@ fn get_impl_args(
     let _ = ocx.resolve_regions_and_report_errors(impl1_def_id, &outlives_env);
     let Ok(impl2_args) = infcx.fully_resolve(impl2_args) else {
         let span = tcx.def_span(impl1_def_id);
-        let guar = tcx.sess.emit_err(SubstsOnOverriddenImpl { span });
+        let guar =
+            tcx.sess.delay_span_bug(span, "could not resolve generic args on overridden impl");
         return Err(guar);
     };
     Ok((impl1_args, impl2_args))
