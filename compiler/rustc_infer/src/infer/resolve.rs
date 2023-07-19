@@ -229,17 +229,23 @@ impl<'a, 'tcx> FallibleTypeFolder<TyCtxt<'tcx>> for FullTypeResolver<'a, 'tcx> {
         }
     }
 
-    fn try_fold_region(&mut self, r: ty::Region<'tcx>) -> Result<ty::Region<'tcx>, Self::Error> {
-        match *r {
-            ty::ReVar(_) => Ok(self
+    fn try_fold_region(
+        &mut self,
+        mut r: ty::Region<'tcx>,
+    ) -> Result<ty::Region<'tcx>, Self::Error> {
+        if matches!(*r, ty::ReVar(_)) {
+            r = self
                 .infcx
                 .lexical_region_resolutions
                 .borrow()
                 .as_ref()
                 .expect("region resolution not performed")
-                .resolve_region(self.infcx.tcx, r)),
-            _ => Ok(r),
+                .resolve_region(self.infcx.tcx, r);
+            if let ty::ReVar(vid) = *r {
+                return Err(FixupError::UnresolvedRegion(vid));
+            }
         }
+        Ok(r)
     }
 
     fn try_fold_const(&mut self, c: ty::Const<'tcx>) -> Result<ty::Const<'tcx>, Self::Error> {

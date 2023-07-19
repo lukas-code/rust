@@ -33,7 +33,7 @@ use rustc_middle::ty::relate::RelateResult;
 use rustc_middle::ty::visit::{TypeVisitable, TypeVisitableExt};
 pub use rustc_middle::ty::IntVarValue;
 use rustc_middle::ty::{self, GenericParamDefKind, InferConst, InferTy, Ty, TyCtxt};
-use rustc_middle::ty::{ConstVid, FloatVid, IntVid, TyVid};
+use rustc_middle::ty::{ConstVid, FloatVid, IntVid, RegionVid, TyVid};
 use rustc_middle::ty::{GenericArg, GenericArgKind, GenericArgs, GenericArgsRef};
 use rustc_span::symbol::Symbol;
 use rustc_span::Span;
@@ -539,6 +539,7 @@ pub enum FixupError<'tcx> {
     UnresolvedFloatTy(FloatVid),
     UnresolvedTy(TyVid),
     UnresolvedConst(ConstVid<'tcx>),
+    UnresolvedRegion(RegionVid),
 }
 
 /// See the `region_obligations` field for more information.
@@ -566,6 +567,7 @@ impl<'tcx> fmt::Display for FixupError<'tcx> {
             ),
             UnresolvedTy(_) => write!(f, "unconstrained type"),
             UnresolvedConst(_) => write!(f, "unconstrained const value"),
+            UnresolvedRegion(_) => write!(f, "unconstrained lifetime"),
         }
     }
 }
