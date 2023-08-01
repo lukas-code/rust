@@ -12,11 +12,13 @@ extern crate edition_lint_infer_outlives_macro;
 // but all the bounds are from an external macro.
 macro_rules! make_foo {
     ($a:tt) => {
-        struct Foo<$a, 'b: $a> {
+        struct Foo<$a, 'b> {
+            //~^ ERROR: outlives requirements can be inferred
             foo: &$a &'b (),
         }
 
-        struct FooWhere<$a, 'b> where 'b: $a {
+        struct FooWhere<$a, 'b> {
+            //~^ ERROR: outlives requirements can be inferred
             foo: &$a &'b (),
         }
     }
@@ -111,7 +113,7 @@ mod everything_outside_with_tt_inner {
 mod everything_outside_with_tt_outer {
     macro_rules! m {
         ($b:lifetime $colon:tt $a:tt) => {
-            struct Foo<$a, $b >(&$a &$b ());
+            struct Foo<$a, $b $colon >(&$a &$b ());
             //~^ ERROR: outlives requirements can be inferred
             struct Bar<$a, $b>(&$a &$b ()) where $b $colon $a;
             struct Baz<$a, $b>(&$a &$b ()) where (): Sized, $b $colon $a;
@@ -123,7 +125,7 @@ mod everything_outside_with_tt_outer {
 mod everything_outside_with_tt_both {
     macro_rules! m {
         ($b:tt $colon:tt $a:tt) => {
-            struct Foo<$a, $b >(&$a &$b ());
+            struct Foo<$a, $b $colon >(&$a &$b ());
             //~^ ERROR: outlives requirements can be inferred
             struct Bar<$a, $b>(&$a &$b ()) where ;
             //~^ ERROR: outlives requirements can be inferred

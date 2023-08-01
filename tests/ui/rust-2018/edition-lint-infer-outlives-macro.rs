@@ -13,10 +13,12 @@ extern crate edition_lint_infer_outlives_macro;
 macro_rules! make_foo {
     ($a:tt) => {
         struct Foo<$a, 'b: $a> {
+            //~^ ERROR: outlives requirements can be inferred
             foo: &$a &'b (),
         }
 
         struct FooWhere<$a, 'b> where 'b: $a {
+            //~^ ERROR: outlives requirements can be inferred
             foo: &$a &'b (),
         }
     }

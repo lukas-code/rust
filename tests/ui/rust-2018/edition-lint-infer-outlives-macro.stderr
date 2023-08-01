@@ -1,8 +1,25 @@
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:27:18
+  --> $DIR/edition-lint-infer-outlives-macro.rs:15:26
    |
-LL | struct Bar<'a, 'b: 'a> {
-   |                  ^^^^ help: remove this bound
+LL | / macro_rules! make_foo {
+LL | |     ($a:tt) => {
+LL | |         struct Foo<$a, 'b: $a> {
+   | |                          ^^^^ help: remove this bound
+LL | |
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `make_foo!` (#2)
+LL |
+LL |   gimme_a! {make_foo!}
+   |   -------------------- in this macro invocation (#1)
+   |
+  ::: $DIR/auxiliary/edition-lint-infer-outlives-macro.rs:4:1
+   |
+LL |   macro_rules! gimme_a {
+   |   -------------------- in this expansion of `gimme_a!` (#1)
+LL |       ($($mac:tt)*) => { $($mac)* { 'a } }
+   |                                   ------ in this macro invocation (#2)
    |
 note: the lint level is defined here
   --> $DIR/edition-lint-infer-outlives-macro.rs:5:9
@@ -11,13 +28,44 @@ LL | #![deny(explicit_outlives_requirements)]
    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:32:24
+  --> $DIR/edition-lint-infer-outlives-macro.rs:20:32
+   |
+LL | / macro_rules! make_foo {
+LL | |     ($a:tt) => {
+LL | |         struct Foo<$a, 'b: $a> {
+LL | |
+...  |
+LL | |         struct FooWhere<$a, 'b> where 'b: $a {
+   | |                                ^^^^^^^^^^^^^ help: remove this bound
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `make_foo!` (#2)
+LL |
+LL |   gimme_a! {make_foo!}
+   |   -------------------- in this macro invocation (#1)
+   |
+  ::: $DIR/auxiliary/edition-lint-infer-outlives-macro.rs:4:1
+   |
+LL |   macro_rules! gimme_a {
+   |   -------------------- in this expansion of `gimme_a!` (#1)
+LL |       ($($mac:tt)*) => { $($mac)* { 'a } }
+   |                                   ------ in this macro invocation (#2)
+
+error: outlives requirements can be inferred
+  --> $DIR/edition-lint-infer-outlives-macro.rs:29:18
+   |
+LL | struct Bar<'a, 'b: 'a> {
+   |                  ^^^^ help: remove this bound
+
+error: outlives requirements can be inferred
+  --> $DIR/edition-lint-infer-outlives-macro.rs:34:24
    |
 LL | struct BarWhere<'a, 'b> where 'b: 'a {
    |                        ^^^^^^^^^^^^^ help: remove this bound
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:41:30
+  --> $DIR/edition-lint-infer-outlives-macro.rs:43:30
    |
 LL | /     macro_rules! m {
 LL | |         ('b: 'a) => {
@@ -32,7 +80,7 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:43:44
+  --> $DIR/edition-lint-infer-outlives-macro.rs:45:44
    |
 LL | /     macro_rules! m {
 LL | |         ('b: 'a) => {
@@ -48,7 +96,7 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:45:61
+  --> $DIR/edition-lint-infer-outlives-macro.rs:47:61
    |
 LL | /     macro_rules! m {
 LL | |         ('b: 'a) => {
@@ -65,7 +113,7 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:55:30
+  --> $DIR/edition-lint-infer-outlives-macro.rs:57:30
    |
 LL | /     macro_rules! m {
 LL | |         ($b:lifetime: 'a) => {
@@ -80,7 +128,7 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:57:44
+  --> $DIR/edition-lint-infer-outlives-macro.rs:59:44
    |
 LL | /     macro_rules! m {
 LL | |         ($b:lifetime: 'a) => {
@@ -96,7 +144,7 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:59:61
+  --> $DIR/edition-lint-infer-outlives-macro.rs:61:61
    |
 LL | /     macro_rules! m {
 LL | |         ($b:lifetime: 'a) => {
@@ -113,28 +161,46 @@ LL |       m!('b: 'a);
    |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:114:31
+  --> $DIR/edition-lint-infer-outlives-macro.rs:116:38
    |
-LL |             struct Foo<$a, $b $colon $a>(&$a &$b ());
-   |                               ^^^^^^^^^ help: remove this bound
+LL | /     macro_rules! m {
+LL | |         ($b:lifetime $colon:tt $a:tt) => {
+LL | |             struct Foo<$a, $b $colon $a>(&$a &$b ());
+   | |                                      ^^ help: remove this bound
+LL | |
+...  |
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `m!`
+LL |       m!('b: 'a);
+   |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:126:31
+  --> $DIR/edition-lint-infer-outlives-macro.rs:128:38
    |
-LL |             struct Foo<$a, $b $colon $a>(&$a &$b ());
-   |                               ^^^^^^^^^ help: remove this bound
+LL | /     macro_rules! m {
+LL | |         ($b:tt $colon:tt $a:tt) => {
+LL | |             struct Foo<$a, $b $colon $a>(&$a &$b ());
+   | |                                      ^^ help: remove this bound
+LL | |
+...  |
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `m!`
+LL |       m!('b: 'a);
+   |       ---------- in this macro invocation
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:128:50
+  --> $DIR/edition-lint-infer-outlives-macro.rs:130:50
    |
 LL |             struct Bar<$a, $b>(&$a &$b ()) where $b $colon $a;
    |                                                  ^^^^^^^^^^^^ help: remove this bound
 
 error: outlives requirements can be inferred
-  --> $DIR/edition-lint-infer-outlives-macro.rs:130:61
+  --> $DIR/edition-lint-infer-outlives-macro.rs:132:61
    |
 LL |             struct Baz<$a, $b>(&$a &$b ()) where (): Sized, $b $colon $a;
    |                                                             ^^^^^^^^^^^^ help: remove this bound
 
-error: aborting due to 12 previous errors
+error: aborting due to 14 previous errors
 
