@@ -1,42 +1,84 @@
 error: hello to you, too!
-  --> $DIR/multispan.rs:15:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:15:5
    |
 LL |     hello!(hi);
-   |     ^^^^^^^^^^
+   |     ^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:18:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:18:5
    |
 LL |     hello!(hi hi);
-   |     ^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:21:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:21:5
    |
 LL |     hello!(hi hi hi);
-   |     ^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:24:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:24:5
    |
 LL |     hello!(hi hey hi yo hi beep beep hi hi);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:25:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:25:5
    |
 LL |     hello!(hi there, hi how are you? hi... hi.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:26:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:26:5
    |
 LL |     hello!(whoah. hi di hi di ho);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
    |
 error: hello to you, too!
-  --> $DIR/multispan.rs:27:5
+  --> $DIR/auxiliary/multispan.rs:31:1
+   |
+LL | pub fn hello(input: TokenStream) -> TokenStream {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this expansion of `hello!`
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/multispan.rs:27:5
    |
 LL |     hello!(hi good hi and good bye);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
    |

@@ -6,6 +6,9 @@ LL | #[derive(PartialEq, Eq)]
 ...
 LL |     Float(Option<f64>),
    |           ^^^^^^^^^^^ the trait `Eq` is not implemented for `f64`
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Eq)]`
    |
    = help: the following other types implement trait `Eq`:
              isize
@@ -20,7 +23,6 @@ LL |     Float(Option<f64>),
    = note: required for `Option<f64>` to implement `Eq`
 note: required by a bound in `AssertParamIsEq`
   --> $SRC_DIR/core/src/cmp.rs:LL:COL
-   = note: this error originates in the derive macro `Eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

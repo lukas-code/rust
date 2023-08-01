@@ -1,8 +1,17 @@
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:32:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -17,12 +26,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:30:28
    |
-LL |               let g = move || match drop(&$name::unsync::Client::default()) {
-   |                                          --------------------------------- has type `&copy::unsync::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
-LL |               };
-   |               - `&$name::unsync::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop(&$name::unsync::Client::default()) {
+   | |                                        --------------------------------- has type `&copy::unsync::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
+LL | |             };
+   | |             - `&$name::unsync::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -37,13 +55,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:44:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -58,12 +84,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:42:28
    |
-LL |               let g = move || match drop($name::unsend::Client::default()) {
-   |                                          -------------------------------- has type `copy::unsend::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
-LL |               };
-   |               - `$name::unsend::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::unsend::Client::default()) {
+   | |                                        -------------------------------- has type `copy::unsend::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::unsend::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -78,13 +113,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:32:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -99,12 +142,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:30:28
    |
-LL |               let g = move || match drop(&$name::unsync::Client::default()) {
-   |                                          --------------------------------- has type `&derived_drop::unsync::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
-LL |               };
-   |               - `&$name::unsync::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop(&$name::unsync::Client::default()) {
+   | |                                        --------------------------------- has type `&derived_drop::unsync::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
+LL | |             };
+   | |             - `&$name::unsync::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -119,13 +171,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:44:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -140,12 +200,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:42:28
    |
-LL |               let g = move || match drop($name::unsend::Client::default()) {
-   |                                          -------------------------------- has type `derived_drop::unsend::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
-LL |               };
-   |               - `$name::unsend::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::unsend::Client::default()) {
+   | |                                        -------------------------------- has type `derived_drop::unsend::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::unsend::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -160,13 +229,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:32:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -181,12 +258,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:30:28
    |
-LL |               let g = move || match drop(&$name::unsync::Client::default()) {
-   |                                          --------------------------------- has type `&significant_drop::unsync::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
-LL |               };
-   |               - `&$name::unsync::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop(&$name::unsync::Client::default()) {
+   | |                                        --------------------------------- has type `&significant_drop::unsync::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `&$name::unsync::Client::default()` maybe used later
+LL | |             };
+   | |             - `&$name::unsync::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -201,13 +287,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/issue-57017.rs:44:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -222,12 +316,21 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/issue-57017.rs:42:28
    |
-LL |               let g = move || match drop($name::unsend::Client::default()) {
-   |                                          -------------------------------- has type `significant_drop::unsend::Client` which is not `Send`
-LL |                   _status => yield,
-   |                              ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
-LL |               };
-   |               - `$name::unsend::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );*
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::unsend::Client::default()) {
+   | |                                        -------------------------------- has type `significant_drop::unsend::Client` which is not `Send`
+LL | |                 _status => yield,
+   | |                            ^^^^^ yield occurs here, with `$name::unsend::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::unsend::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         copy => { #[derive(Copy, Clone, Default)] pub struct Client; };
@@ -242,7 +345,6 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 6 previous errors
 

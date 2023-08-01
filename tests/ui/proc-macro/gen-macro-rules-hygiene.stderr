@@ -2,23 +2,25 @@ error[E0426]: use of undeclared label `'label_use`
   --> $DIR/gen-macro-rules-hygiene.rs:12:1
    |
 LL | gen_macro_rules!();
-   | ^^^^^^^^^^^^^^^^^^ undeclared label `'label_use`
+   | ^^^^^^^^^^^^^^^^^^
+   | |
+   | undeclared label `'label_use`
+   | in this expansion of `generated!`
 ...
 LL |         generated!();
    |         ------------ in this macro invocation
-   |
-   = note: this error originates in the macro `generated` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0425]: cannot find value `local_use` in this scope
   --> $DIR/gen-macro-rules-hygiene.rs:12:1
    |
 LL | gen_macro_rules!();
-   | ^^^^^^^^^^^^^^^^^^ help: a local variable with a similar name exists: `local_def`
+   | ^^^^^^^^^^^^^^^^^^
+   | |
+   | help: a local variable with a similar name exists: `local_def`
+   | in this expansion of `generated!`
 ...
 LL |         generated!();
    |         ------------ in this macro invocation
-   |
-   = note: this error originates in the macro `generated` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0425]: cannot find value `local_def` in this scope
   --> $DIR/gen-macro-rules-hygiene.rs:21:9

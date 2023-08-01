@@ -1,14 +1,18 @@
 error: can't qualify macro invocation with `pub`
   --> $DIR/pub-item-macro.rs:10:5
    |
-LL |     pub priv_x!();
-   |     ^^^ help: remove the visibility
+LL | / macro_rules! pub_x { () => {
+LL | |     pub priv_x!();
+   | |     ^^^ help: remove the visibility
+LL | |
+LL | |
+LL | | }}
+   | |__- in this expansion of `pub_x!`
 ...
-LL |     pub_x!();
-   |     -------- in this macro invocation
+LL |       pub_x!();
+   |       -------- in this macro invocation
    |
    = help: try adjusting the macro to put `pub` inside the invocation
-   = note: this error originates in the macro `pub_x` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0603]: static `x` is private
   --> $DIR/pub-item-macro.rs:20:23
@@ -19,12 +23,24 @@ LL |     let y: u32 = foo::x;
 note: the static `x` is defined here
   --> $DIR/pub-item-macro.rs:5:9
    |
-LL |         static x: u32 = 0;
-   |         ^^^^^^^^^^^^^^^^^^
+LL | / macro_rules! priv_x {
+LL | |     () => {
+LL | |         static x: u32 = 0;
+   | |         ^^^^^^^^^^^^^^^^^^
+LL | |     };
+LL | | }
+   | |_- in this expansion of `priv_x!` (#2)
+LL |
+LL | / macro_rules! pub_x { () => {
+LL | |     pub priv_x!();
+   | |         --------- in this macro invocation (#2)
+LL | |
+LL | |
+LL | | }}
+   | |__- in this expansion of `pub_x!` (#1)
 ...
-LL |     pub_x!();
-   |     -------- in this macro invocation
-   = note: this error originates in the macro `priv_x` which comes from the expansion of the macro `pub_x` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       pub_x!();
+   |       -------- in this macro invocation (#1)
 
 error: aborting due to 2 previous errors
 

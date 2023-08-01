@@ -102,13 +102,15 @@ LL |     let mut W(mut a, W(b, W(ref c, W(d, B { box f }))))
 error: expected identifier, found `x`
   --> $DIR/mut-patterns.rs:44:21
    |
-LL |             let mut $p = 0;
-   |                     ^^ expected identifier
-...
-LL |     foo!(x);
-   |     ------- in this macro invocation
-   |
-   = note: this error originates in the macro `foo` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL | /     macro_rules! foo {
+LL | |         ($p:pat) => {
+LL | |             let mut $p = 0;
+   | |                     ^^ expected identifier
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `foo!`
+LL |       foo!(x);
+   |       ------- in this macro invocation
 
 error: aborting due to 13 previous errors
 

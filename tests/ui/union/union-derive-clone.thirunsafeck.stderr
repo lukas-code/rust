@@ -2,11 +2,16 @@ error[E0277]: the trait bound `U1: Copy` is not satisfied
   --> $DIR/union-derive-clone.rs:6:10
    |
 LL | #[derive(Clone)]
-   |          ^^^^^ the trait `Copy` is not implemented for `U1`
+   |          ^^^^^
+   |          |
+   |          the trait `Copy` is not implemented for `U1`
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/clone.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Clone)]`
    |
 note: required by a bound in `AssertParamIsCopy`
   --> $SRC_DIR/core/src/clone.rs:LL:COL
-   = note: this error originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `U1` with `#[derive(Copy)]`
    |
 LL + #[derive(Copy)]

@@ -251,60 +251,81 @@ LL | fn two_arg_diff(_a: i32, _b: &str) {}
 error[E0061]: this function takes 0 arguments but 2 arguments were supplied
   --> $DIR/extra_arguments.rs:8:9
    |
-LL |         empty($x, 1);
-   |         ^^^^^     - unexpected argument of type `{integer}`
+LL | / macro_rules! foo {
+LL | |     ($x:expr, ~) => {
+LL | |         empty($x, 1);
+   | |         ^^^^^     - unexpected argument of type `{integer}`
+LL | |     };
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `foo!`
 ...
-LL |   foo!(1, ~);
-   |   ----------
-   |   |    |
-   |   |    unexpected argument of type `{integer}`
-   |   in this macro invocation
+LL |     foo!(1, ~);
+   |     ----------
+   |     |    |
+   |     |    unexpected argument of type `{integer}`
+   |     in this macro invocation
    |
 note: function defined here
   --> $DIR/extra_arguments.rs:1:4
    |
 LL | fn empty() {}
    |    ^^^^^
-   = note: this error originates in the macro `foo` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0061]: this function takes 0 arguments but 2 arguments were supplied
   --> $DIR/extra_arguments.rs:14:9
    |
-LL |         empty(1, $y);
-   |         ^^^^^ - unexpected argument of type `{integer}`
+LL | / macro_rules! foo {
+LL | |     ($x:expr, ~) => {
+LL | |         empty($x, 1);
+LL | |     };
+...  |
+LL | |         empty(1, $y);
+   | |         ^^^^^ - unexpected argument of type `{integer}`
+LL | |     };
+LL | | }
+   | |_- in this expansion of `foo!`
 ...
-LL |   foo!(~, 1);
-   |   ----------
-   |   |       |
-   |   |       unexpected argument of type `{integer}`
-   |   in this macro invocation
+LL |     foo!(~, 1);
+   |     ----------
+   |     |       |
+   |     |       unexpected argument of type `{integer}`
+   |     in this macro invocation
    |
 note: function defined here
   --> $DIR/extra_arguments.rs:1:4
    |
 LL | fn empty() {}
    |    ^^^^^
-   = note: this error originates in the macro `foo` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0061]: this function takes 0 arguments but 2 arguments were supplied
   --> $DIR/extra_arguments.rs:11:9
    |
-LL |         empty($x, $y);
-   |         ^^^^^
+LL | / macro_rules! foo {
+LL | |     ($x:expr, ~) => {
+LL | |         empty($x, 1);
+LL | |     };
+LL | |     ($x:expr, $y:expr) => {
+LL | |         empty($x, $y);
+   | |         ^^^^^
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `foo!`
 ...
-LL |   foo!(1, 1);
-   |   ----------
-   |   |    |  |
-   |   |    |  unexpected argument of type `{integer}`
-   |   |    unexpected argument of type `{integer}`
-   |   in this macro invocation
+LL |     foo!(1, 1);
+   |     ----------
+   |     |    |  |
+   |     |    |  unexpected argument of type `{integer}`
+   |     |    unexpected argument of type `{integer}`
+   |     in this macro invocation
    |
 note: function defined here
   --> $DIR/extra_arguments.rs:1:4
    |
 LL | fn empty() {}
    |    ^^^^^
-   = note: this error originates in the macro `foo` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0061]: this function takes 1 argument but 2 arguments were supplied
   --> $DIR/extra_arguments.rs:53:3

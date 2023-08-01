@@ -6,13 +6,15 @@ LL | #[derive(PartialEq)]
 LL | struct Struct(
 LL |     Error
    |     ^^^^^
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(PartialEq)]`
    |
 note: an implementation of `PartialEq` might be missing for `Error`
   --> $DIR/derives-span-PartialEq-tuple-struct.rs:4:1
    |
 LL | struct Error;
    | ^^^^^^^^^^^^ must implement `PartialEq`
-   = note: this error originates in the derive macro `PartialEq` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Error` with `#[derive(PartialEq)]`
    |
 LL + #[derive(PartialEq)]

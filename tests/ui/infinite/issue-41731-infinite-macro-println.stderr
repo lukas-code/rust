@@ -1,11 +1,30 @@
 error: recursion limit reached while expanding `$crate::format_args_nl!`
-  --> $DIR/issue-41731-infinite-macro-println.rs:14:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     stack!("overflow");
-   |     ^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `println!` (#3)
+   |
+  ::: $DIR/issue-41731-infinite-macro-println.rs:6:5
+   |
+LL | /     macro_rules! stack {
+LL | |         ($overflow:expr) => {
+LL | |             println!(stack!($overflow));
+   | |             ---------------------------
+   | |             |        |
+   | |             |        in this macro invocation (#2)
+   | |             in this macro invocation (#3)
+LL | |
+LL | |
+LL | |         };
+LL | |     }
+   | |     -
+   | |     |
+   | |_____in this expansion of `stack!` (#1)
+   |       in this expansion of `stack!` (#2)
+LL |
+LL |       stack!("overflow");
+   |       ------------------ in this macro invocation (#1)
    |
    = help: consider increasing the recursion limit by adding a `#![recursion_limit = "10"]` attribute to your crate (`issue_41731_infinite_macro_println`)
-   = note: this error originates in the macro `println` which comes from the expansion of the macro `stack` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 note: trace_macro
   --> $DIR/issue-41731-infinite-macro-println.rs:14:5
@@ -23,13 +42,33 @@ LL |     stack!("overflow");
    = note: to `{ $crate :: io :: _print($crate :: format_args_nl! (stack! ("overflow"))) ; }`
 
 error: format argument must be a string literal
-  --> $DIR/issue-41731-infinite-macro-println.rs:14:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     stack!("overflow");
-   |     ^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `println!` (#3)
    |
-   = note: this error originates in the macro `println` which comes from the expansion of the macro `stack` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/issue-41731-infinite-macro-println.rs:6:5
+   |
+LL | /     macro_rules! stack {
+LL | |         ($overflow:expr) => {
+LL | |             println!(stack!($overflow));
+   | |             ---------------------------
+   | |             |        |
+   | |             |        in this macro invocation (#2)
+   | |             in this macro invocation (#3)
+LL | |
+LL | |
+LL | |         };
+LL | |     }
+   | |     -
+   | |     |
+   | |_____in this expansion of `stack!` (#1)
+   |       in this expansion of `stack!` (#2)
+LL |
+LL |       stack!("overflow");
+   |       ------------------ in this macro invocation (#1)
+   |
 help: you might be missing a string literal to format with
+  --> $DIR/issue-41731-infinite-macro-println.rs:8:22
    |
 LL |             println!("{}", stack!($overflow));
    |                      +++++

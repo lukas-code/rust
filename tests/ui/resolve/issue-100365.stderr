@@ -19,35 +19,50 @@ LL |     let _ = Into::<()>.into;
 error[E0423]: expected value, found trait `std::iter::Iterator`
   --> $DIR/issue-100365.rs:17:9
    |
-LL |         ::std::iter::Iterator
-   |         ^^^^^^^^^^^^^^^^^^^^^ not a value
+LL | / macro_rules! Trait {
+LL | |     () => {
+LL | |         ::std::iter::Iterator
+   | |         ^^^^^^^^^^^^^^^^^^^^^ not a value
+LL | |
+LL | |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `Trait!`
 ...
-LL |     Trait!().map(std::convert::identity); // no `help` here!
-   |     -------- in this macro invocation
-   |
-   = note: this error originates in the macro `Trait` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       Trait!().map(std::convert::identity); // no `help` here!
+   |       -------- in this macro invocation
 
 error[E0423]: expected value, found trait `std::iter::Iterator`
   --> $DIR/issue-100365.rs:17:9
    |
-LL |         ::std::iter::Iterator
-   |         ^^^^^^^^^^^^^^^^^^^^^ not a value
+LL | / macro_rules! Trait {
+LL | |     () => {
+LL | |         ::std::iter::Iterator
+   | |         ^^^^^^^^^^^^^^^^^^^^^ not a value
+LL | |
+LL | |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `Trait!`
 ...
-LL |     Trait!().map; // no `help` here!
-   |     -------- in this macro invocation
-   |
-   = note: this error originates in the macro `Trait` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       Trait!().map; // no `help` here!
+   |       -------- in this macro invocation
 
 error[E0423]: expected value, found trait `Into`
   --> $DIR/issue-100365.rs:25:9
    |
-LL |         Into::<String>.into("")
-   |         ^^^^^^^^^^^^^^- help: use the path separator to refer to an item: `::`
+LL | / macro_rules! create {
+LL | |     () => {
+LL | |         Into::<String>.into("")
+   | |         ^^^^^^^^^^^^^^- help: use the path separator to refer to an item: `::`
+LL | |
+LL | |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `create!`
 ...
-LL |     let _ = create!();
-   |             --------- in this macro invocation
-   |
-   = note: this error originates in the macro `create` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       let _ = create!();
+   |               --------- in this macro invocation
 
 error: aborting due to 6 previous errors
 

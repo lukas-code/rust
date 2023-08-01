@@ -1,13 +1,17 @@
 error[E0616]: field `c_object` of struct `Item` is private
   --> $DIR/issue-25386.rs:19:16
    |
-LL |         (*$var.c_object).$member.is_some()
-   |                ^^^^^^^^ private field
+LL | / macro_rules! check_ptr_exist {
+LL | |     ($var:expr, $member:ident) => (
+LL | |         (*$var.c_object).$member.is_some()
+   | |                ^^^^^^^^ private field
+LL | |
+LL | |     );
+LL | | }
+   | |_- in this expansion of `check_ptr_exist!`
 ...
-LL |     println!("{}", check_ptr_exist!(item, name));
-   |                    ---------------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `check_ptr_exist` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       println!("{}", check_ptr_exist!(item, name));
+   |                      ---------------------------- in this macro invocation
 
 error: aborting due to previous error
 

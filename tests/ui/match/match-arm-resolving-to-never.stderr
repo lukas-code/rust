@@ -5,13 +5,14 @@ LL | /     match E::F {
 LL | |         E::A => 1,
 LL | |         E::B => 2,
 LL | |         E::C => 3,
-LL | |         E::D => 4,
-LL | |         E::E => unimplemented!(""),
-   | |                 ------------------ this and all prior arms are found to be of type `{integer}`
+...  |
 LL | |         E::F => "",
    | |                 ^^ expected integer, found `&str`
 LL | |     };
    | |_____- `match` arms have incompatible types
+  --> $SRC_DIR/core/src/panic.rs:LL:COL
+   |
+   = note: this and all prior arms are found to be of type `{integer}`
 
 error: aborting due to previous error
 

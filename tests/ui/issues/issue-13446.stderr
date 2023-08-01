@@ -1,12 +1,18 @@
 error[E0308]: mismatched types
-  --> $DIR/issue-13446.rs:3:26
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `vec!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: expected `[u32; 256]`, found `Vec<_>`
+   |
+  ::: $DIR/issue-13446.rs:3:26
    |
 LL | static VEC: [u32; 256] = vec![];
-   |                          ^^^^^^ expected `[u32; 256]`, found `Vec<_>`
+   |                          ------ in this macro invocation
    |
    = note: expected array `[u32; 256]`
              found struct `Vec<_>`
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

@@ -16,13 +16,16 @@ LL | #![deny(single_use_lifetimes)]
 error: lifetime parameter `'a` only used once
   --> $DIR/issue-104440.rs:38:30
    |
-LL |         fn f<'b, 'c, $a: 'b, 'a: 'c>(t1: &$a(), t2: &'a ()) -> (&'b (), &'c ()) {
-   |                              ^^ this lifetime...     -- ...is used only here
+LL | /     macro m($a:lifetime) {
+LL | |         fn f<'b, 'c, $a: 'b, 'a: 'c>(t1: &$a(), t2: &'a ()) -> (&'b (), &'c ()) {
+   | |                              ^^ this lifetime...     -- ...is used only here
+LL | |             (t1, t2)
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `m!`
 ...
-LL |     m!('a);
-   |     ------ in this macro invocation
-   |
-   = note: this error originates in the macro `m` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       m!('a);
+   |       ------ in this macro invocation
 
 error: aborting due to 2 previous errors
 

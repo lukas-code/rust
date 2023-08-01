@@ -6,10 +6,12 @@ LL | #[derive(Debug)]
 LL | struct Struct(
 LL |     Error
    |     ^^^^^ `Error` cannot be formatted using `{:?}`
+  --> $SRC_DIR/core/src/fmt/mod.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Debug)]`
    |
    = help: the trait `Debug` is not implemented for `Error`
    = note: add `#[derive(Debug)]` to `Error` or manually `impl Debug for Error`
-   = note: this error originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Error` with `#[derive(Debug)]`
    |
 LL + #[derive(Debug)]

@@ -1,38 +1,63 @@
 error[E0658]: use of unstable library feature 'function'
-  --> $DIR/internal-unstable-noallow.rs:16:5
+  --> $DIR/auxiliary/internal_unstable.rs:74:13
+   |
+LL | macro_rules! call_unstable_noallow {
+   | ---------------------------------- in this expansion of `call_unstable_noallow!`
+LL |     () => { $crate::unstable() }
+   |             ^^^^^^^^^^^^^^^^
+   |
+  ::: $DIR/internal-unstable-noallow.rs:16:5
    |
 LL |     call_unstable_noallow!();
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ------------------------ in this macro invocation
    |
    = help: add `#![feature(function)]` to the crate attributes to enable
-   = note: this error originates in the macro `call_unstable_noallow` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'struct_field'
-  --> $DIR/internal-unstable-noallow.rs:18:5
+  --> $DIR/auxiliary/internal_unstable.rs:81:23
+   |
+LL | macro_rules! construct_unstable_noallow {
+   | --------------------------------------- in this expansion of `construct_unstable_noallow!`
+LL |     ($e: expr) => {
+LL |         $crate::Foo { x: $e }
+   |                       ^
+   |
+  ::: $DIR/internal-unstable-noallow.rs:18:5
    |
 LL |     construct_unstable_noallow!(0);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ------------------------------ in this macro invocation
    |
    = help: add `#![feature(struct_field)]` to the crate attributes to enable
-   = note: this error originates in the macro `construct_unstable_noallow` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'method'
-  --> $DIR/internal-unstable-noallow.rs:20:35
+  --> $DIR/auxiliary/internal_unstable.rs:88:24
+   |
+LL | macro_rules! call_method_noallow {
+   | -------------------------------- in this expansion of `call_method_noallow!`
+LL |     ($e: expr) => { $e.method() }
+   |                        ^^^^^^
+   |
+  ::: $DIR/internal-unstable-noallow.rs:20:35
    |
 LL |     |x: internal_unstable::Foo| { call_method_noallow!(x) };
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^
+   |                                   ----------------------- in this macro invocation
    |
    = help: add `#![feature(method)]` to the crate attributes to enable
-   = note: this error originates in the macro `call_method_noallow` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'struct2_field'
-  --> $DIR/internal-unstable-noallow.rs:22:35
+  --> $DIR/auxiliary/internal_unstable.rs:94:21
+   |
+LL | macro_rules! access_field_noallow {
+   | --------------------------------- in this expansion of `access_field_noallow!`
+LL |     ($e: expr) => { $e.x }
+   |                     ^^^^
+   |
+  ::: $DIR/internal-unstable-noallow.rs:22:35
    |
 LL |     |x: internal_unstable::Bar| { access_field_noallow!(x) };
-   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^
+   |                                   ------------------------ in this macro invocation
    |
    = help: add `#![feature(struct2_field)]` to the crate attributes to enable
-   = note: this error originates in the macro `access_field_noallow` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 4 previous errors
 

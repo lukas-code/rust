@@ -134,13 +134,17 @@ LL |         (true | false, None | Some(true
 error: unreachable pattern
   --> $DIR/exhaustiveness-unreachable-pattern.rs:105:14
    |
-LL |             (true
-   |              ^^^^
+LL | /     macro_rules! t_or_f {
+LL | |         () => {
+LL | |             (true
+   | |              ^^^^
+LL | |             | false)
+LL | |         };
+LL | |     }
+   | |_____- in this expansion of `t_or_f!`
 ...
-LL |         (true | false, None | Some(t_or_f!())) => {}
-   |                                    --------- in this macro invocation
-   |
-   = note: this error originates in the macro `t_or_f` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |           (true | false, None | Some(t_or_f!())) => {}
+   |                                      --------- in this macro invocation
 
 error: unreachable pattern
   --> $DIR/exhaustiveness-unreachable-pattern.rs:116:14

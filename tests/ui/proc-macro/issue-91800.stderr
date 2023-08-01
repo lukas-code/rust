@@ -2,9 +2,12 @@ error: macros that expand to items must be delimited with braces or followed by 
   --> $DIR/issue-91800.rs:6:10
    |
 LL | #[derive(MyTrait)]
-   |          ^^^^^^^
+   |          ^^^^^^^ in this derive macro expansion
    |
-   = note: this error originates in the derive macro `MyTrait` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:15:1
+   |
+LL | pub fn derive(input: TokenStream) -> TokenStream {
+   | ------------------------------------------------ in this expansion of `#[derive(MyTrait)]`
 
 error: proc-macro derive produced unparsable tokens
   --> $DIR/issue-91800.rs:6:10
@@ -16,41 +19,56 @@ error:
   --> $DIR/issue-91800.rs:6:10
    |
 LL | #[derive(MyTrait)]
-   |          ^^^^^^^
+   |          ^^^^^^^ in this derive macro expansion
    |
-   = note: this error originates in the derive macro `MyTrait` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:15:1
+   |
+LL | pub fn derive(input: TokenStream) -> TokenStream {
+   | ------------------------------------------------ in this expansion of `#[derive(MyTrait)]`
 
 error: macros that expand to items must be delimited with braces or followed by a semicolon
   --> $DIR/issue-91800.rs:9:1
    |
 LL | #[attribute_macro]
-   | ^^^^^^^^^^^^^^^^^^
+   | ^^^^^^^^^^^^^^^^^^ in this procedural macro expansion
    |
-   = note: this error originates in the attribute macro `attribute_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:19:1
+   |
+LL | pub fn attribute_macro(_attr: TokenStream, mut input: TokenStream) -> TokenStream {
+   | --------------------------------------------------------------------------------- in this expansion of `#[attribute_macro]`
 
 error: 
   --> $DIR/issue-91800.rs:9:1
    |
 LL | #[attribute_macro]
-   | ^^^^^^^^^^^^^^^^^^
+   | ^^^^^^^^^^^^^^^^^^ in this procedural macro expansion
    |
-   = note: this error originates in the attribute macro `attribute_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:19:1
+   |
+LL | pub fn attribute_macro(_attr: TokenStream, mut input: TokenStream) -> TokenStream {
+   | --------------------------------------------------------------------------------- in this expansion of `#[attribute_macro]`
 
 error: macros that expand to items must be delimited with braces or followed by a semicolon
   --> $DIR/issue-91800.rs:13:1
    |
 LL | fn_macro! {}
-   | ^^^^^^^^^^^^
+   | ^^^^^^^^^^^^ in this macro invocation
    |
-   = note: this error originates in the macro `fn_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:24:1
+   |
+LL | pub fn fn_macro(_item: TokenStream) -> TokenStream {
+   | -------------------------------------------------- in this expansion of `fn_macro!`
 
 error: 
   --> $DIR/issue-91800.rs:13:1
    |
 LL | fn_macro! {}
-   | ^^^^^^^^^^^^
+   | ^^^^^^^^^^^^ in this macro invocation
    |
-   = note: this error originates in the macro `fn_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-91800-macro.rs:24:1
+   |
+LL | pub fn fn_macro(_item: TokenStream) -> TokenStream {
+   | -------------------------------------------------- in this expansion of `fn_macro!`
 
 error: aborting due to 7 previous errors
 

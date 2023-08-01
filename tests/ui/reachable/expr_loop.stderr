@@ -1,37 +1,53 @@
 error: unreachable statement
-  --> $DIR/expr_loop.rs:8:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     loop { return; }
-   |            ------ any code following this expression is unreachable
-LL |     println!("I am dead.");
-   |     ^^^^^^^^^^^^^^^^^^^^^^ unreachable statement
+   = note: in this expansion of `println!`
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: unreachable statement
+   |
+  ::: $DIR/expr_loop.rs:7:12
+   |
+LL |       loop { return; }
+   |              ------ any code following this expression is unreachable
+LL |       println!("I am dead.");
+   |       ---------------------- in this macro invocation
    |
 note: the lint level is defined here
   --> $DIR/expr_loop.rs:4:9
    |
 LL | #![deny(unreachable_code)]
    |         ^^^^^^^^^^^^^^^^
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: unreachable statement
-  --> $DIR/expr_loop.rs:21:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     loop { return; }
-   |            ------ any code following this expression is unreachable
-LL |     println!("I am dead.");
-   |     ^^^^^^^^^^^^^^^^^^^^^^ unreachable statement
+   = note: in this expansion of `println!`
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: unreachable statement
+   |
+  ::: $DIR/expr_loop.rs:20:12
+   |
+LL |       loop { return; }
+   |              ------ any code following this expression is unreachable
+LL |       println!("I am dead.");
+   |       ---------------------- in this macro invocation
 
 error: unreachable statement
-  --> $DIR/expr_loop.rs:32:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     loop { 'middle: loop { loop { break 'middle; } } }
-   |     -------------------------------------------------- any code following this expression is unreachable
-LL |     println!("I am dead.");
-   |     ^^^^^^^^^^^^^^^^^^^^^^ unreachable statement
+   = note: in this expansion of `println!`
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: unreachable statement
+   |
+  ::: $DIR/expr_loop.rs:31:5
+   |
+LL |       loop { 'middle: loop { loop { break 'middle; } } }
+   |       -------------------------------------------------- any code following this expression is unreachable
+LL |       println!("I am dead.");
+   |       ---------------------- in this macro invocation
 
 error: aborting due to 3 previous errors
 

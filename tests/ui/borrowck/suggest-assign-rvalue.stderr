@@ -17,9 +17,20 @@ error[E0381]: used binding `my_float` isn't initialized
 LL |     let my_float: f32;
    |         -------- binding declared here but left uninitialized
 LL |     println!("my_float: {}", my_float);
-   |                              ^^^^^^^^ `my_float` used here but it isn't initialized
+   |     -------------------------^^^^^^^^-
+   |     |                        |
+   |     |                        `my_float` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let my_float: f32 = 0.0;
@@ -31,9 +42,20 @@ error[E0381]: used binding `demo` isn't initialized
 LL |     let demo: Demo;
    |         ---- binding declared here but left uninitialized
 LL |     println!("demo: {:?}", demo);
-   |                            ^^^^ `demo` used here but it isn't initialized
+   |     -----------------------^^^^-
+   |     |                      |
+   |     |                      `demo` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let demo: Demo = Default::default();
@@ -45,9 +67,20 @@ error[E0381]: used binding `demo_no` isn't initialized
 LL |     let demo_no: DemoNoDef;
    |         ------- binding declared here but left uninitialized
 LL |     println!("demo_no: {:?}", demo_no);
-   |                               ^^^^^^^ `demo_no` used here but it isn't initialized
+   |     --------------------------^^^^^^^-
+   |     |                         |
+   |     |                         `demo_no` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let demo_no: DemoNoDef = todo!();
@@ -59,9 +92,20 @@ error[E0381]: used binding `arr` isn't initialized
 LL |     let arr: [i32; 5];
    |         --- binding declared here but left uninitialized
 LL |     println!("arr: {:?}", arr);
-   |                           ^^^ `arr` used here but it isn't initialized
+   |     ----------------------^^^-
+   |     |                     |
+   |     |                     `arr` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let arr: [i32; 5] = todo!();
@@ -73,9 +117,20 @@ error[E0381]: used binding `foo` isn't initialized
 LL |     let foo: Vec<&str>;
    |         --- binding declared here but left uninitialized
 LL |     println!("foo: {:?}", foo);
-   |                           ^^^ `foo` used here but it isn't initialized
+   |     ----------------------^^^-
+   |     |                     |
+   |     |                     `foo` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let foo: Vec<&str> = vec![];
@@ -87,9 +142,20 @@ error[E0381]: used binding `my_string` isn't initialized
 LL |     let my_string: String;
    |         --------- binding declared here but left uninitialized
 LL |     println!("my_string: {}", my_string);
-   |                               ^^^^^^^^^ `my_string` used here but it isn't initialized
+   |     --------------------------^^^^^^^^^-
+   |     |                         |
+   |     |                         `my_string` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let my_string: String = Default::default();
@@ -101,9 +167,20 @@ error[E0381]: used binding `my_int` isn't initialized
 LL |     let my_int: &i32;
    |         ------ binding declared here but left uninitialized
 LL |     println!("my_int: {}", *my_int);
-   |                            ^^^^^^^ `*my_int` used here but it isn't initialized
+   |     -----------------------^^^^^^^-
+   |     |                      |
+   |     |                      `*my_int` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let my_int: &i32 = todo!();
@@ -115,9 +192,20 @@ error[E0381]: used binding `hello` isn't initialized
 LL |     let hello: &str;
    |         ----- binding declared here but left uninitialized
 LL |     println!("hello: {}", hello);
-   |                           ^^^^^ `hello` used here but it isn't initialized
+   |     ----------------------^^^^^-
+   |     |                     |
+   |     |                     `hello` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
+   |
 help: consider assigning a value
    |
 LL |     let hello: &str = todo!();
@@ -129,9 +217,19 @@ error[E0381]: used binding `never` isn't initialized
 LL |     let never: !;
    |         ----- binding declared here but left uninitialized
 LL |     println!("never: {}", never);
-   |                           ^^^^^ `never` used here but it isn't initialized
+   |     ----------------------^^^^^-
+   |     |                     |
+   |     |                     `never` used here but it isn't initialized
+   |     in this macro invocation (#1)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `println!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#2)
 
 error: aborting due to 10 previous errors
 

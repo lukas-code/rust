@@ -8,10 +8,12 @@ LL |     fn f() { ::baz::m!(); }
    |              ----------- in this macro invocation
 ...
 LL |     pub macro m() { ().f() }
-   |                        ^ method not found in `()`
+   |     -------------------^----
+   |     |                  |
+   |     |                  method not found in `()`
+   |     in this expansion of `::baz::m!`
    |
    = help: items from traits can only be used if the trait is in scope
-   = note: this error originates in the macro `::baz::m` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: the following trait is implemented but not in scope; perhaps add a `use` for it:
    |
 LL +     use foo::T;

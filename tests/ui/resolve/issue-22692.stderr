@@ -19,13 +19,19 @@ LL |     let _ = Vec::<()>.with_capacity(1);
 error[E0423]: expected value, found struct `std::cell::Cell`
   --> $DIR/issue-22692.rs:17:9
    |
-LL |         ::std::cell::Cell
-   |         ^^^^^^^^^^^^^^^^^
+LL | / macro_rules! Type {
+LL | |     () => {
+LL | |         ::std::cell::Cell
+   | |         ^^^^^^^^^^^^^^^^^
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `Type!`
 ...
-LL |     Type!().get();
-   |     ------- in this macro invocation
+LL |       Type!().get();
+   |       ------- in this macro invocation
    |
-   = note: this error originates in the macro `Type` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: use the path separator to refer to an item
    |
 LL |     <Type!()>::get();
@@ -34,13 +40,19 @@ LL |     <Type!()>::get();
 error[E0423]: expected value, found struct `std::cell::Cell`
   --> $DIR/issue-22692.rs:17:9
    |
-LL |         ::std::cell::Cell
-   |         ^^^^^^^^^^^^^^^^^
+LL | / macro_rules! Type {
+LL | |     () => {
+LL | |         ::std::cell::Cell
+   | |         ^^^^^^^^^^^^^^^^^
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `Type!`
 ...
-LL |     Type! {}.get;
-   |     -------- in this macro invocation
+LL |       Type! {}.get;
+   |       -------- in this macro invocation
    |
-   = note: this error originates in the macro `Type` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: use the path separator to refer to an item
    |
 LL |     <Type! {}>::get;
@@ -49,35 +61,65 @@ LL |     <Type! {}>::get;
 error[E0423]: expected value, found struct `Vec`
   --> $DIR/issue-22692.rs:26:9
    |
-LL |         Vec.new()
-   |         ^^^- help: use the path separator to refer to an item: `::`
+LL | / macro_rules! create {
+LL | |     (type method) => {
+LL | |         Vec.new()
+   | |         ^^^- help: use the path separator to refer to an item: `::`
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `create!`
 ...
-LL |     let _ = create!(type method);
-   |             -------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `create` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       let _ = create!(type method);
+   |               -------------------- in this macro invocation
 
 error[E0423]: expected value, found struct `Vec`
   --> $DIR/issue-22692.rs:31:9
    |
-LL |         Vec.new
-   |         ^^^- help: use the path separator to refer to an item: `::`
+LL | / macro_rules! create {
+LL | |     (type method) => {
+LL | |         Vec.new()
+LL | |
+...  |
+LL | |         Vec.new
+   | |         ^^^- help: use the path separator to refer to an item: `::`
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `create!`
 ...
-LL |     let _ = create!(type field);
-   |             ------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `create` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       let _ = create!(type field);
+   |               ------------------- in this macro invocation
 
 error[E0423]: expected value, found struct `std::cell::Cell`
   --> $DIR/issue-22692.rs:17:9
    |
-LL |         ::std::cell::Cell
-   |         ^^^^^^^^^^^^^^^^^
+LL | / macro_rules! Type {
+LL | |     () => {
+LL | |         ::std::cell::Cell
+   | |         ^^^^^^^^^^^^^^^^^
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `Type!` (#2)
+LL |
+LL | / macro_rules! create {
+LL | |     (type method) => {
+LL | |         Vec.new()
+LL | |
+...  |
+LL | |         Type!().new(0)
+   | |         ------- in this macro invocation (#2)
+LL | |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `create!` (#1)
 ...
-LL |     let _ = create!(macro method);
-   |             --------------------- in this macro invocation
+LL |       let _ = create!(macro method);
+   |               --------------------- in this macro invocation (#1)
    |
-   = note: this error originates in the macro `Type` which comes from the expansion of the macro `create` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: use the path separator to refer to an item
    |
 LL |         <Type!()>::new(0)

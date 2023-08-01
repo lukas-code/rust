@@ -1,11 +1,14 @@
 error[E0015]: cannot call non-const fn `_print` in constant functions
-  --> $DIR/issue-79450.rs:9:9
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `println!`
+   |
+  ::: $DIR/issue-79450.rs:9:9
    |
 LL |         println!("lul");
-   |         ^^^^^^^^^^^^^^^
+   |         --------------- in this macro invocation
    |
    = note: calls in constant functions are limited to constant functions, tuple structs and tuple variants
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

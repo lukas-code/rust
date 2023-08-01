@@ -16,15 +16,20 @@ LL | #![deny(unreachable_code)]
    |         ^^^^^^^^^^^^^^^^
 
 error: unreachable statement
-  --> $DIR/expr_if.rs:27:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |         return;
-   |         ------ any code following this expression is unreachable
+   = note: in this expansion of `println!`
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: unreachable statement
+   |
+  ::: $DIR/expr_if.rs:21:9
+   |
+LL |           return;
+   |           ------ any code following this expression is unreachable
 ...
-LL |     println!("But I am.");
-   |     ^^^^^^^^^^^^^^^^^^^^^ unreachable statement
-   |
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       println!("But I am.");
+   |       --------------------- in this macro invocation
 
 error: aborting due to 2 previous errors
 

@@ -2,9 +2,12 @@ error: expected error
   --> $DIR/resolved-located-at.rs:7:25
    |
 LL |     resolve_located_at!(a b)
-   |                         ^
+   |     --------------------^--- in this macro invocation
    |
-   = note: this error originates in the macro `resolve_located_at` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/resolved-located-at.rs:13:1
+   |
+LL | pub fn resolve_located_at(input: TokenStream) -> TokenStream {
+   | ------------------------------------------------------------ in this expansion of `resolve_located_at!`
 
 error[E0308]: mismatched types
   --> $DIR/resolved-located-at.rs:7:27
@@ -12,9 +15,15 @@ error[E0308]: mismatched types
 LL | fn main() {
    |           - expected `()` because of default return type
 LL |     resolve_located_at!(a b)
-   |                           ^ expected `()`, found `S`
+   |     ----------------------^-
+   |     |                     |
+   |     |                     expected `()`, found `S`
+   |     in this macro invocation
    |
-   = note: this error originates in the macro `resolve_located_at` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/resolved-located-at.rs:13:1
+   |
+LL | pub fn resolve_located_at(input: TokenStream) -> TokenStream {
+   | ------------------------------------------------------------ in this expansion of `resolve_located_at!`
 
 error: aborting due to 2 previous errors
 

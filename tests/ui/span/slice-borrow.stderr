@@ -1,16 +1,22 @@
 error[E0716]: temporary value dropped while borrowed
-  --> $DIR/slice-borrow.rs:6:28
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |         let x: &[isize] = &vec![1, 2, 3, 4, 5];
-   |                            ^^^^^^^^^^^^^^^^^^^ creates a temporary value which is freed while still in use
+   = note: in this expansion of `vec!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: creates a temporary value which is freed while still in use
+   |
+  ::: $DIR/slice-borrow.rs:6:28
+   |
+LL |           let x: &[isize] = &vec![1, 2, 3, 4, 5];
+   |                              ------------------- in this macro invocation
 ...
-LL |     }
-   |     - temporary value is freed at the end of this statement
-LL |     y.use_ref();
-   |     - borrow later used here
+LL |       }
+   |       - temporary value is freed at the end of this statement
+LL |       y.use_ref();
+   |       - borrow later used here
    |
    = note: consider using a `let` binding to create a longer lived value
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

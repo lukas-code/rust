@@ -2329,6 +2329,7 @@ impl<'test> TestCx<'test> {
                 rustc.arg("-Ccodegen-units=1");
                 // Hide line numbers to reduce churn
                 rustc.arg("-Zui-testing");
+                rustc.arg("-Zmacro-backtrace");
                 rustc.arg("-Zdeduplicate-diagnostics=no");
                 // #[cfg(not(bootstrap)] unconditionally pass flag after beta bump
                 // since `ui-fulldeps --stage=1` builds using the stage 0 compiler,

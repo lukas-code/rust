@@ -1,35 +1,42 @@
 error: arbitrary expressions aren't allowed in patterns
   --> $DIR/issue-92074-macro-ice.rs:18:25
    |
-LL |     () => { force_expr!(Vec::new()) }
-   |                         ^^^^^^^^^^
+LL | / macro_rules! make_vec {
+LL | |     () => { force_expr!(Vec::new()) }
+   | |                         ^^^^^^^^^^
+LL | | }
+   | |_- in this expansion of `make_vec!`
 ...
-LL |     assert!(matches!(x, En::A(make_vec!())));
-   |                               ----------- in this macro invocation
-   |
-   = note: this error originates in the macro `make_vec` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       assert!(matches!(x, En::A(make_vec!())));
+   |                                 ----------- in this macro invocation
 
 error: arbitrary expressions aren't allowed in patterns
   --> $DIR/issue-92074-macro-ice.rs:22:24
    |
-LL |     () => { force_pat!(get_usize(), get_usize()) }
-   |                        ^^^^^^^^^^^
+LL | / macro_rules! make_pat {
+LL | |     () => { force_pat!(get_usize(), get_usize()) }
+   | |                        ^^^^^^^^^^^
+LL | |
+LL | |
+LL | | }
+   | |_- in this expansion of `make_pat!`
 ...
-LL |     assert!(matches!(5, make_pat!()));
-   |                         ----------- in this macro invocation
-   |
-   = note: this error originates in the macro `make_pat` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       assert!(matches!(5, make_pat!()));
+   |                           ----------- in this macro invocation
 
 error: arbitrary expressions aren't allowed in patterns
   --> $DIR/issue-92074-macro-ice.rs:22:37
    |
-LL |     () => { force_pat!(get_usize(), get_usize()) }
-   |                                     ^^^^^^^^^^^
+LL | / macro_rules! make_pat {
+LL | |     () => { force_pat!(get_usize(), get_usize()) }
+   | |                                     ^^^^^^^^^^^
+LL | |
+LL | |
+LL | | }
+   | |_- in this expansion of `make_pat!`
 ...
-LL |     assert!(matches!(5, make_pat!()));
-   |                         ----------- in this macro invocation
-   |
-   = note: this error originates in the macro `make_pat` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       assert!(matches!(5, make_pat!()));
+   |                           ----------- in this macro invocation
 
 error: aborting due to 3 previous errors
 

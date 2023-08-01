@@ -1,13 +1,17 @@
 error: expected one of `!`, `.`, `::`, `;`, `?`, `{`, `}`, or an operator, found `$`
   --> $DIR/issue-6596-2.rs:3:16
    |
-LL |         { $inp $nonexistent }
-   |                ^^^^^^^^^^^^ expected one of 8 possible tokens
+LL | / macro_rules! g {
+LL | |     ($inp:ident) => (
+LL | |         { $inp $nonexistent }
+   | |                ^^^^^^^^^^^^ expected one of 8 possible tokens
+LL | |
+LL | |     );
+LL | | }
+   | |_- in this expansion of `g!`
 ...
-LL |     g!(foo);
-   |     ------- in this macro invocation
-   |
-   = note: this error originates in the macro `g` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       g!(foo);
+   |       ------- in this macro invocation
 
 error: aborting due to previous error
 

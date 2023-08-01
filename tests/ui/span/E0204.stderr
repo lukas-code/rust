@@ -11,12 +11,13 @@ error[E0204]: the trait `Copy` cannot be implemented for this type
   --> $DIR/E0204.rs:7:10
    |
 LL | #[derive(Copy)]
-   |          ^^^^
+   |          ^^^^ in this derive macro expansion
 LL | struct Foo2<'a> {
 LL |     ty: &'a mut bool,
    |     ---------------- this field does not implement `Copy`
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Copy)]`
 
 error[E0204]: the trait `Copy` cannot be implemented for this type
   --> $DIR/E0204.rs:17:15
@@ -31,12 +32,13 @@ error[E0204]: the trait `Copy` cannot be implemented for this type
   --> $DIR/E0204.rs:19:10
    |
 LL | #[derive(Copy)]
-   |          ^^^^
+   |          ^^^^ in this derive macro expansion
 LL | enum EFoo2<'a> {
 LL |     Bar(&'a mut bool),
    |         ------------ this field does not implement `Copy`
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Copy)]`
 
 error: aborting due to 4 previous errors
 

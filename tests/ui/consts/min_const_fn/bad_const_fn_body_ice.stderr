@@ -1,19 +1,27 @@
 error[E0010]: allocations are not allowed in constant functions
-  --> $DIR/bad_const_fn_body_ice.rs:2:5
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `vec!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: allocation not allowed in constant functions
+   |
+  ::: $DIR/bad_const_fn_body_ice.rs:2:5
    |
 LL |     vec![1, 2, 3]
-   |     ^^^^^^^^^^^^^ allocation not allowed in constant functions
-   |
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ------------- in this macro invocation
 
 error[E0015]: cannot call non-const fn `slice::<impl [i32]>::into_vec::<std::alloc::Global>` in constant functions
-  --> $DIR/bad_const_fn_body_ice.rs:2:5
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |     vec![1, 2, 3]
-   |     ^^^^^^^^^^^^^
+   = note: in this expansion of `vec!`
+   |
+  ::: $DIR/bad_const_fn_body_ice.rs:2:5
+   |
+LL |       vec![1, 2, 3]
+   |       ------------- in this macro invocation
    |
    = note: calls in constant functions are limited to constant functions, tuple structs and tuple variants
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 2 previous errors
 

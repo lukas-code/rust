@@ -1,36 +1,56 @@
 error[E0308]: mismatched types
-  --> $DIR/suggest-ref-macro.rs:8:1
+  --> $DIR/auxiliary/proc-macro-type-error.rs:15:15
+   |
+LL | pub fn hello(_: TokenStream, _: TokenStream) -> TokenStream {
+   | ----------------------------------------------------------- in this expansion of `#[hello]`
+...
+LL |             f(123);
+   |             - ^^^ expected `&mut i32`, found integer
+   |             |
+   |             arguments to this function are incorrect
+   |
+  ::: $DIR/suggest-ref-macro.rs:8:1
    |
 LL | #[hello]
-   | ^^^^^^^^
-   | |
-   | expected `&mut i32`, found integer
-   | arguments to this function are incorrect
+   | -------- in this procedural macro expansion
    |
 note: function defined here
-  --> $DIR/suggest-ref-macro.rs:8:1
+  --> $DIR/auxiliary/proc-macro-type-error.rs:13:12
+   |
+LL | pub fn hello(_: TokenStream, _: TokenStream) -> TokenStream {
+   | ----------------------------------------------------------- in this expansion of `#[hello]`
+LL |     quote!(
+LL |         fn f(_: &mut i32) {}
+   |            ^ -----------
+   |
+  ::: $DIR/suggest-ref-macro.rs:8:1
    |
 LL | #[hello]
-   | ^^^^^^^^
-   = note: this error originates in the attribute macro `hello` (in Nightly builds, run with -Z macro-backtrace for more info)
+   | -------- in this procedural macro expansion
 
 error[E0308]: mismatched types
   --> $DIR/suggest-ref-macro.rs:15:11
    |
-LL |         x(123);
-   |         - ^^^ expected `&mut i32`, found integer
-   |         |
-   |         arguments to this function are incorrect
+LL | / macro_rules! bla {
+LL | |     () => {
+LL | |         x(123);
+   | |         - ^^^ expected `&mut i32`, found integer
+   | |         |
+   | |         arguments to this function are incorrect
+LL | |
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `bla!`
 ...
-LL |     bla!();
-   |     ------ in this macro invocation
+LL |       bla!();
+   |       ------ in this macro invocation
    |
 note: function defined here
   --> $DIR/suggest-ref-macro.rs:11:4
    |
 LL | fn x(_: &mut i32) {}
    |    ^ -----------
-   = note: this error originates in the macro `bla` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider mutably borrowing here
    |
 LL |         x(&mut 123);

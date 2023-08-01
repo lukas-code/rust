@@ -10,15 +10,18 @@ LL | use std::io;
 note: `std` could also refer to the module defined here
   --> $DIR/ambiguity-macros.rs:12:9
    |
-LL | /         mod std {
-LL | |             pub struct io;
-LL | |         }
-   | |_________^
-...
-LL |   m!();
-   |   ---- in this macro invocation
+LL | /  macro_rules! m {
+LL | |      () => {
+LL | |/         mod std {
+LL | ||             pub struct io;
+LL | ||         }
+   | ||_________^
+LL | |      }
+LL | |  }
+   | |__- in this expansion of `m!`
+LL |    m!();
+   |    ---- in this macro invocation
    = help: use `crate::std` to refer to this module unambiguously
-   = note: this error originates in the macro `m` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

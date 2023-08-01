@@ -87,12 +87,17 @@ LL |     offset_of!((u8, u8), -1);
    = note: while trying to match sequence start
 
 error: expected identifier, found `)`
-  --> $DIR/offset-of-tuple.rs:14:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+  ::: $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: expected identifier
+   |
+  ::: $DIR/offset-of-tuple.rs:14:5
    |
 LL |     offset_of!((u8, u8), 1.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^ expected identifier
-   |
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ------------------------ in this macro invocation
 
 error: unexpected end of macro invocation
   --> $DIR/offset-of-tuple.rs:15:29
@@ -104,12 +109,17 @@ note: while trying to match meta-variable `$fields:tt`
   --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
 
 error: expected identifier, found `)`
-  --> $DIR/offset-of-tuple.rs:36:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+  ::: $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: expected identifier
+   |
+  ::: $DIR/offset-of-tuple.rs:36:5
    |
 LL |     offset_of!(ComplexTup, 0.0.1.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected identifier
-   |
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ------------------------------ in this macro invocation
 
 error: unexpected end of macro invocation
   --> $DIR/offset-of-tuple.rs:37:35
@@ -138,28 +148,43 @@ LL |     offset_of!(ComplexTup, 0. 0.1.);
    = note: while trying to match sequence start
 
 error: expected identifier, found `)`
-  --> $DIR/offset-of-tuple.rs:40:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+  ::: $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: expected identifier
+   |
+  ::: $DIR/offset-of-tuple.rs:40:5
    |
 LL |     offset_of!(ComplexTup, 0.0 .1.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected identifier
-   |
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ------------------------------- in this macro invocation
 
 error: expected identifier, found `)`
-  --> $DIR/offset-of-tuple.rs:41:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+  ::: $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: expected identifier
+   |
+  ::: $DIR/offset-of-tuple.rs:41:5
    |
 LL |     offset_of!(ComplexTup, 0.0 . 1.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected identifier
-   |
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     -------------------------------- in this macro invocation
 
 error: expected identifier, found `)`
-  --> $DIR/offset-of-tuple.rs:42:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+  ::: $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: expected identifier
+   |
+  ::: $DIR/offset-of-tuple.rs:42:5
    |
 LL |     offset_of!(ComplexTup, 0.0. 1.);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected identifier
-   |
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ------------------------------- in this macro invocation
 
 error[E0609]: no field `_0` on type `(u8, u8)`
   --> $DIR/offset-of-tuple.rs:7:26

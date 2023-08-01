@@ -6,10 +6,12 @@ LL | #[derive(Eq)]
 LL | union U2 {
 LL |     a: PartialEqNotEq,
    |     ^^^^^^^^^^^^^^^^^ the trait `Eq` is not implemented for `PartialEqNotEq`
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Eq)]`
    |
 note: required by a bound in `AssertParamIsEq`
   --> $SRC_DIR/core/src/cmp.rs:LL:COL
-   = note: this error originates in the derive macro `Eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `PartialEqNotEq` with `#[derive(Eq)]`
    |
 LL + #[derive(Eq)]

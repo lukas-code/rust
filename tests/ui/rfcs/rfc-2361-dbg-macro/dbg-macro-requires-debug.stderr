@@ -1,13 +1,31 @@
 error[E0277]: `NotDebug` doesn't implement `Debug`
-  --> $DIR/dbg-macro-requires-debug.rs:6:23
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |     let _: NotDebug = dbg!(NotDebug);
-   |                       ^^^^^^^^^^^^^^ `NotDebug` cannot be formatted using `{:?}`
+   = note: in this expansion of `$crate::eprintln!` (#2)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#3)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `dbg!` (#1)
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
+   |
+   = note: `NotDebug` cannot be formatted using `{:?}`
+   |
+  ::: $DIR/dbg-macro-requires-debug.rs:6:23
+   |
+LL |       let _: NotDebug = dbg!(NotDebug);
+   |                         -------------- in this macro invocation (#1)
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::format_args_nl!` (#3)
    |
    = help: the trait `Debug` is not implemented for `NotDebug`
    = note: add `#[derive(Debug)]` to `NotDebug` or manually `impl Debug for NotDebug`
-   = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `dbg` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `NotDebug` with `#[derive(Debug)]`
+  --> $DIR/dbg-macro-requires-debug.rs:3:1
    |
 LL + #[derive(Debug)]
 LL | struct NotDebug;

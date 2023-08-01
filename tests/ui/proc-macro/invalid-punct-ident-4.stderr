@@ -2,9 +2,15 @@ error: unexpected closing delimiter: `)`
   --> $DIR/invalid-punct-ident-4.rs:7:1
    |
 LL | lexer_failure!();
-   | ^^^^^^^^^^^^^^^^ unexpected closing delimiter
+   | ^^^^^^^^^^^^^^^^
+   | |
+   | unexpected closing delimiter
+   | in this macro invocation
    |
-   = note: this error originates in the macro `lexer_failure` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/invalid-punct-ident.rs:26:1
+   |
+LL | pub fn lexer_failure(_: TokenStream) -> TokenStream {
+   | --------------------------------------------------- in this expansion of `lexer_failure!`
 
 error: proc macro panicked
   --> $DIR/invalid-punct-ident-4.rs:7:1

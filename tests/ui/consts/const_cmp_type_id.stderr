@@ -26,8 +26,13 @@ LL |     const _A: bool = TypeId::of::<u8>() < TypeId::of::<u16>();
    |
 note: impl defined here, but it is not `const`
   --> $SRC_DIR/core/src/any.rs:LL:COL
+   |
+   = note: in this derive macro expansion
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+  ::: $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(PartialOrd)]`
    = note: calls in constants are limited to constant functions, tuple structs and tuple variants
-   = note: this error originates in the derive macro `PartialOrd` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 3 previous errors
 

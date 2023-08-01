@@ -2,13 +2,18 @@ error[E0119]: conflicting implementations of trait `Clone` for type `Node<[_]>`
   --> $DIR/issue-48728.rs:4:10
    |
 LL | #[derive(Clone)]
-   |          ^^^^^ conflicting implementation for `Node<[_]>`
+   |          ^^^^^
+   |          |
+   |          conflicting implementation for `Node<[_]>`
+   |          in this derive macro expansion
 ...
 LL | impl<T: Clone + ?Sized> Clone for Node<[T]> {
    | ------------------------------------------- first implementation here
+  --> $SRC_DIR/core/src/clone.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Clone)]`
    |
    = note: upstream crates may add a new impl of trait `std::clone::Clone` for type `[_]` in future versions
-   = note: this error originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

@@ -2,16 +2,18 @@ error: multiple declared defaults
   --> $DIR/issue-105101.rs:3:10
    |
 LL | #[derive(Default)]
-   |          ^^^^^^^
+   |          ^^^^^^^ in this derive macro expansion
 ...
 LL |     A,
    |     - first default
 LL |     #[default]
 LL |     A,
    |     - additional default
+  --> $SRC_DIR/core/src/default.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Default)]`
    |
    = note: only one variant can be default
-   = note: this error originates in the derive macro `Default` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0428]: the name `A` is defined multiple times
   --> $DIR/issue-105101.rs:8:5

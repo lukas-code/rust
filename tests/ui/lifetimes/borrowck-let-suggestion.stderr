@@ -1,16 +1,22 @@
 error[E0716]: temporary value dropped while borrowed
-  --> $DIR/borrowck-let-suggestion.rs:2:17
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |     let mut x = vec![1].iter();
-   |                 ^^^^^^^       - temporary value is freed at the end of this statement
-   |                 |
-   |                 creates a temporary value which is freed while still in use
+   = note: in this expansion of `vec!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: creates a temporary value which is freed while still in use
+   |
+  ::: $DIR/borrowck-let-suggestion.rs:2:31
+   |
+LL |       let mut x = vec![1].iter();
+   |                   -------       - temporary value is freed at the end of this statement
+   |                   |
+   |                   in this macro invocation
 LL |
-LL |     x.use_mut();
-   |     - borrow later used here
+LL |       x.use_mut();
+   |       - borrow later used here
    |
    = note: consider using a `let` binding to create a longer lived value
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

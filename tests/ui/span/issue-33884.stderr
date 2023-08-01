@@ -1,10 +1,15 @@
 error[E0308]: mismatched types
-  --> $DIR/issue-33884.rs:6:22
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `format!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: expected `Arguments<'_>`, found `String`
+   |
+  ::: $DIR/issue-33884.rs:6:22
    |
 LL |     stream.write_fmt(format!("message received"))
-   |                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Arguments<'_>`, found `String`
-   |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                      --------------------------- in this macro invocation
 
 error: aborting due to previous error
 

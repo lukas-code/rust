@@ -1,24 +1,45 @@
 error[E0425]: cannot find value `hidden_ident` in this scope
   --> $DIR/weird-hygiene.rs:23:43
    |
-LL |             Value = (stringify!($tokens + hidden_ident), 1).1
-   |                                           ^^^^^^^^^^^^ not found in this scope
+LL | /  macro_rules! other {
+LL | |      ($tokens:expr) => {
+LL | |          macro_rules! call_it {
+LL | |              ($outer_ident:ident) => {
+LL | |/                 macro_rules! inner {
+LL | ||                     () => {
+LL | ||                         $outer_ident;
+LL | ||                     }
+LL | ||                 }
+   | ||_________________- in this expansion of `inner!` (#2)
+...  |
+LL | |              Value = (stringify!($tokens + hidden_ident), 1).1
+   | |                                            ^^^^^^^^^^^^ not found in this scope
+...  |
+LL | |          inner!();
+   | |          -------- in this macro invocation (#2)
+LL | |      }
+LL | |  }
+   | |__- in this expansion of `other!` (#1)
 ...
-LL |     other!(50);
-   |     ---------- in this macro invocation
-   |
-   = note: this error originates in the macro `inner` which comes from the expansion of the macro `other` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |        other!(50);
+   |        ---------- in this macro invocation (#1)
 
 error[E0425]: cannot find value `hidden_ident` in this scope
   --> $DIR/weird-hygiene.rs:34:13
    |
-LL |             hidden_ident
-   |             ^^^^^^^^^^^^ not found in this scope
+LL | / macro_rules! invoke_it {
+LL | |     ($token:expr) => {
+LL | |         #[recollect_attr] {
+LL | |             $token;
+LL | |             hidden_ident
+   | |             ^^^^^^^^^^^^ not found in this scope
+LL | |         }
+LL | |     }
+LL | | }
+   | |_- in this expansion of `invoke_it!`
 ...
-LL |     invoke_it!(25);
-   |     -------------- in this macro invocation
-   |
-   = note: this error originates in the macro `invoke_it` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       invoke_it!(25);
+   |       -------------- in this macro invocation
 
 error: aborting due to 2 previous errors
 

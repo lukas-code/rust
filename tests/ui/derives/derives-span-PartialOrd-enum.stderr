@@ -6,9 +6,11 @@ LL | #[derive(PartialOrd,PartialEq)]
 ...
 LL |      Error
    |      ^^^^^ no implementation for `Error < Error` and `Error > Error`
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(PartialOrd)]`
    |
    = help: the trait `PartialOrd` is not implemented for `Error`
-   = note: this error originates in the derive macro `PartialOrd` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Error` with `#[derive(PartialOrd)]`
    |
 LL + #[derive(PartialOrd)]

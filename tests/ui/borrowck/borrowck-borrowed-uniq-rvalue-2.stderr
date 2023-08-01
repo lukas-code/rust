@@ -1,15 +1,21 @@
 error[E0716]: temporary value dropped while borrowed
-  --> $DIR/borrowck-borrowed-uniq-rvalue-2.rs:20:20
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |     let x = defer(&vec!["Goodbye", "world!"]);
-   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^ - temporary value is freed at the end of this statement
-   |                    |
-   |                    creates a temporary value which is freed while still in use
-LL |     x.x[0];
-   |     ------ borrow later used here
+   = note: in this expansion of `vec!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: creates a temporary value which is freed while still in use
+   |
+  ::: $DIR/borrowck-borrowed-uniq-rvalue-2.rs:20:46
+   |
+LL |       let x = defer(&vec!["Goodbye", "world!"]);
+   |                      ------------------------- - temporary value is freed at the end of this statement
+   |                      |
+   |                      in this macro invocation
+LL |       x.x[0];
+   |       ------ borrow later used here
    |
    = note: consider using a `let` binding to create a longer lived value
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

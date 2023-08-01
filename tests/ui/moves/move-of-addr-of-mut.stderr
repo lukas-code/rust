@@ -1,13 +1,20 @@
 error[E0381]: used binding `x` isn't initialized
-  --> $DIR/move-of-addr-of-mut.rs:8:5
+  --> $SRC_DIR/core/src/ptr/mod.rs:LL:COL
+   |
+   = note: in this expansion of `std::ptr::addr_of_mut!`
+  ::: $SRC_DIR/core/src/ptr/mod.rs:LL:COL
+   |
+   = note: `x` used here but it isn't initialized
+   |
+  ::: $DIR/move-of-addr-of-mut.rs:7:9
    |
 LL |     let mut x: S;
    |         ----- binding declared here but left uninitialized
 LL |     std::ptr::addr_of_mut!(x);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^ `x` used here but it isn't initialized
+   |     ------------------------- in this macro invocation
    |
-   = note: this error originates in the macro `std::ptr::addr_of_mut` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider assigning a value
+  --> $DIR/move-of-addr-of-mut.rs:7:17
    |
 LL |     let mut x: S = todo!();
    |                  +++++++++

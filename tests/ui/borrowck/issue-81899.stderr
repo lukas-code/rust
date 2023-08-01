@@ -1,20 +1,42 @@
 error[E0080]: evaluation of constant value failed
-  --> $DIR/issue-81899.rs:11:5
+  --> $SRC_DIR/std/src/panic.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::panic::panic_2015!` (#2)
+  ::: $SRC_DIR/std/src/panic.rs:LL:COL
+   |
+   = note: the evaluated program panicked at 'explicit panic', $DIR/issue-81899.rs:11:5
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `panic!` (#1)
+   |
+  ::: $DIR/issue-81899.rs:11:5
    |
 LL |     panic!()
-   |     ^^^^^^^^ the evaluated program panicked at 'explicit panic', $DIR/issue-81899.rs:11:5
+   |     --------
+   |     |
+   |     in this macro invocation (#1)
+   |     in this macro invocation (#2)
    |
 note: inside `f::<[closure@$DIR/issue-81899.rs:4:31: 4:34]>`
-  --> $DIR/issue-81899.rs:11:5
+  --> $SRC_DIR/std/src/panic.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::panic::panic_2015!` (#2)
+   |
+  ::: $DIR/issue-81899.rs:11:5
    |
 LL |     panic!()
-   |     ^^^^^^^^
+   |     --------
+   |     |
+   |     in this macro invocation (#1)
+   |     in this macro invocation (#2)
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `panic!` (#1)
 note: inside `_CONST`
   --> $DIR/issue-81899.rs:4:24
    |
 LL | const _CONST: &[u8] = &f(&[], |_| {});
    |                        ^^^^^^^^^^^^^^
-   = note: this error originates in the macro `$crate::panic::panic_2015` which comes from the expansion of the macro `panic` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 note: erroneous constant used
   --> $DIR/issue-81899.rs:4:23

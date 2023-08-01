@@ -50,10 +50,14 @@ error: recursion limit reached while expanding `recursive_expand!`
   --> $DIR/expand-expr.rs:126:16
    |
 LL | const _: u32 = recursive_expand!();
-   |                ^^^^^^^^^^^^^^^^^^^
+   |                ^^^^^^^^^^^^^^^^^^^ in this macro invocation
+   |
+  ::: $DIR/auxiliary/expand-expr.rs:152:1
+   |
+LL | pub fn recursive_expand(_: TokenStream) -> TokenStream {
+   | ------------------------------------------------------ in this expansion of `recursive_expand!`
    |
    = help: consider increasing the recursion limit by adding a `#![recursion_limit = "256"]` attribute to your crate (`expand_expr`)
-   = note: this error originates in the macro `recursive_expand` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 7 previous errors
 

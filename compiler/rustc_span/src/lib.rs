@@ -695,6 +695,7 @@ impl Span {
         while !outer.contains(self) {
             self = self.parent_callsite()?;
         }
+        // self = self.with_ctxt(outer.ctxt());
         Some(self)
     }
 

@@ -39,13 +39,16 @@ LL |         asm!("{}", in(reg) |x: i32| x);
    = note: only integers, floats, SIMD vectors, pointers and function pointers can be used as arguments for inline assembly
 
 error: cannot use value of type `Vec<i32>` for inline assembly
-  --> $DIR/type-check-2.rs:54:28
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |         asm!("{}", in(reg) vec![0]);
-   |                            ^^^^^^^
+   = note: in this expansion of `vec!`
+   |
+  ::: $DIR/type-check-2.rs:54:28
+   |
+LL |           asm!("{}", in(reg) vec![0]);
+   |                              ------- in this macro invocation
    |
    = note: only integers, floats, SIMD vectors, pointers and function pointers can be used as arguments for inline assembly
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: cannot use value of type `(i32, i32, i32)` for inline assembly
   --> $DIR/type-check-2.rs:56:28

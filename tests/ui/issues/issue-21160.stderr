@@ -5,8 +5,10 @@ LL | #[derive(Hash)]
    |          ---- in this derive macro expansion
 LL | struct Foo(Bar);
    |            ^^^ the trait `Hash` is not implemented for `Bar`
+  --> $SRC_DIR/core/src/hash/mod.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Hash` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Hash)]`
+   |
 help: consider annotating `Bar` with `#[derive(Hash)]`
    |
 LL + #[derive(Hash)]

@@ -50,16 +50,18 @@ error: no default declared
   --> $DIR/macros-nonfatal-errors.rs:42:10
    |
 LL | #[derive(Default)]
-   |          ^^^^^^^
+   |          ^^^^^^^ in this derive macro expansion
+  --> $SRC_DIR/core/src/default.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Default)]`
    |
    = help: make a unit variant default by placing `#[default]` above it
-   = note: this error originates in the derive macro `Default` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: multiple declared defaults
   --> $DIR/macros-nonfatal-errors.rs:48:10
    |
 LL | #[derive(Default)]
-   |          ^^^^^^^
+   |          ^^^^^^^ in this derive macro expansion
 ...
 LL |     Foo,
    |     --- first default
@@ -69,9 +71,11 @@ LL |     Bar,
 LL |     #[default]
 LL |     Baz,
    |     --- additional default
+  --> $SRC_DIR/core/src/default.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Default)]`
    |
    = note: only one variant can be default
-   = note: this error originates in the derive macro `Default` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: `#[default]` attribute does not accept a value
   --> $DIR/macros-nonfatal-errors.rs:60:5
@@ -172,10 +176,12 @@ error: environment variable `RUST_HOPEFULLY_THIS_DOESNT_EXIST` not defined at co
   --> $DIR/macros-nonfatal-errors.rs:106:5
    |
 LL |     env!("RUST_HOPEFULLY_THIS_DOESNT_EXIST");
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `env!`
    |
    = help: use `std::env::var("RUST_HOPEFULLY_THIS_DOESNT_EXIST")` to read the variable at run time
-   = note: this error originates in the macro `env` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: format argument must be a string literal
   --> $DIR/macros-nonfatal-errors.rs:108:13
@@ -204,9 +210,10 @@ error: couldn't read $DIR/i'd be quite surprised if a file with this name existe
   --> $DIR/macros-nonfatal-errors.rs:113:5
    |
 LL |     include_str!("i'd be quite surprised if a file with this name existed");
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
    |
-   = note: this error originates in the macro `include_str` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `include_str!`
 
 error: argument must be a string literal
   --> $DIR/macros-nonfatal-errors.rs:114:20
@@ -218,9 +225,10 @@ error: couldn't read $DIR/i'd be quite surprised if a file with this name existe
   --> $DIR/macros-nonfatal-errors.rs:115:5
    |
 LL |     include_bytes!("i'd be quite surprised if a file with this name existed");
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ in this macro invocation
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
    |
-   = note: this error originates in the macro `include_bytes` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `include_bytes!`
 
 error: trace_macros! accepts only `true` or `false`
   --> $DIR/macros-nonfatal-errors.rs:117:5

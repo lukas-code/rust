@@ -2,9 +2,13 @@ error[E0184]: the trait `Copy` cannot be implemented for this type; the type has
   --> $DIR/E0184.rs:1:10
    |
 LL | #[derive(Copy)]
-   |          ^^^^ `Copy` not allowed on types with destructors
+   |          ^^^^
+   |          |
+   |          `Copy` not allowed on types with destructors
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Copy)]`
 
 error: aborting due to previous error
 

@@ -31,13 +31,16 @@ LL |         ty!()::AssocItem => {}
 error: missing angle brackets in associated item path
   --> $DIR/bad-assoc-pat.rs:21:19
    |
-LL |     ($ty: ty) => ($ty::AssocItem)
-   |                   ^^^^^^^^^^^^^^ help: try: `<$ty>::AssocItem`
+LL | / macro_rules! pat {
+LL | |     ($ty: ty) => ($ty::AssocItem)
+   | |                   ^^^^^^^^^^^^^^ help: try: `<$ty>::AssocItem`
+LL | |
+LL | |
+LL | | }
+   | |_- in this expansion of `pat!`
 ...
-LL |         pat!(u8) => {}
-   |         -------- in this macro invocation
-   |
-   = note: this error originates in the macro `pat` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |           pat!(u8) => {}
+   |           -------- in this macro invocation
 
 error[E0599]: no associated item named `AssocItem` found for slice `[u8]` in the current scope
   --> $DIR/bad-assoc-pat.rs:3:15
@@ -66,13 +69,16 @@ LL |         &(u8,)::AssocItem => {}
 error[E0599]: no associated item named `AssocItem` found for type `u8` in the current scope
   --> $DIR/bad-assoc-pat.rs:21:24
    |
-LL |     ($ty: ty) => ($ty::AssocItem)
-   |                        ^^^^^^^^^ associated item not found in `u8`
+LL | / macro_rules! pat {
+LL | |     ($ty: ty) => ($ty::AssocItem)
+   | |                        ^^^^^^^^^ associated item not found in `u8`
+LL | |
+LL | |
+LL | | }
+   | |_- in this expansion of `pat!`
 ...
-LL |         pat!(u8) => {}
-   |         -------- in this macro invocation
-   |
-   = note: this error originates in the macro `pat` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |           pat!(u8) => {}
+   |           -------- in this macro invocation
 
 error[E0599]: no associated item named `AssocItem` found for type `u8` in the current scope
   --> $DIR/bad-assoc-pat.rs:32:16

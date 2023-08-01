@@ -5,9 +5,11 @@ LL | #[derive(PartialEq, PartialOrd)] struct Nope(Comparable);
    |                     ----------               ^^^^^^^^^^ no implementation for `Comparable < Comparable` and `Comparable > Comparable`
    |                     |
    |                     in this derive macro expansion
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(PartialOrd)]`
    |
    = help: the trait `PartialOrd` is not implemented for `Comparable`
-   = note: this error originates in the derive macro `PartialOrd` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Comparable` with `#[derive(PartialOrd)]`
    |
 LL | #[derive(PartialEq)] #[derive(PartialOrd)]

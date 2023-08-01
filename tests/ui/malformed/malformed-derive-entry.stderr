@@ -20,11 +20,16 @@ error[E0277]: the trait bound `Test1: Clone` is not satisfied
   --> $DIR/malformed-derive-entry.rs:1:10
    |
 LL | #[derive(Copy(Bad))]
-   |          ^^^^ the trait `Clone` is not implemented for `Test1`
+   |          ^^^^
+   |          |
+   |          the trait `Clone` is not implemented for `Test1`
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
    |
 note: required by a bound in `Copy`
   --> $SRC_DIR/core/src/marker.rs:LL:COL
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Test1` with `#[derive(Clone)]`
    |
 LL + #[derive(Clone)]
@@ -35,11 +40,16 @@ error[E0277]: the trait bound `Test2: Clone` is not satisfied
   --> $DIR/malformed-derive-entry.rs:6:10
    |
 LL | #[derive(Copy="bad")]
-   |          ^^^^ the trait `Clone` is not implemented for `Test2`
+   |          ^^^^
+   |          |
+   |          the trait `Clone` is not implemented for `Test2`
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
    |
 note: required by a bound in `Copy`
   --> $SRC_DIR/core/src/marker.rs:LL:COL
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider annotating `Test2` with `#[derive(Clone)]`
    |
 LL + #[derive(Clone)]

@@ -12,9 +12,10 @@ error[E0782]: trait objects must include the `dyn` keyword
   --> $DIR/issue-106072.rs:1:10
    |
 LL | #[derive(Clone)]
-   |          ^^^^^
+   |          ^^^^^ in this derive macro expansion
+  --> $SRC_DIR/core/src/clone.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Clone)]`
 
 error: aborting due to 2 previous errors
 

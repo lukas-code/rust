@@ -8,13 +8,15 @@ LL | #[derive(Debug)]
    |          in this derive macro expansion
 LL | pub struct Irrelevant<Irrelevant> {
    |                       ^^^^^^^^^^ type argument not allowed
+  --> $SRC_DIR/core/src/fmt/mod.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Debug)]`
    |
 note: type parameter `Irrelevant` defined here
   --> $DIR/issue-97343.rs:4:23
    |
 LL | pub struct Irrelevant<Irrelevant> {
    |                       ^^^^^^^^^^
-   = note: this error originates in the derive macro `Debug` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

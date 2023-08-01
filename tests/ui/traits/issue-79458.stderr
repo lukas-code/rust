@@ -6,10 +6,12 @@ LL | #[derive(Clone)]
 LL | struct Foo<'a, T> {
 LL |     bar: &'a mut T
    |     ^^^^^^^^^^^^^^ the trait `Clone` is not implemented for `&mut T`
+  --> $SRC_DIR/core/src/clone.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Clone)]`
    |
    = help: the trait `Clone` is implemented for `&T`
    = note: `Clone` is implemented for `&T`, but not for `&mut T`
-   = note: this error originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

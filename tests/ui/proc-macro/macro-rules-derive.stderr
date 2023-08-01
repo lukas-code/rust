@@ -1,13 +1,19 @@
 error[E0412]: cannot find type `MissingType` in this scope
   --> $DIR/macro-rules-derive.rs:10:20
    |
-LL |             field: MissingType
-   |                    ^^^^^^^^^^^ not found in this scope
-...
-LL | produce_it!(MyName);
-   | ------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `produce_it` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL | / macro_rules! produce_it {
+LL | |     ($name:ident) => {
+LL | |         #[first]
+LL | |         struct $name {
+LL | |             field: MissingType
+   | |                    ^^^^^^^^^^^ not found in this scope
+LL | |         }
+LL | |     }
+LL | | }
+   | |_- in this expansion of `produce_it!`
+LL |
+LL |   produce_it!(MyName);
+   |   ------------------- in this macro invocation
 
 error: aborting due to previous error
 

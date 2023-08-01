@@ -1,15 +1,20 @@
 error[E0124]: field `a` is already declared
   --> $DIR/fields-definition.rs:14:13
    |
-LL |             a: u8,
-   |             ----- `a` first declared here
-LL |             $a: u8,
-   |             ^^^^^^ field already declared
+LL | / macro_rules! legacy {
+LL | |     ($a: ident) => {
+LL | |         struct Legacy {
+LL | |             a: u8,
+   | |             ----- `a` first declared here
+LL | |             $a: u8,
+   | |             ^^^^^^ field already declared
+LL | |         }
+LL | |     }
+LL | | }
+   | |_- in this expansion of `legacy!`
 ...
-LL | legacy!(a);
-   | ---------- in this macro invocation
-   |
-   = note: this error originates in the macro `legacy` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |   legacy!(a);
+   |   ---------- in this macro invocation
 
 error: aborting due to previous error
 

@@ -1,13 +1,17 @@
 error: expected expression, found `$`
   --> $DIR/issue-6596-1.rs:3:9
    |
-LL |         $nonexistent
-   |         ^^^^^^^^^^^^ expected expression
+LL | / macro_rules! e {
+LL | |     ($inp:ident) => (
+LL | |         $nonexistent
+   | |         ^^^^^^^^^^^^ expected expression
+LL | |
+LL | |     );
+LL | | }
+   | |_- in this expansion of `e!`
 ...
-LL |     e!(foo);
-   |     ------- in this macro invocation
-   |
-   = note: this error originates in the macro `e` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       e!(foo);
+   |       ------- in this macro invocation
 
 error: aborting due to previous error
 

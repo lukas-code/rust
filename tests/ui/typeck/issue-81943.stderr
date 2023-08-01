@@ -1,10 +1,15 @@
 error[E0308]: mismatched types
-  --> $DIR/issue-81943.rs:7:9
+  --> $DIR/auxiliary/issue-81943-lib.rs:6:36
+   |
+LL | macro_rules! d {
+   | -------------- in this expansion of `lib::d!`
+LL |   ($e:expr) => { match $e { x => { $crate::g(x) } } }
+   |                                    ^^^^^^^^^^^^ expected `()`, found `i32`
+   |
+  ::: $DIR/issue-81943.rs:7:9
    |
 LL |   f(|x| lib::d!(x));
-   |         ^^^^^^^^^^ expected `()`, found `i32`
-   |
-   = note: this error originates in the macro `lib::d` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |         ---------- in this macro invocation
 
 error[E0308]: mismatched types
   --> $DIR/issue-81943.rs:8:28
@@ -27,16 +32,17 @@ LL |   f(|x| match x { tmp => { g(tmp) } };);
 error[E0308]: mismatched types
   --> $DIR/issue-81943.rs:10:38
    |
-LL |     ($e:expr) => { match $e { x => { g(x) } } }
-   |                    ------------------^^^^----
-   |                    |                 |
-   |                    |                 expected `()`, found `i32`
-   |                    expected this to be `()`
-LL |   }
-LL |   f(|x| d!(x));
-   |         ----- in this macro invocation
+LL | /   macro_rules! d {
+LL | |     ($e:expr) => { match $e { x => { g(x) } } }
+   | |                    ------------------^^^^----
+   | |                    |                 |
+   | |                    |                 expected `()`, found `i32`
+   | |                    expected this to be `()`
+LL | |   }
+   | |___- in this expansion of `d!`
+LL |     f(|x| d!(x));
+   |           ----- in this macro invocation
    |
-   = note: this error originates in the macro `d` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider using a semicolon here
    |
 LL |     ($e:expr) => { match $e { x => { g(x); } } }

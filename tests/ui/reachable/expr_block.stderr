@@ -13,14 +13,19 @@ LL | #![deny(unreachable_code)]
    |         ^^^^^^^^^^^^^^^^
 
 error: unreachable statement
-  --> $DIR/expr_block.rs:25:9
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
    |
-LL |         return;
-   |         ------ any code following this expression is unreachable
-LL |         println!("foo");
-   |         ^^^^^^^^^^^^^^^ unreachable statement
+   = note: in this expansion of `println!`
+  ::: $SRC_DIR/std/src/macros.rs:LL:COL
    |
-   = note: this error originates in the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: unreachable statement
+   |
+  ::: $DIR/expr_block.rs:24:9
+   |
+LL |           return;
+   |           ------ any code following this expression is unreachable
+LL |           println!("foo");
+   |           --------------- in this macro invocation
 
 error: aborting due to 2 previous errors
 

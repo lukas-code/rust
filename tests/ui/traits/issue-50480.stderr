@@ -64,27 +64,29 @@ error[E0204]: the trait `Copy` cannot be implemented for this type
   --> $DIR/issue-50480.rs:1:17
    |
 LL | #[derive(Clone, Copy)]
-   |                 ^^^^
+   |                 ^^^^ in this derive macro expansion
 LL |
 LL | struct Foo(N, NotDefined, <i32 as Iterator>::Item, Vec<i32>, String);
    |                                                    --------  ------ this field does not implement `Copy`
    |                                                    |
    |                                                    this field does not implement `Copy`
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Copy)]`
 
 error[E0204]: the trait `Copy` cannot be implemented for this type
   --> $DIR/issue-50480.rs:9:17
    |
 LL | #[derive(Clone, Copy)]
-   |                 ^^^^
+   |                 ^^^^ in this derive macro expansion
 LL |
 LL | struct Bar<T>(T, N, NotDefined, <i32 as Iterator>::Item, Vec<i32>, String);
    |                                                          --------  ------ this field does not implement `Copy`
    |                                                          |
    |                                                          this field does not implement `Copy`
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Copy)]`
 
 error: aborting due to 8 previous errors
 

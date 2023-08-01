@@ -1,10 +1,21 @@
 error[E0422]: cannot find struct, variant or union type `MyStruct` in this scope
-  --> $DIR/cross-crate-glob-hygiene.rs:21:13
+  --> $DIR/auxiliary/use_by_macro.rs:10:13
    |
-LL |     let x = my_struct!(create);
-   |             ^^^^^^^^^^^^^^^^^^ not found in this scope
+LL | /     macro_rules! $macro_name {
+LL | |         (define) => {
+LL | |             pub struct MyStruct;
+LL | |         };
+LL | |         (create) => {
+LL | |             MyStruct {}
+   | |             ^^^^^^^^ not found in this scope
+LL | |         };
+LL | |     }
+   | |_____- in this expansion of `my_struct!`
    |
-   = note: this error originates in the macro `my_struct` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/cross-crate-glob-hygiene.rs:21:13
+   |
+LL |       let x = my_struct!(create);
+   |               ------------------ in this macro invocation
 
 error: aborting due to previous error
 

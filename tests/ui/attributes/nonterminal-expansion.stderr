@@ -1,24 +1,34 @@
 error: expected unsuffixed literal or identifier, found `n!()`
   --> $DIR/nonterminal-expansion.rs:5:22
    |
-LL |         #[repr(align($n))]
-   |                      ^^
+LL | / macro_rules! pass_nonterminal {
+LL | |     ($n:expr) => {
+LL | |         #[repr(align($n))]
+   | |                      ^^
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `pass_nonterminal!`
 ...
-LL | pass_nonterminal!(n!());
-   | ----------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `pass_nonterminal` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |   pass_nonterminal!(n!());
+   |   ----------------------- in this macro invocation
 
 error[E0693]: incorrect `repr(align)` attribute format: `align` takes exactly one argument in parentheses
   --> $DIR/nonterminal-expansion.rs:5:16
    |
-LL |         #[repr(align($n))]
-   |                ^^^^^^^^^
+LL | / macro_rules! pass_nonterminal {
+LL | |     ($n:expr) => {
+LL | |         #[repr(align($n))]
+   | |                ^^^^^^^^^
+LL | |
+...  |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `pass_nonterminal!`
 ...
-LL | pass_nonterminal!(n!());
-   | ----------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `pass_nonterminal` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |   pass_nonterminal!(n!());
+   |   ----------------------- in this macro invocation
 
 error: aborting due to 2 previous errors
 

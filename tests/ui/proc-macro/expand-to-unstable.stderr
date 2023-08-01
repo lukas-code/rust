@@ -2,10 +2,14 @@ error[E0658]: use of unstable library feature 'core_intrinsics': intrinsics are 
   --> $DIR/expand-to-unstable.rs:8:10
    |
 LL | #[derive(Unstable)]
-   |          ^^^^^^^^
+   |          ^^^^^^^^ in this derive macro expansion
+   |
+  ::: $DIR/auxiliary/derive-unstable.rs:11:1
+   |
+LL | pub fn derive(_input: TokenStream) -> TokenStream {
+   | ------------------------------------------------- in this expansion of `#[derive(Unstable)]`
    |
    = help: add `#![feature(core_intrinsics)]` to the crate attributes to enable
-   = note: this error originates in the derive macro `Unstable` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

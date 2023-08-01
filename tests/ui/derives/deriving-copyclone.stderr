@@ -10,13 +10,21 @@ note: required for `B<C>` to implement `Copy`
   --> $DIR/deriving-copyclone.rs:9:10
    |
 LL | #[derive(Copy, Clone)]
-   |          ^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^
+   |          |
+   |          unsatisfied trait bound introduced in this `derive` macro
+   |          in this derive macro expansion
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
+   |
+   = note: in this expansion of `#[derive(Copy)]`
 note: required by a bound in `is_copy`
   --> $DIR/deriving-copyclone.rs:18:15
    |
 LL | fn is_copy<T: Copy>(_: T) {}
    |               ^^^^ required by this bound in `is_copy`
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider borrowing here
    |
 LL |     is_copy(B { a: 1, b: &C });
@@ -34,13 +42,21 @@ note: required for `B<C>` to implement `Clone`
   --> $DIR/deriving-copyclone.rs:9:16
    |
 LL | #[derive(Copy, Clone)]
-   |                ^^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |                ^^^^^
+   |                |
+   |                unsatisfied trait bound introduced in this `derive` macro
+   |                in this derive macro expansion
+   |                in this derive macro expansion
+  --> $SRC_DIR/core/src/clone.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Clone)]`
+   |
+   = note: in this expansion of `#[derive(Clone)]`
 note: required by a bound in `is_clone`
   --> $DIR/deriving-copyclone.rs:19:16
    |
 LL | fn is_clone<T: Clone>(_: T) {}
    |                ^^^^^ required by this bound in `is_clone`
-   = note: this error originates in the derive macro `Clone` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider borrowing here
    |
 LL |     is_clone(B { a: 1, b: &C });
@@ -58,13 +74,21 @@ note: required for `B<D>` to implement `Copy`
   --> $DIR/deriving-copyclone.rs:9:10
    |
 LL | #[derive(Copy, Clone)]
-   |          ^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^
+   |          |
+   |          unsatisfied trait bound introduced in this `derive` macro
+   |          in this derive macro expansion
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
+   |
+   = note: in this expansion of `#[derive(Copy)]`
 note: required by a bound in `is_copy`
   --> $DIR/deriving-copyclone.rs:18:15
    |
 LL | fn is_copy<T: Copy>(_: T) {}
    |               ^^^^ required by this bound in `is_copy`
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider borrowing here
    |
 LL |     is_copy(B { a: 1, b: &D });

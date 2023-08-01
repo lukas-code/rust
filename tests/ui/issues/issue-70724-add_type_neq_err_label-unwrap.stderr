@@ -1,36 +1,52 @@
 error[E0369]: binary operation `==` cannot be applied to type `fn() -> i32 {a}`
-  --> $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:6:5
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `assert_eq!`
+  ::: $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: {integer}
+   |
+   = note: fn() -> i32 {a}
+   |
+  ::: $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:6:5
    |
 LL |     assert_eq!(a, 0);
-   |     ^^^^^^^^^^^^^^^^
-   |     |
-   |     fn() -> i32 {a}
-   |     {integer}
-   |
-   = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |     ---------------- in this macro invocation
 
 error[E0308]: mismatched types
-  --> $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:6:5
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `assert_eq!`
+  ::: $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: expected fn item, found integer
+   |
+  ::: $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:6:5
    |
 LL |     assert_eq!(a, 0);
-   |     ^^^^^^^^^^^^^^^^ expected fn item, found integer
+   |     ---------------- in this macro invocation
    |
    = note: expected fn item `fn() -> i32 {a}`
                  found type `{integer}`
-   = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0277]: `fn() -> i32 {a}` doesn't implement `Debug`
-  --> $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:6:5
+  --> $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: in this expansion of `assert_eq!`
+  ::: $SRC_DIR/core/src/macros/mod.rs:LL:COL
+   |
+   = note: `fn() -> i32 {a}` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+   |
+  ::: $DIR/issue-70724-add_type_neq_err_label-unwrap.rs:1:4
    |
 LL | fn a() -> i32 {
    |    - consider calling this function
 ...
 LL |     assert_eq!(a, 0);
-   |     ^^^^^^^^^^^^^^^^ `fn() -> i32 {a}` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+   |     ---------------- in this macro invocation
    |
    = help: the trait `Debug` is not implemented for fn item `fn() -> i32 {a}`
    = help: use parentheses to call this function: `a()`
-   = note: this error originates in the macro `assert_eq` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 3 previous errors
 

@@ -1,14 +1,19 @@
 error: recursion limit reached while expanding `recursive!`
   --> $DIR/infinite-macro-expansion.rs:2:12
    |
-LL |     () => (recursive!())
-   |            ^^^^^^^^^^^^
+LL | / macro_rules! recursive {
+LL | |     () => (recursive!())
+   | |            ^^^^^^^^^^^^ in this macro invocation (#2)
+LL | | }
+   | | -
+   | | |
+   | |_in this expansion of `recursive!` (#1)
+   |   in this expansion of `recursive!` (#2)
 ...
-LL |     recursive!()
-   |     ------------ in this macro invocation
+LL |       recursive!()
+   |       ------------ in this macro invocation (#1)
    |
    = help: consider increasing the recursion limit by adding a `#![recursion_limit = "256"]` attribute to your crate (`infinite_macro_expansion`)
-   = note: this error originates in the macro `recursive` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

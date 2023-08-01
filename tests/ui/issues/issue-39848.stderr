@@ -1,21 +1,30 @@
 error: expected `{`, found `foo`
   --> $DIR/issue-39848.rs:3:21
    |
-LL |         if $tgt.has_$field() {}
-   |                     ^^^^^^ expected `{`
+LL | / macro_rules! get_opt {
+LL | |     ($tgt:expr, $field:ident) => {
+LL | |         if $tgt.has_$field() {}
+   | |                     ^^^^^^ expected `{`
+LL | |     }
+LL | | }
+   | |_- in this expansion of `get_opt!`
 ...
-LL |     get_opt!(bar, foo);
-   |     ------------------ in this macro invocation
+LL |       get_opt!(bar, foo);
+   |       ------------------ in this macro invocation
    |
 note: the `if` expression is missing a block after this condition
   --> $DIR/issue-39848.rs:3:12
    |
-LL |         if $tgt.has_$field() {}
-   |            ^^^^^^^^^
+LL | / macro_rules! get_opt {
+LL | |     ($tgt:expr, $field:ident) => {
+LL | |         if $tgt.has_$field() {}
+   | |            ^^^^^^^^^
+LL | |     }
+LL | | }
+   | |_- in this expansion of `get_opt!`
 ...
-LL |     get_opt!(bar, foo);
-   |     ------------------ in this macro invocation
-   = note: this error originates in the macro `get_opt` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       get_opt!(bar, foo);
+   |       ------------------ in this macro invocation
 help: try placing this code inside a block
    |
 LL |         if $tgt.has_{ $field() } {}

@@ -6,8 +6,10 @@ LL | #[derive(Default)]
 LL | struct Struct {
 LL |     x: Error
    |     ^^^^^^^^ the trait `Default` is not implemented for `Error`
+  --> $SRC_DIR/core/src/default.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Default` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Default)]`
+   |
 help: consider annotating `Error` with `#[derive(Default)]`
    |
 LL + #[derive(Default)]

@@ -164,61 +164,94 @@ LL |     unsafe {}
 error: declaration of a `no_mangle` function
   --> $DIR/lint-unsafe-code.rs:21:9
    |
-LL |         #[no_mangle] fn foo() {}
-   |         ^^^^^^^^^^^^
+LL | / macro_rules! unsafe_in_macro {
+LL | |     () => {{
+LL | |         #[no_mangle] fn foo() {}
+   | |         ^^^^^^^^^^^^
+LL | |         #[no_mangle] static FOO: u32 = 5;
+...  |
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `unsafe_in_macro!`
 ...
-LL |     unsafe_in_macro!()
-   |     ------------------ in this macro invocation
+LL |       unsafe_in_macro!()
+   |       ------------------ in this macro invocation
    |
    = note: the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them
-   = note: this error originates in the macro `unsafe_in_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: declaration of a `no_mangle` static
   --> $DIR/lint-unsafe-code.rs:22:9
    |
-LL |         #[no_mangle] static FOO: u32 = 5;
-   |         ^^^^^^^^^^^^
+LL | / macro_rules! unsafe_in_macro {
+LL | |     () => {{
+LL | |         #[no_mangle] fn foo() {}
+LL | |         #[no_mangle] static FOO: u32 = 5;
+   | |         ^^^^^^^^^^^^
+...  |
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `unsafe_in_macro!`
 ...
-LL |     unsafe_in_macro!()
-   |     ------------------ in this macro invocation
+LL |       unsafe_in_macro!()
+   |       ------------------ in this macro invocation
    |
    = note: the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them
-   = note: this error originates in the macro `unsafe_in_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: declaration of a function with `export_name`
   --> $DIR/lint-unsafe-code.rs:23:9
    |
-LL |         #[export_name = "bar"] fn bar() {}
-   |         ^^^^^^^^^^^^^^^^^^^^^^
+LL | / macro_rules! unsafe_in_macro {
+LL | |     () => {{
+LL | |         #[no_mangle] fn foo() {}
+LL | |         #[no_mangle] static FOO: u32 = 5;
+LL | |         #[export_name = "bar"] fn bar() {}
+   | |         ^^^^^^^^^^^^^^^^^^^^^^
+...  |
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `unsafe_in_macro!`
 ...
-LL |     unsafe_in_macro!()
-   |     ------------------ in this macro invocation
+LL |       unsafe_in_macro!()
+   |       ------------------ in this macro invocation
    |
    = note: the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them
-   = note: this error originates in the macro `unsafe_in_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: declaration of a static with `export_name`
   --> $DIR/lint-unsafe-code.rs:25:9
    |
-LL |         #[export_name = "BAR"] static BAR: u32 = 5;
-   |         ^^^^^^^^^^^^^^^^^^^^^^
+LL | / macro_rules! unsafe_in_macro {
+LL | |     () => {{
+LL | |         #[no_mangle] fn foo() {}
+LL | |         #[no_mangle] static FOO: u32 = 5;
+...  |
+LL | |         #[export_name = "BAR"] static BAR: u32 = 5;
+   | |         ^^^^^^^^^^^^^^^^^^^^^^
+...  |
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `unsafe_in_macro!`
 ...
-LL |     unsafe_in_macro!()
-   |     ------------------ in this macro invocation
+LL |       unsafe_in_macro!()
+   |       ------------------ in this macro invocation
    |
    = note: the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them
-   = note: this error originates in the macro `unsafe_in_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: usage of an `unsafe` block
   --> $DIR/lint-unsafe-code.rs:27:9
    |
-LL |         unsafe {}
-   |         ^^^^^^^^^
+LL | / macro_rules! unsafe_in_macro {
+LL | |     () => {{
+LL | |         #[no_mangle] fn foo() {}
+LL | |         #[no_mangle] static FOO: u32 = 5;
+...  |
+LL | |         unsafe {}
+   | |         ^^^^^^^^^
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `unsafe_in_macro!`
 ...
-LL |     unsafe_in_macro!()
-   |     ------------------ in this macro invocation
-   |
-   = note: this error originates in the macro `unsafe_in_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |       unsafe_in_macro!()
+   |       ------------------ in this macro invocation
 
 error: aborting due to 28 previous errors
 

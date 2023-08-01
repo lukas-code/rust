@@ -33,14 +33,30 @@ LL |     bar!(internal_unstable::unstable());
 error[E0658]: use of unstable library feature 'function'
   --> $DIR/internal-unstable.rs:19:9
    |
-LL |         internal_unstable::unstable();
-   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+LL | / macro_rules! foo {
+LL | |     ($e: expr, $f: expr) => {{
+LL | |         $e;
+LL | |         $f;
+LL | |         internal_unstable::unstable();
+   | |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `foo!` (#2)
 ...
-LL |     bar!(internal_unstable::unstable());
-   |     ----------------------------------- in this macro invocation
+LL | / macro_rules! bar {
+LL | |     ($e: expr) => {{
+LL | /         foo!($e,
+LL | |              internal_unstable::unstable());
+   | |___________________________________________- in this macro invocation (#2)
+LL |           internal_unstable::unstable();
+LL | |     }}
+LL | | }
+   | |_- in this expansion of `bar!` (#1)
+...
+LL |       bar!(internal_unstable::unstable());
+   |       ----------------------------------- in this macro invocation (#1)
    |
    = help: add `#![feature(function)]` to the crate attributes to enable
-   = note: this error originates in the macro `foo` which comes from the expansion of the macro `bar` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 5 previous errors
 

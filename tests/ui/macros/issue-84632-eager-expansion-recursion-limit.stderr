@@ -1,14 +1,27 @@
 error: recursion limit reached while expanding `concat!`
   --> $DIR/issue-84632-eager-expansion-recursion-limit.rs:8:28
    |
-LL |     (A, $($A:ident),*) => (concat!("", a!($($A),*)))
-   |                            ^^^^^^^^^^^^^^^^^^^^^^^^
+LL | / macro_rules! a {
+LL | |     () => ("");
+LL | |     (A) => (concat!("", a!()));
+LL | |     (A, $($A:ident),*) => (concat!("", a!($($A),*)))
+   | |                            ^^^^^^^^^^^^-----------^
+   | |                                        |
+   | |                                        in this macro invocation (#2)
+   | |                                        in this macro invocation (#3)
+LL | |
+LL | |
+LL | | }
+   | | -
+   | | |
+   | | in this expansion of `a!` (#1)
+   | |_in this expansion of `a!` (#2)
+   |   in this expansion of `a!` (#3)
 ...
-LL |     a!(A, A, A, A, A, A, A, A, A, A, A);
-   |     ----------------------------------- in this macro invocation
+LL |       a!(A, A, A, A, A, A, A, A, A, A, A);
+   |       ----------------------------------- in this macro invocation (#1)
    |
    = help: consider increasing the recursion limit by adding a `#![recursion_limit = "30"]` attribute to your crate (`issue_84632_eager_expansion_recursion_limit`)
-   = note: this error originates in the macro `a` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

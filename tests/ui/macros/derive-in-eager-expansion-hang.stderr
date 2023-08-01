@@ -1,18 +1,20 @@
 error: format argument must be a string literal
   --> $DIR/derive-in-eager-expansion-hang.rs:4:5
    |
-LL | /     {
-LL | |         #[derive(Clone)]
-LL | |         struct S;
-LL | |
-LL | |         ""
-LL | |     }
-   | |_____^
+LL | /  macro_rules! hang { () => {
+LL | |/     {
+LL | ||         #[derive(Clone)]
+LL | ||         struct S;
+LL | ||
+LL | ||         ""
+LL | ||     }
+   | ||_____^
+LL | |  }}
+   | |___- in this expansion of `hang!`
 ...
-LL |       format_args!(hang!());
-   |                    ------- in this macro invocation
+LL |        format_args!(hang!());
+   |                     ------- in this macro invocation
    |
-   = note: this error originates in the macro `hang` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: you might be missing a string literal to format with
    |
 LL |     format_args!("{}", hang!());

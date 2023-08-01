@@ -1,16 +1,21 @@
 error[E0609]: no field `trace` on type `&T`
   --> $DIR/issue-31011.rs:3:17
    |
-LL |         if $ctx.trace {
-   |                 ^^^^^
+LL | / macro_rules! log {
+LL | |     ( $ctx:expr, $( $args:expr),* ) => {
+LL | |         if $ctx.trace {
+   | |                 ^^^^^
+LL | |
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `log!`
 ...
-LL | fn wrap<T>(context: &T) -> ()
-   |         - type parameter 'T' declared here
-LL | {
-LL |     log!(context, "entered wrapper");
-   |     -------------------------------- in this macro invocation
-   |
-   = note: this error originates in the macro `log` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL |   fn wrap<T>(context: &T) -> ()
+   |           - type parameter 'T' declared here
+LL |   {
+LL |       log!(context, "entered wrapper");
+   |       -------------------------------- in this macro invocation
 
 error: aborting due to previous error
 

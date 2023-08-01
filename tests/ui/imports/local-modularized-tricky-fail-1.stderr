@@ -8,20 +8,23 @@ LL | exported!();
 note: `exported` could refer to the macro defined here
   --> $DIR/local-modularized-tricky-fail-1.rs:6:5
    |
-LL | /     macro_rules! exported {
-LL | |         () => ()
-LL | |     }
-   | |_____^
+LL | /  macro_rules! define_exported { () => {
+LL | |      #[macro_export]
+LL | |/     macro_rules! exported {
+LL | ||         () => ()
+LL | ||     }
+   | ||_____^
+LL | |  }}
+   | |___- in this expansion of `define_exported!`
 ...
-LL |       define_exported!();
-   |       ------------------ in this macro invocation
+LL |        define_exported!();
+   |        ------------------ in this macro invocation
 note: `exported` could also refer to the macro imported here
   --> $DIR/local-modularized-tricky-fail-1.rs:23:5
    |
 LL | use inner1::*;
    |     ^^^^^^^^^
    = help: consider adding an explicit import of `exported` to disambiguate
-   = note: this error originates in the macro `define_exported` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0659]: `panic` is ambiguous
   --> $DIR/local-modularized-tricky-fail-1.rs:36:5
@@ -34,15 +37,18 @@ LL |     panic!();
 note: `panic` could also refer to the macro defined here
   --> $DIR/local-modularized-tricky-fail-1.rs:12:5
    |
-LL | /     macro_rules! panic {
-LL | |         () => ()
-LL | |     }
-   | |_____^
+LL | /  macro_rules! define_panic { () => {
+LL | |      #[macro_export]
+LL | |/     macro_rules! panic {
+LL | ||         () => ()
+LL | ||     }
+   | ||_____^
+LL | |  }}
+   | |___- in this expansion of `define_panic!`
 ...
-LL |       define_panic!();
-   |       --------------- in this macro invocation
+LL |        define_panic!();
+   |        --------------- in this macro invocation
    = help: use `crate::panic` to refer to this macro unambiguously
-   = note: this error originates in the macro `define_panic` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0659]: `include` is ambiguous
   --> $DIR/local-modularized-tricky-fail-1.rs:47:1
@@ -55,15 +61,18 @@ LL | include!();
 note: `include` could also refer to the macro defined here
   --> $DIR/local-modularized-tricky-fail-1.rs:18:5
    |
-LL | /     macro_rules! include {
-LL | |         () => ()
-LL | |     }
-   | |_____^
+LL | /  macro_rules! define_include { () => {
+LL | |      #[macro_export]
+LL | |/     macro_rules! include {
+LL | ||         () => ()
+LL | ||     }
+   | ||_____^
+LL | |  }}
+   | |___- in this expansion of `define_include!`
 ...
-LL |       define_include!();
-   |       ----------------- in this macro invocation
+LL |        define_include!();
+   |        ----------------- in this macro invocation
    = help: use `crate::include` to refer to this macro unambiguously
-   = note: this error originates in the macro `define_include` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 3 previous errors
 

@@ -1,8 +1,17 @@
 error: generator cannot be sent between threads safely
   --> $DIR/drop-tracking-parent-expression.rs:27:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -17,13 +26,22 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/drop-tracking-parent-expression.rs:25:22
    |
-LL |               let g = move || match drop($name::Client { ..$name::Client::default() }) {
-   |                                                            ------------------------ has type `derived_drop::Client` which is not `Send`
-...
-LL |                   _ => yield,
-   |                        ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
-LL |               };
-   |               - `$name::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::Client { ..$name::Client::default() }) {
+   | |                                                          ------------------------ has type `derived_drop::Client` which is not `Send`
+...  |
+LL | |                 _ => yield,
+   | |                      ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -38,13 +56,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/drop-tracking-parent-expression.rs:27:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -59,13 +85,22 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/drop-tracking-parent-expression.rs:25:22
    |
-LL |               let g = move || match drop($name::Client { ..$name::Client::default() }) {
-   |                                                            ------------------------ has type `significant_drop::Client` which is not `Send`
-...
-LL |                   _ => yield,
-   |                        ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
-LL |               };
-   |               - `$name::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::Client { ..$name::Client::default() }) {
+   | |                                                          ------------------------ has type `significant_drop::Client` which is not `Send`
+...  |
+LL | |                 _ => yield,
+   | |                      ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -80,13 +115,21 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: generator cannot be sent between threads safely
   --> $DIR/drop-tracking-parent-expression.rs:27:25
    |
-LL |               assert_send(g);
-   |                           ^ generator is not `Send`
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             assert_send(g);
+   | |                         ^ generator is not `Send`
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -101,13 +144,22 @@ LL | |     );
 note: generator is not `Send` as this value is used across a yield
   --> $DIR/drop-tracking-parent-expression.rs:25:22
    |
-LL |               let g = move || match drop($name::Client { ..$name::Client::default() }) {
-   |                                                            ------------------------ has type `insignificant_dtor::Client` which is not `Send`
-...
-LL |                   _ => yield,
-   |                        ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
-LL |               };
-   |               - `$name::Client::default()` is later dropped here
+LL | / macro_rules! type_combinations {
+LL | |     (
+LL | |         $( $name:ident => { $( $tt:tt )* } );* $(;)?
+LL | |     ) => { $(
+...  |
+LL | |             let g = move || match drop($name::Client { ..$name::Client::default() }) {
+   | |                                                          ------------------------ has type `insignificant_dtor::Client` which is not `Send`
+...  |
+LL | |                 _ => yield,
+   | |                      ^^^^^ yield occurs here, with `$name::Client::default()` maybe used later
+LL | |             };
+   | |             - `$name::Client::default()` is later dropped here
+...  |
+LL | |     )* }
+LL | | }
+   | |_- in this expansion of `type_combinations!`
 ...
 LL | /     type_combinations!(
 LL | |         // OK
@@ -122,7 +174,6 @@ note: required by a bound in `assert_send`
    |
 LL | fn assert_send<T: Send>(_thing: T) {}
    |                   ^^^^ required by this bound in `assert_send`
-   = note: this error originates in the macro `type_combinations` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 3 previous errors
 

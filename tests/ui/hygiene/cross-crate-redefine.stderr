@@ -1,14 +1,25 @@
 error[E0428]: the name `MyStruct` is defined multiple times
-  --> $DIR/cross-crate-redefine.rs:10:1
+  --> $DIR/auxiliary/use_by_macro.rs:7:13
    |
-LL | my_struct!(define);
-   | ^^^^^^^^^^^^^^^^^^ `MyStruct` redefined here
-LL |
-LL | my_struct!(define);
-   | ------------------ previous definition of the type `MyStruct` here
+LL | /     macro_rules! $macro_name {
+LL | |         (define) => {
+LL | |             pub struct MyStruct;
+   | |             ^^^^^^^^^^^^^^^^^^^^
+   | |             |
+   | |             `MyStruct` redefined here
+   | |             previous definition of the type `MyStruct` here
+LL | |         };
+...  |
+LL | |         };
+LL | |     }
+   | |_____- in this expansion of `my_struct!`
+   |
+  ::: $DIR/cross-crate-redefine.rs:10:1
+   |
+LL |   my_struct!(define);
+   |   ------------------ in this macro invocation
    |
    = note: `MyStruct` must be defined only once in the type namespace of this module
-   = note: this error originates in the macro `my_struct` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to previous error
 

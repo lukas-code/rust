@@ -1,10 +1,12 @@
 error: arbitrary expressions aren't allowed in patterns
-  --> $DIR/vec-macro-in-pattern.rs:7:14
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |         Some(vec![43]) => {}
-   |              ^^^^^^^^
+   = note: in this expansion of `vec!`
    |
-   = note: this error originates in the macro `vec` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/vec-macro-in-pattern.rs:7:14
+   |
+LL |           Some(vec![43]) => {}
+   |                -------- in this macro invocation
 
 error: aborting due to previous error
 

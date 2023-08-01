@@ -7,10 +7,13 @@ LL |         asm!("");
 error[E0472]: inline assembly is unsupported on this target
   --> $DIR/bad-arch.rs:27:1
    |
-LL | global_asm!("");
-   | ^^^^^^^^^^^^^^^
-   |
-   = note: this error originates in the macro `global_asm` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL | / macro_rules! global_asm {
+LL | |     () => {};
+LL | | }
+   | |_- in this expansion of `global_asm!`
+...
+LL |   global_asm!("");
+   |   ^^^^^^^^^^^^^^^ in this macro invocation
 
 error: aborting due to 2 previous errors
 

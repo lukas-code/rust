@@ -22,8 +22,14 @@ error[E0425]: cannot find function `g` in this scope
 LL |       pub fn f() {}
    |       ---------- similarly named function `f` defined here
 ...
-LL |       g();
-   |       ^
+LL | / macro m($($t:tt)*) {
+LL | |     $($t)*
+LL | |     use foo::*;
+LL | |     f();
+LL | |     g();
+   | |     ^
+LL | | }
+   | |_- in this expansion of `m!`
 ...
 LL | /     m! {
 LL | |         use bar::*;
@@ -32,7 +38,6 @@ LL | |         f();
 LL | |     }
    | |_____- in this macro invocation
    |
-   = note: this error originates in the macro `m` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: a function with a similar name exists
    |
 LL |     f();
@@ -45,28 +50,42 @@ LL + use bar::g;
 error[E0425]: cannot find function `f` in this scope
   --> $DIR/globs.rs:61:12
    |
-LL | n!(f);
-   | ----- in this macro invocation
-...
-LL |         n!(f);
-   |            ^ not found in this scope
+LL |   n!(f);
+   |   ----- in this macro invocation
+LL | / macro n($i:ident) {
+LL | |     mod foo {
+LL | |         pub fn $i() -> u32 { 0 }
+LL | |         pub fn f() {}
+...  |
+LL | |         n!(f);
+   | |            ^ not found in this scope
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `n!`
    |
    = help: consider importing this function:
            foo::f
-   = note: this error originates in the macro `n` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0425]: cannot find function `f` in this scope
   --> $DIR/globs.rs:65:17
    |
-LL | n!(f);
-   | ----- in this macro invocation
-...
-LL |                 f
-   |                 ^ not found in this scope
+LL |   n!(f);
+   |   ----- in this macro invocation
+LL | / macro n($i:ident) {
+LL | |     mod foo {
+LL | |         pub fn $i() -> u32 { 0 }
+LL | |         pub fn f() {}
+...  |
+LL | |                 f
+   | |                 ^ not found in this scope
+...  |
+LL | |     }
+LL | | }
+   | |_- in this expansion of `n!`
    |
    = help: consider importing this function:
            foo::f
-   = note: this error originates in the macro `n` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 4 previous errors
 

@@ -2,9 +2,15 @@ error[E0425]: cannot find value `foo` in this scope
   --> $DIR/issue-38586.rs:6:10
    |
 LL | #[derive(A)]
-   |          ^ not found in this scope
+   |          ^
+   |          |
+   |          not found in this scope
+   |          in this derive macro expansion
    |
-   = note: this error originates in the derive macro `A` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-38586.rs:9:1
+   |
+LL | pub fn derive_a(_: proc_macro::TokenStream) -> proc_macro::TokenStream {
+   | ---------------------------------------------------------------------- in this expansion of `#[derive(A)]`
 
 error: aborting due to previous error
 

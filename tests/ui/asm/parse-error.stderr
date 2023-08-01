@@ -189,20 +189,24 @@ LL |         asm!("{}", in(reg) foo, "{}", out(reg) foo);
    |                                 ^^^^ expected one of 9 possible tokens
 
 error: asm template must be a string literal
-  --> $DIR/parse-error.rs:86:14
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |         asm!(format!("{{{}}}", 0), in(reg) foo);
-   |              ^^^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `format!`
    |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/parse-error.rs:86:14
+   |
+LL |           asm!(format!("{{{}}}", 0), in(reg) foo);
+   |                -------------------- in this macro invocation
 
 error: asm template must be a string literal
-  --> $DIR/parse-error.rs:88:21
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL |         asm!("{1}", format!("{{{}}}", 0), in(reg) foo, out(reg) bar);
-   |                     ^^^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `format!`
    |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/parse-error.rs:88:21
+   |
+LL |           asm!("{1}", format!("{{{}}}", 0), in(reg) foo, out(reg) bar);
+   |                       -------------------- in this macro invocation
 
 error: _ cannot be used for input operands
   --> $DIR/parse-error.rs:90:28
@@ -347,20 +351,24 @@ LL | global_asm!("{}", const FOO, "{}", const FOO);
    |                              ^^^^ expected one of `clobber_abi`, `const`, `options`, or `sym`
 
 error: asm template must be a string literal
-  --> $DIR/parse-error.rs:141:13
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL | global_asm!(format!("{{{}}}", 0), const FOO);
-   |             ^^^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `format!`
    |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/parse-error.rs:141:13
+   |
+LL |   global_asm!(format!("{{{}}}", 0), const FOO);
+   |               -------------------- in this macro invocation
 
 error: asm template must be a string literal
-  --> $DIR/parse-error.rs:143:20
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
-LL | global_asm!("{1}", format!("{{{}}}", 0), const FOO, const BAR);
-   |                    ^^^^^^^^^^^^^^^^^^^^
+   = note: in this expansion of `format!`
    |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/parse-error.rs:143:20
+   |
+LL |   global_asm!("{1}", format!("{{{}}}", 0), const FOO, const BAR);
+   |                      -------------------- in this macro invocation
 
 error[E0435]: attempt to use a non-constant value in a constant
   --> $DIR/parse-error.rs:39:37

@@ -1,10 +1,21 @@
 error[E0080]: evaluation of constant value failed
-  --> $DIR/panic-never-type.rs:4:17
+  --> $SRC_DIR/std/src/panic.rs:LL:COL
+   |
+   = note: in this expansion of `$crate::panic::panic_2015!` (#2)
+  ::: $SRC_DIR/std/src/panic.rs:LL:COL
+   |
+   = note: the evaluated program panicked at 'explicit panic', $DIR/panic-never-type.rs:4:17
+  --> $SRC_DIR/std/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `panic!` (#1)
+   |
+  ::: $DIR/panic-never-type.rs:4:17
    |
 LL | const VOID: ! = panic!();
-   |                 ^^^^^^^^ the evaluated program panicked at 'explicit panic', $DIR/panic-never-type.rs:4:17
-   |
-   = note: this error originates in the macro `$crate::panic::panic_2015` which comes from the expansion of the macro `panic` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                 --------
+   |                 |
+   |                 in this macro invocation (#1)
+   |                 in this macro invocation (#2)
 
 error: aborting due to previous error
 

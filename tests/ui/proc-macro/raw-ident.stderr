@@ -2,9 +2,15 @@ error: expected one of `!`, `.`, `::`, `;`, `?`, `{`, `}`, or an operator, found
   --> $DIR/raw-ident.rs:15:5
    |
 LL |     make_bad_struct!(S);
-   |     ^^^^^^^^^^^^^^^^^^^ expected one of 8 possible tokens
+   |     ^^^^^^^^^^^^^^^^^^^
+   |     |
+   |     expected one of 8 possible tokens
+   |     in this macro invocation
    |
-   = note: this error originates in the macro `make_bad_struct` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/raw-ident.rs:24:1
+   |
+LL | pub fn make_bad_struct(input: TokenStream) -> TokenStream {
+   | --------------------------------------------------------- in this expansion of `make_bad_struct!`
 
 error: aborting due to previous error
 

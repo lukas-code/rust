@@ -2,9 +2,16 @@ error[E0405]: cannot find trait `MyTrait` in the crate root
   --> $DIR/issue-100199.rs:1:1
    |
 LL | #[issue_100199::struct_with_bound]
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in the crate root
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   | |
+   | not found in the crate root
+   | in this procedural macro expansion
    |
-   = note: this error originates in the attribute macro `issue_100199::struct_with_bound` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/issue-100199.rs:12:1
+   |
+LL | pub fn struct_with_bound(_: TokenStream, _: TokenStream) -> TokenStream {
+   | ----------------------------------------------------------------------- in this expansion of `#[issue_100199::struct_with_bound]`
+   |
 help: consider importing this trait
    |
 LL + use traits::MyTrait;

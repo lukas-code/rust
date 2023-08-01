@@ -1,10 +1,15 @@
 error: type `fn() -> u32 {foo::bar::f}` is private
-  --> $DIR/intercrate.rs:8:16
+  --> $DIR/auxiliary/intercrate.rs:8:13
+   |
+LL |         pub macro m() {
+   |         ----------- in this expansion of `intercrate::foo::m!`
+LL |             f()
+   |             ^ private type
+   |
+  ::: $DIR/intercrate.rs:8:16
    |
 LL |     assert_eq!(intercrate::foo::m!(), 1);
-   |                ^^^^^^^^^^^^^^^^^^^^^ private type
-   |
-   = note: this error originates in the macro `intercrate::foo::m` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                --------------------- in this macro invocation
 
 error: aborting due to previous error
 

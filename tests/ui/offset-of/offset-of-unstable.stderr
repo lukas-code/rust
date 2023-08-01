@@ -23,61 +23,76 @@ LL |         UnstableWithStableFieldType,
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
 
 error[E0658]: use of unstable library feature 'unstable_test_feature'
-  --> $DIR/offset-of-unstable.rs:12:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+   |
+  ::: $DIR/offset-of-unstable.rs:12:5
    |
 LL | /     offset_of!(
 LL | |
 LL | |         Unstable,
 LL | |         unstable
 LL | |     );
-   | |_____^
+   | |_____- in this macro invocation
    |
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'unstable_test_feature'
-  --> $DIR/offset-of-unstable.rs:18:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+   |
+  ::: $DIR/offset-of-unstable.rs:18:5
    |
 LL |     offset_of!(StableWithUnstableField, unstable);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     --------------------------------------------- in this macro invocation
    |
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'unstable_test_feature'
-  --> $DIR/offset-of-unstable.rs:20:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+   |
+  ::: $DIR/offset-of-unstable.rs:20:5
    |
 LL |     offset_of!(StableWithUnstableFieldType, stable.unstable);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |     -------------------------------------------------------- in this macro invocation
    |
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'unstable_test_feature'
-  --> $DIR/offset-of-unstable.rs:21:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+   |
+  ::: $DIR/offset-of-unstable.rs:21:5
    |
 LL | /     offset_of!(
 LL | |
 LL | |         UnstableWithStableFieldType,
 LL | |         unstable
 LL | |     );
-   | |_____^
+   | |_____- in this macro invocation
    |
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0658]: use of unstable library feature 'unstable_test_feature'
-  --> $DIR/offset-of-unstable.rs:26:5
+  --> $SRC_DIR/core/src/mem/mod.rs:LL:COL
+   |
+   = note: in this expansion of `offset_of!`
+   |
+  ::: $DIR/offset-of-unstable.rs:26:5
    |
 LL | /     offset_of!(
 LL | |
 LL | |         UnstableWithStableFieldType,
 LL | |         unstable.stable
 LL | |     );
-   | |_____^
+   | |_____- in this macro invocation
    |
    = help: add `#![feature(unstable_test_feature)]` to the crate attributes to enable
-   = note: this error originates in the macro `offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 8 previous errors
 

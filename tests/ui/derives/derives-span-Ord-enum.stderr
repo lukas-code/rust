@@ -6,8 +6,10 @@ LL | #[derive(Ord,Eq,PartialOrd,PartialEq)]
 ...
 LL |      Error
    |      ^^^^^ the trait `Ord` is not implemented for `Error`
+  --> $SRC_DIR/core/src/cmp.rs:LL:COL
    |
-   = note: this error originates in the derive macro `Ord` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `#[derive(Ord)]`
+   |
 help: consider annotating `Error` with `#[derive(Ord)]`
    |
 LL + #[derive(Ord)]

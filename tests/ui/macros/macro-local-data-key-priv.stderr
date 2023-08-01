@@ -5,11 +5,20 @@ LL |     bar::baz.with(|_| ());
    |          ^^^ private constant
    |
 note: the constant `baz` is defined here
-  --> $DIR/macro-local-data-key-priv.rs:4:5
+  --> $SRC_DIR/std/src/sys/common/thread_local/fast_local.rs:LL:COL
    |
-LL |     thread_local!(static baz: f64 = 0.0);
-   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   = note: this error originates in the macro `$crate::thread::local_impl::thread_local_inner` which comes from the expansion of the macro `thread_local` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: in this expansion of `$crate::thread::local_impl::thread_local_inner!` (#2)
+   |
+  ::: $DIR/macro-local-data-key-priv.rs:4:5
+   |
+LL |       thread_local!(static baz: f64 = 0.0);
+   |       ------------------------------------ in this macro invocation (#1)
+  --> $SRC_DIR/std/src/thread/local.rs:LL:COL
+   |
+   = note: in this expansion of `thread_local!` (#1)
+  ::: $SRC_DIR/std/src/thread/local.rs:LL:COL
+   |
+   = note: in this macro invocation (#2)
 
 error: aborting due to previous error
 

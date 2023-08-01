@@ -1,12 +1,17 @@
 error: expected identifier, found keyword `async`
-  --> $DIR/edition-keywords-2018-2018-expansion.rs:8:5
+  --> $DIR/auxiliary/edition-kw-macro-2018.rs:7:19
+   |
+LL | macro_rules! produces_async {
+   | --------------------------- in this expansion of `produces_async!`
+LL |     () => (pub fn async() {})
+   |                   ^^^^^ expected identifier, found keyword
+   |
+  ::: $DIR/edition-keywords-2018-2018-expansion.rs:8:5
    |
 LL |     produces_async! {}
-   |     ^^^^^^^^^^^^^^^^^^ expected identifier, found keyword
+   |     ------------------ in this macro invocation
    |
-   = note: this error originates in the macro `produces_async` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: escape `async` to use it as an identifier
-  --> $DIR/auxiliary/edition-kw-macro-2018.rs:7:19
    |
 LL |     () => (pub fn r#async() {})
    |                   ++

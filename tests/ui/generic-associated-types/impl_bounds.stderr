@@ -31,7 +31,16 @@ note: required for `Fooy<T>` to implement `Copy`
   --> $DIR/impl_bounds.rs:10:10
    |
 LL | #[derive(Copy, Clone)]
-   |          ^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^
+   |          |
+   |          unsatisfied trait bound introduced in this `derive` macro
+   |          in this derive macro expansion
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
+   |
+   = note: in this expansion of `#[derive(Copy)]`
 note: the requirement `Fooy<T>: Copy` appears on the `impl`'s associated type `C` but not on the corresponding trait's associated type
   --> $DIR/impl_bounds.rs:6:10
    |
@@ -40,7 +49,6 @@ LL | trait Foo {
 ...
 LL |     type C where Self: Clone;
    |          ^ this trait's associated type doesn't have the requirement `Fooy<T>: Copy`
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider restricting type parameter `T`
    |
 LL | impl<T: std::marker::Copy> Foo for Fooy<T> {
@@ -56,7 +64,16 @@ note: required for `Fooy<T>` to implement `Copy`
   --> $DIR/impl_bounds.rs:10:10
    |
 LL | #[derive(Copy, Clone)]
-   |          ^^^^ unsatisfied trait bound introduced in this `derive` macro
+   |          ^^^^
+   |          |
+   |          unsatisfied trait bound introduced in this `derive` macro
+   |          in this derive macro expansion
+   |          in this derive macro expansion
+  --> $SRC_DIR/core/src/marker.rs:LL:COL
+   |
+   = note: in this expansion of `#[derive(Copy)]`
+   |
+   = note: in this expansion of `#[derive(Copy)]`
 note: the requirement `Fooy<T>: Copy` appears on the `impl`'s method `d` but not on the corresponding trait's method
   --> $DIR/impl_bounds.rs:7:8
    |
@@ -65,7 +82,6 @@ LL | trait Foo {
 ...
 LL |     fn d() where Self: Clone;
    |        ^ this trait's method doesn't have the requirement `Fooy<T>: Copy`
-   = note: this error originates in the derive macro `Copy` (in Nightly builds, run with -Z macro-backtrace for more info)
 help: consider restricting type parameter `T`
    |
 LL | impl<T: std::marker::Copy> Foo for Fooy<T> {

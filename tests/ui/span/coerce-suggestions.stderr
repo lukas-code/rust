@@ -63,12 +63,17 @@ LL |     f = *Box::new(f);
    |         +
 
 error[E0308]: mismatched types
-  --> $DIR/coerce-suggestions.rs:21:9
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: in this expansion of `format!`
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: expected `&mut String`, found `String`
+   |
+  ::: $DIR/coerce-suggestions.rs:21:9
    |
 LL |     s = format!("foo");
-   |         ^^^^^^^^^^^^^^ expected `&mut String`, found `String`
-   |
-   = note: this error originates in the macro `format` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |         -------------- in this macro invocation
 
 error: aborting due to 6 previous errors
 

@@ -2,17 +2,29 @@ error[E0426]: use of undeclared label `'label_use`
   --> $DIR/mixed-site-span.rs:13:9
    |
 LL |         proc_macro_rules!();
-   |         ^^^^^^^^^^^^^^^^^^^ undeclared label `'label_use`
+   |         ^^^^^^^^^^^^^^^^^^^
+   |         |
+   |         undeclared label `'label_use`
+   |         in this macro invocation
    |
-   = note: this error originates in the macro `proc_macro_rules` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/mixed-site-span.rs:12:1
+   |
+LL | pub fn proc_macro_rules(input: TokenStream) -> TokenStream {
+   | ---------------------------------------------------------- in this expansion of `proc_macro_rules!`
 
 error[E0425]: cannot find value `local_use` in this scope
   --> $DIR/mixed-site-span.rs:13:9
    |
 LL |         proc_macro_rules!();
-   |         ^^^^^^^^^^^^^^^^^^^ help: a local variable with a similar name exists: `local_def`
+   |         ^^^^^^^^^^^^^^^^^^^
+   |         |
+   |         help: a local variable with a similar name exists: `local_def`
+   |         in this macro invocation
    |
-   = note: this error originates in the macro `proc_macro_rules` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/auxiliary/mixed-site-span.rs:12:1
+   |
+LL | pub fn proc_macro_rules(input: TokenStream) -> TokenStream {
+   | ---------------------------------------------------------- in this expansion of `proc_macro_rules!`
 
 error[E0425]: cannot find value `local_def` in this scope
   --> $DIR/mixed-site-span.rs:17:9
@@ -21,12 +33,23 @@ LL |         local_def;
    |         ^^^^^^^^^ help: a local variable with a similar name exists: `local_use`
 
 error[E0412]: cannot find type `ItemUse` in crate `$crate`
-  --> $DIR/mixed-site-span.rs:24:1
+  --> $DIR/auxiliary/mixed-site-span.rs:37:37
    |
-LL | pass_dollar_crate!();
-   | ^^^^^^^^^^^^^^^^^^^^ not found in `$crate`
+LL |   pub fn proc_macro_rules(input: TokenStream) -> TokenStream {
+   |   ---------------------------------------------------------- in this expansion of `proc_macro_rules!` (#2)
+...
+LL |               type A = $dollar_crate::ItemUse;
+   |                                       ^^^^^^^ not found in `$crate`
    |
-   = note: this error originates in the macro `proc_macro_rules` which comes from the expansion of the macro `pass_dollar_crate` (in Nightly builds, run with -Z macro-backtrace for more info)
+  ::: $DIR/mixed-site-span.rs:21:1
+   |
+LL | / macro_rules! pass_dollar_crate {
+LL | |     () => (proc_macro_rules!($crate);)
+   | |            ------------------------- in this macro invocation (#2)
+LL | | }
+   | |_- in this expansion of `pass_dollar_crate!` (#1)
+LL |   pass_dollar_crate!();
+   |   -------------------- in this macro invocation (#1)
 
 error: aborting due to 4 previous errors
 

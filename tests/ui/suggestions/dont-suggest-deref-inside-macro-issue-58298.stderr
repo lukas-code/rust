@@ -1,12 +1,26 @@
 error[E0308]: mismatched types
-  --> $DIR/dont-suggest-deref-inside-macro-issue-58298.rs:11:5
+  --> $SRC_DIR/alloc/src/macros.rs:LL:COL
    |
+   = note: in this expansion of `format!` (#2)
+  ::: $SRC_DIR/alloc/src/macros.rs:LL:COL
+   |
+   = note: expected `&str`, found `String`
+   |
+  ::: $DIR/dont-suggest-deref-inside-macro-issue-58298.rs:3:1
+   |
+LL | / macro_rules! intrinsic_match {
+LL | |     ($intrinsic:expr) => {
+LL | |         warn(format!("unsupported intrinsic {}", $intrinsic));
+   | |              ----------------------------------------------- in this macro invocation (#2)
+LL | |
+LL | |     };
+LL | | }
+   | |_- in this expansion of `intrinsic_match!` (#1)
+...
 LL | /     intrinsic_match! {
 LL | |         "abc"
 LL | |     };
-   | |_____^ expected `&str`, found `String`
-   |
-   = note: this error originates in the macro `format` which comes from the expansion of the macro `intrinsic_match` (in Nightly builds, run with -Z macro-backtrace for more info)
+   | |_____- in this macro invocation (#1)
 
 error: aborting due to previous error
 

@@ -161,37 +161,57 @@ LL |     if let ....3 = 0 {}
 error: range-to patterns with `...` are not allowed
   --> $DIR/recover-range-pats.rs:149:17
    |
-LL |             let ...$e;
-   |                 ^^^ help: use `..=` instead
-...
-LL |     mac!(0);
-   |     ------- in this macro invocation
-   |
-   = note: this error originates in the macro `mac` (in Nightly builds, run with -Z macro-backtrace for more info)
+LL | /     macro_rules! mac {
+LL | |         ($e:expr) => {
+LL | |             let ..$e;
+LL | |             let ...$e;
+   | |                 ^^^ help: use `..=` instead
+...  |
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `mac!`
+LL |
+LL |       mac!(0);
+   |       ------- in this macro invocation
 
 error[E0586]: inclusive range with no end
   --> $DIR/recover-range-pats.rs:153:19
    |
-LL |             let $e...;
-   |                   ^^^ help: use `..` instead
-...
-LL |     mac!(0);
-   |     ------- in this macro invocation
+LL | /     macro_rules! mac {
+LL | |         ($e:expr) => {
+LL | |             let ..$e;
+LL | |             let ...$e;
+...  |
+LL | |             let $e...;
+   | |                   ^^^ help: use `..` instead
+LL | |             let $e..=;
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `mac!`
+LL |
+LL |       mac!(0);
+   |       ------- in this macro invocation
    |
    = note: inclusive ranges must be bounded at the end (`..=b` or `a..=b`)
-   = note: this error originates in the macro `mac` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0586]: inclusive range with no end
   --> $DIR/recover-range-pats.rs:154:19
    |
-LL |             let $e..=;
-   |                   ^^^ help: use `..` instead
-...
-LL |     mac!(0);
-   |     ------- in this macro invocation
+LL | /     macro_rules! mac {
+LL | |         ($e:expr) => {
+LL | |             let ..$e;
+LL | |             let ...$e;
+...  |
+LL | |             let $e..=;
+   | |                   ^^^ help: use `..` instead
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `mac!`
+LL |
+LL |       mac!(0);
+   |       ------- in this macro invocation
    |
    = note: inclusive ranges must be bounded at the end (`..=b` or `a..=b`)
-   = note: this error originates in the macro `mac` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: `...` range patterns are deprecated
   --> $DIR/recover-range-pats.rs:41:13
@@ -273,15 +293,21 @@ LL |     if let X... .0 = 0 {}
 error: `...` range patterns are deprecated
   --> $DIR/recover-range-pats.rs:137:20
    |
-LL |             let $e1...$e2;
-   |                    ^^^ help: use `..=` for an inclusive range
-...
-LL |     mac2!(0, 1);
-   |     ----------- in this macro invocation
+LL | /     macro_rules! mac2 {
+LL | |         ($e1:expr, $e2:expr) => {
+LL | |             let $e1..$e2;
+LL | |             let $e1...$e2;
+   | |                    ^^^ help: use `..=` for an inclusive range
+...  |
+LL | |         }
+LL | |     }
+   | |_____- in this expansion of `mac2!`
+LL |
+LL |       mac2!(0, 1);
+   |       ----------- in this macro invocation
    |
    = warning: this is accepted in the current edition (Rust 2015) but is a hard error in Rust 2021!
    = note: for more information, see <https://doc.rust-lang.org/nightly/edition-guide/rust-2021/warnings-promoted-to-error.html>
-   = note: this error originates in the macro `mac2` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0029]: only `char` and numeric types are allowed in range patterns
   --> $DIR/recover-range-pats.rs:19:12

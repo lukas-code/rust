@@ -1,8 +1,15 @@
 warning: irrefutable `while let` pattern
   --> $DIR/while-let-2.rs:7:19
    |
-LL |               while let $p = $e $b
-   |                     ^^^
+LL | /     macro_rules! foo{
+LL | |         ($p:pat, $e:expr, $b:block) => {{
+LL | |             while let $p = $e $b
+   | |                   ^^^
+LL | |
+LL | |
+LL | |         }}
+LL | |     }
+   | |_____- in this expansion of `foo!`
 ...
 LL | /     foo!(_a, 1, {
 LL | |         println!("irrefutable pattern");
@@ -12,22 +19,34 @@ LL | |     });
    = note: this pattern will always match, so the loop will never exit
    = help: consider instead using a `loop { ... }` with a `let` inside it
    = note: `#[warn(irrefutable_let_patterns)]` on by default
-   = note: this warning originates in the macro `foo` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: irrefutable `while let` pattern
   --> $DIR/while-let-2.rs:7:19
    |
-LL |               while let $p = $e $b
-   |                     ^^^
+LL | /     macro_rules! foo{
+LL | |         ($p:pat, $e:expr, $b:block) => {{
+LL | |             while let $p = $e $b
+   | |                   ^^^
+LL | |
+LL | |
+LL | |         }}
+LL | |     }
+   | |_____- in this expansion of `foo!` (#2)
+LL | /     macro_rules! bar{
+LL | |         ($p:pat, $e:expr, $b:block) => {{
+LL | |             foo!($p, $e, $b)
+   | |             ---------------- in this macro invocation (#2)
+LL | |         }}
+LL | |     }
+   | |_____- in this expansion of `bar!` (#1)
 ...
 LL | /     bar!(_a, 1, {
 LL | |         println!("irrefutable pattern");
 LL | |     });
-   | |______- in this macro invocation
+   | |______- in this macro invocation (#1)
    |
    = note: this pattern will always match, so the loop will never exit
    = help: consider instead using a `loop { ... }` with a `let` inside it
-   = note: this warning originates in the macro `foo` which comes from the expansion of the macro `bar` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 warning: irrefutable `while let` pattern
   --> $DIR/while-let-2.rs:27:11

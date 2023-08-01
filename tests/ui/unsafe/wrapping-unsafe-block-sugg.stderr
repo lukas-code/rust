@@ -70,7 +70,10 @@ error: call to unsafe function is unsafe and requires unsafe block (error E0133)
   --> $DIR/wrapping-unsafe-block-sugg.rs:41:36
    |
 LL | macro_rules! unsafe_macro { () => (unsf()) }
-   |                                    ^^^^^^ call to unsafe function
+   | -----------------------------------^^^^^^---
+   | |                                  |
+   | |                                  call to unsafe function
+   | in this expansion of `unsafe_macro!`
 ...
 LL |     unsafe_macro!();
    |     --------------- in this macro invocation
@@ -81,19 +84,20 @@ note: an unsafe function restricts its caller, but its body is safe by default
    |
 LL | pub unsafe fn unsafe_in_macro() {
    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   = note: this error originates in the macro `unsafe_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: call to unsafe function is unsafe and requires unsafe block (error E0133)
   --> $DIR/wrapping-unsafe-block-sugg.rs:41:36
    |
 LL | macro_rules! unsafe_macro { () => (unsf()) }
-   |                                    ^^^^^^ call to unsafe function
+   | -----------------------------------^^^^^^---
+   | |                                  |
+   | |                                  call to unsafe function
+   | in this expansion of `unsafe_macro!`
 ...
 LL |     unsafe_macro!();
    |     --------------- in this macro invocation
    |
    = note: consult the function's documentation for information on how to avoid undefined behavior
-   = note: this error originates in the macro `unsafe_macro` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error: aborting due to 8 previous errors
 
