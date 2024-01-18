@@ -1,0 +1,40 @@
+error: lifetime may not live long enough
+  --> $DIR/metadata-cast-fail-lifetimes.rs:22:5
+   |
+LL | fn err1<'a, 'b>() {
+   |         --  -- lifetime `'b` defined here
+   |         |
+   |         lifetime `'a` defined here
+LL |     // changing lifetimes in `DynMetadata<T>` is only allowed if `T = dyn Trait`
+LL |     check::<DynMetadata<&'a ()>, DynMetadata<&'b ()>>();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ requires that `'a` must outlive `'b`
+   |
+   = help: consider adding the following bound: `'a: 'b`
+
+error: lifetime may not live long enough
+  --> $DIR/metadata-cast-fail-lifetimes.rs:27:5
+   |
+LL | fn err2<'a, 'b>() {
+   |         --  -- lifetime `'b` defined here
+   |         |
+   |         lifetime `'a` defined here
+LL |     check::<&'a (), &'b ()>();
+   |     ^^^^^^^^^^^^^^^^^^^^^^^ requires that `'a` must outlive `'b`
+   |
+   = help: consider adding the following bound: `'a: 'b`
+
+error: lifetime may not live long enough
+  --> $DIR/metadata-cast-fail-lifetimes.rs:37:5
+   |
+LL | fn subtype_fail<'short, 'long: 'short, T, U>(ptr: *mut T) -> *mut U
+   |                 ------  ----- lifetime `'long` defined here
+   |                 |
+   |                 lifetime `'short` defined here
+...
+LL |     cast(ptr)
+   |     ^^^^^^^^^ requires that `'short` must outlive `'long`
+   |
+   = help: consider adding the following bound: `'short: 'long`
+
+error: aborting due to 3 previous errors
+

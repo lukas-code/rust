@@ -155,6 +155,7 @@ language_item_table! {
     PointeeTrait,            sym::pointee_trait,       pointee_trait,              Target::Trait,          GenericRequirement::None;
     Metadata,                sym::metadata_type,       metadata_type,              Target::AssocTy,        GenericRequirement::None;
     DynMetadata,             sym::dyn_metadata,        dyn_metadata,               Target::Struct,         GenericRequirement::None;
+    MetadataCast,            sym::metadata_cast,       metadata_cast_trait,        Target::Trait,          GenericRequirement::Minimum(1);
 
     Freeze,                  sym::freeze,              freeze_trait,               Target::Trait,          GenericRequirement::Exact(0);
 

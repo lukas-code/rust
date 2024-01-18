@@ -1017,6 +1017,7 @@ symbols! {
         memtag,
         message,
         meta,
+        metadata_cast,
         metadata_type,
         min_align_of,
         min_align_of_val,
