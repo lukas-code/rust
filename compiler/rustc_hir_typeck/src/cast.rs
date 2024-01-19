@@ -32,10 +32,10 @@ use super::FnCtxt;
 
 use crate::errors;
 use crate::type_error_struct;
-use hir::ExprKind;
+use hir::{ExprKind, LangItem};
 use rustc_errors::{Applicability, Diagnostic, DiagnosticBuilder, ErrorGuaranteed};
 use rustc_hir as hir;
-use rustc_macros::{TypeFoldable, TypeVisitable};
+use rustc_infer::traits::Obligation;
 use rustc_middle::mir::Mutability;
 use rustc_middle::ty::adjustment::AllowTwoPhase;
 use rustc_middle::ty::cast::{CastKind, CastTy};
@@ -45,7 +45,8 @@ use rustc_session::lint;
 use rustc_span::def_id::{DefId, LOCAL_CRATE};
 use rustc_span::symbol::sym;
 use rustc_span::Span;
-use rustc_trait_selection::infer::InferCtxtExt;
+use rustc_trait_selection::infer::InferCtxtExt as _;
+use rustc_trait_selection::traits::query::evaluate_obligation::InferCtxtExt as _;
 
 /// Reifies a cast check to be checked once we have full type information for
 /// a function context.
@@ -67,7 +68,7 @@ pub struct CastCheck<'tcx> {
 /// The kind of pointer and associated metadata (thin, length or vtable) - we
 /// only allow casts between fat pointers if their metadata have the same
 /// kind.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, TypeVisitable, TypeFoldable)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum PointerKind<'tcx> {
     /// No metadata attached, ie pointer to sized type or foreign type
     Thin,
@@ -787,33 +788,40 @@ impl<'a, 'tcx> CastCheck<'tcx> {
     ) -> Result<(), CastError> {
         debug!(?expr, ?cast, "check_ptr_ptr_cast");
 
-        let expr_kind = fcx.pointer_kind(expr, self.span)?;
-        let cast_kind = fcx.pointer_kind(cast, self.span)?;
+        let meta_did = fcx.tcx.require_lang_item(LangItem::Metadata, Some(self.span));
+        let expr_meta = Ty::new_projection(fcx.tcx, meta_did, [expr]);
+        let cast_meta = Ty::new_projection(fcx.tcx, meta_did, [cast]);
+        let expr_meta = fcx.normalize(self.span, expr_meta);
+        let cast_meta = fcx.normalize(self.span, cast_meta);
 
-        let Some(cast_kind) = cast_kind else {
-            // We can't cast if target pointer kind is unknown
-            return Err(CastError::UnknownCastPtrKind);
-        };
+        let pred = ty::TraitRef::from_lang_item(
+            fcx.tcx,
+            LangItem::MetadataCast,
+            self.span,
+            [expr_meta, cast_meta],
+        );
 
-        // Cast to thin pointer is OK
-        if cast_kind == PointerKind::Thin {
+        let obligation = Obligation::new(fcx.tcx, fcx.misc(self.span), fcx.param_env, pred);
+        if fcx.predicate_must_hold_modulo_regions(&obligation) {
             return Ok(());
         }
 
-        let Some(expr_kind) = expr_kind else {
+        expr_meta.error_reported()?;
+        cast_meta.error_reported()?;
+
+        if cast_meta == fcx.tcx.types.unit {
+            span_bug!(self.span, "cast to thin pointer, but predicate didn't hold: {pred}");
+        } else if cast_meta.has_infer_types() {
+            // We can't cast if target pointer kind is unknown
+            Err(CastError::UnknownCastPtrKind)
+        } else if expr_meta.has_infer_types() {
             // We can't cast to fat pointer if source pointer kind is unknown
-            return Err(CastError::UnknownExprPtrKind);
-        };
-
-        // thin -> fat? report invalid cast (don't complain about vtable kinds)
-        if expr_kind == PointerKind::Thin {
-            return Err(CastError::SizedUnsizedCast);
-        }
-
-        // vtable kinds must match
-        if fcx.tcx.erase_regions(cast_kind) == fcx.tcx.erase_regions(expr_kind) {
-            Ok(())
+            Err(CastError::UnknownExprPtrKind)
+        } else if expr_meta == fcx.tcx.types.unit {
+            // thin -> fat? report invalid cast (don't complain about metadata kinds)
+            Err(CastError::SizedUnsizedCast)
         } else {
+            // metadata kinds must match
             Err(CastError::DifferingKinds)
         }
     }

@@ -3,11 +3,11 @@
 
 use std::ptr::{self, DynMetadata, MetadataCast, Pointee, PointerCast, Thin};
 
-fn cast<T: ?Sized, U: ?Sized>(_: *mut T) -> *mut U
+fn cast<T: ?Sized, U: ?Sized>(ptr: *mut T) -> *mut U
 where
     T: PointerCast<U>,
 {
-    todo!()
+    ptr as _
 }
 
 fn check<T: ?Sized, U: ?Sized>()

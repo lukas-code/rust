@@ -6,7 +6,7 @@ fn cast<T: ?Sized, U: ?Sized>(ptr: *mut T) -> *mut U
 where
     T: PointerCast<U>,
 {
-    todo!()
+    ptr as _
 }
 
 fn check<T: ?Sized, U: ?Sized>()
