@@ -2296,7 +2296,27 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                         let cast_ty_from = CastTy::from_ty(ty_from);
                         let cast_ty_to = CastTy::from_ty(*ty);
                         match (cast_ty_from, cast_ty_to) {
-                            (Some(CastTy::Ptr(_)), Some(CastTy::Ptr(_))) => (),
+                            (Some(CastTy::Ptr(pointee_from)), Some(CastTy::Ptr(pointee_to))) => {
+                                let metadata_def_id =
+                                    tcx.require_lang_item(LangItem::Metadata, Some(span));
+                                let metadata_from =
+                                    Ty::new_projection(tcx, metadata_def_id, [pointee_from.ty]);
+                                let metadata_to =
+                                    Ty::new_projection(tcx, metadata_def_id, [pointee_to.ty]);
+
+                                let predicate = ty::TraitRef::from_lang_item(
+                                    tcx,
+                                    LangItem::MetadataCast,
+                                    span,
+                                    [metadata_from, metadata_to],
+                                );
+
+                                self.prove_predicate(
+                                    predicate,
+                                    location.to_locations(),
+                                    ConstraintCategory::Cast { unsize_to: None },
+                                );
+                            }
                             _ => {
                                 span_mirbug!(
                                     self,

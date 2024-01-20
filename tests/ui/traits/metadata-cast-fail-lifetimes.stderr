@@ -36,5 +36,18 @@ LL |     cast(ptr)
    |
    = help: consider adding the following bound: `'short: 'long`
 
-error: aborting due to 3 previous errors
+error: lifetime may not live long enough
+  --> $DIR/metadata-cast-fail-lifetimes.rs:47:5
+   |
+LL | fn borrowck_cast<'short, 'long: 'short, T, U>(ptr: *mut T) -> *mut U
+   |                  ------  ----- lifetime `'long` defined here
+   |                  |
+   |                  lifetime `'short` defined here
+...
+LL |     ptr as _
+   |     ^^^^^^^^ cast requires that `'short` must outlive `'long`
+   |
+   = help: consider adding the following bound: `'short: 'long`
+
+error: aborting due to 4 previous errors
 

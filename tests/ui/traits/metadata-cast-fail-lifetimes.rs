@@ -37,3 +37,13 @@ where
     cast(ptr)
     //~^ ERROR may not live long enough
 }
+
+fn borrowck_cast<'short, 'long: 'short, T, U>(ptr: *mut T) -> *mut U
+where
+    T: ?Sized + Pointee<Metadata = &'short ()>,
+    U: ?Sized + Pointee<Metadata = &'long ()>,
+{
+    // test that pointer-to-pointer casts are borrow-checked
+    ptr as _
+    //~^ ERROR may not live long enough
+}
