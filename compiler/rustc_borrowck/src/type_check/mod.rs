@@ -20,7 +20,7 @@ use rustc_infer::infer::outlives::env::RegionBoundPairs;
 use rustc_infer::infer::region_constraints::RegionConstraintData;
 use rustc_infer::infer::type_variable::{TypeVariableOrigin, TypeVariableOriginKind};
 use rustc_infer::infer::{
-    BoundRegion, BoundRegionConversionTime, InferCtxt, NllRegionVariableOrigin,
+    BoundRegion, BoundRegionConversionTime, DefineOpaqueTypes, InferCtxt, NllRegionVariableOrigin,
 };
 use rustc_middle::mir::tcx::PlaceTy;
 use rustc_middle::mir::visit::{NonMutatingUseContext, PlaceContext, Visitor};
@@ -2294,7 +2294,34 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                         let cast_ty_from = CastTy::from_ty(ty_from);
                         let cast_ty_to = CastTy::from_ty(*ty);
                         match (cast_ty_from, cast_ty_to) {
-                            (Some(CastTy::Ptr(_)), Some(CastTy::Ptr(_))) => (),
+                            (Some(CastTy::Ptr(from_pointee)), Some(CastTy::Ptr(to_pointee))) => {
+                                if let ty::Dynamic(to_preds, _, ty::Dyn) = *to_pointee.ty.kind()
+                                    && let Some(to_principal) = to_preds.principal()
+                                    && let ty::Dynamic(from_preds, _, ty::Dyn) =
+                                        *from_pointee.ty.kind()
+                                    && let Some(from_principal) = from_preds.principal()
+                                {
+                                    let param_env = self.param_env;
+                                    let op = CustomTypeOp::new(
+                                        |ocx| {
+                                            let cause = ObligationCause::dummy_with_span(span);
+                                            let infer_ok = ocx.infcx.at(&cause, param_env).eq(
+                                                DefineOpaqueTypes::No,
+                                                from_principal,
+                                                to_principal,
+                                            )?;
+                                            ocx.register_infer_ok_obligations(infer_ok);
+                                            Ok(())
+                                        },
+                                        "equate PtrToPtr dyn trait principal",
+                                    );
+                                    let _: Result<(), ErrorGuaranteed> = self.fully_perform_op(
+                                        location.to_locations(),
+                                        ConstraintCategory::Cast { unsize_to: None },
+                                        op,
+                                    );
+                                }
+                            }
                             _ => {
                                 span_mirbug!(
                                     self,
