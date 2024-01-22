@@ -1910,7 +1910,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
-                | MetadataCastCandidate(MetadataCastKind::Subtype)
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
                 ParamCandidate(ref victim_cand),
             ) => {
@@ -2073,7 +2073,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
-                | MetadataCastCandidate(MetadataCastKind::Subtype)
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
                 ImplCandidate(_)
                 | ClosureCandidate { .. }
@@ -2086,7 +2086,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
-                | MetadataCastCandidate(MetadataCastKind::Subtype)
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
             ) => DropVictim::No,
         }

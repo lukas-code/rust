@@ -58,8 +58,23 @@ LL | where
 LL |     T: MetadataCast<U>,
    |        ^^^^^^^^^^^^^^^ required by this bound in `check`
 
-error[E0277]: the trait bound `DynMetadata<dyn Trait>: MetadataCast<DynMetadata<dyn Trait2>>` is not satisfied
+error[E0277]: the trait bound `DynMetadata<dyn Trait>: MetadataCast<dyn Trait + Send>` is not satisfied
   --> $DIR/metadata-cast-fail-traits.rs:26:13
+   |
+LL |     check::<DynMetadata<dyn Trait>, dyn Trait + Send>();
+   |             ^^^^^^^^^^^^^^^^^^^^^^ the trait `MetadataCast<dyn Trait + Send>` is not implemented for `DynMetadata<dyn Trait>`
+   |
+note: required by a bound in `check`
+  --> $DIR/metadata-cast-fail-traits.rs:14:8
+   |
+LL | fn check<T: ?Sized, U: ?Sized>()
+   |    ----- required by a bound in this function
+LL | where
+LL |     T: MetadataCast<U>,
+   |        ^^^^^^^^^^^^^^^ required by this bound in `check`
+
+error[E0277]: the trait bound `DynMetadata<dyn Trait>: MetadataCast<DynMetadata<dyn Trait2>>` is not satisfied
+  --> $DIR/metadata-cast-fail-traits.rs:27:13
    |
 LL |     check::<DynMetadata<dyn Trait>, DynMetadata<dyn Trait2>>();
    |             ^^^^^^^^^^^^^^^^^^^^^^ the trait `MetadataCast<DynMetadata<dyn Trait2>>` is not implemented for `DynMetadata<dyn Trait>`
@@ -74,7 +89,7 @@ LL |     T: MetadataCast<U>,
    |        ^^^^^^^^^^^^^^^ required by this bound in `check`
 
 error[E0277]: the trait bound `dyn Trait + Send: MetadataCast<dyn Trait + Sync>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:27:13
+  --> $DIR/metadata-cast-fail-traits.rs:28:13
    |
 LL |     check::<dyn Trait + Send, dyn Trait + Sync>();
    |             ^^^^^^^^^^^^^^^^ the trait `MetadataCast<dyn Trait + Sync>` is not implemented for `dyn Trait + Send`
@@ -89,7 +104,7 @@ LL |     T: MetadataCast<U>,
    |        ^^^^^^^^^^^^^^^ required by this bound in `check`
 
 error[E0277]: the trait bound `dyn MetadataCast<usize>: MetadataCast<usize>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:30:13
+  --> $DIR/metadata-cast-fail-traits.rs:31:13
    |
 LL |     check::<dyn MetadataCast<usize>, usize>();
    |             ^^^^^^^^^^^^^^^^^^^^^^^ the trait `MetadataCast<usize>` is not implemented for `dyn MetadataCast<usize>`
@@ -104,7 +119,7 @@ LL |     T: MetadataCast<U>,
    |        ^^^^^^^^^^^^^^^ required by this bound in `check`
 
 error[E0277]: the trait bound `DynMetadata<dyn Trait>: MetadataCast<DynMetadata<dyn Send>>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:33:13
+  --> $DIR/metadata-cast-fail-traits.rs:34:13
    |
 LL |     check::<DynMetadata<dyn Trait>, DynMetadata<dyn Send>>();
    |             ^^^^^^^^^^^^^^^^^^^^^^ the trait `MetadataCast<DynMetadata<dyn Send>>` is not implemented for `DynMetadata<dyn Trait>`
@@ -119,7 +134,7 @@ LL |     T: MetadataCast<U>,
    |        ^^^^^^^^^^^^^^^ required by this bound in `check`
 
 error[E0277]: the trait bound `(): MetadataCast<usize>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:37:29
+  --> $DIR/metadata-cast-fail-traits.rs:38:29
    |
 LL |     let _: *mut [u8] = cast(thin);
    |                        ---- ^^^^ the trait `MetadataCast<usize>` is not implemented for `()`
@@ -137,7 +152,7 @@ LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
 error[E0277]: the trait bound `(): MetadataCast<DynMetadata<dyn Trait>>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:38:34
+  --> $DIR/metadata-cast-fail-traits.rs:39:34
    |
 LL |     let _: *mut dyn Trait = cast(thin);
    |                             ---- ^^^^ the trait `MetadataCast<DynMetadata<dyn Trait>>` is not implemented for `()`
@@ -155,7 +170,7 @@ LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
 error[E0277]: the trait bound `DynMetadata<dyn Trait + Send>: MetadataCast<usize>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:39:29
+  --> $DIR/metadata-cast-fail-traits.rs:40:29
    |
 LL |     let _: *mut [u8] = cast(trait_object);
    |                        ---- ^^^^^^^^^^^^ the trait `MetadataCast<usize>` is not implemented for `DynMetadata<dyn Trait + Send>`
@@ -173,7 +188,7 @@ LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
 error[E0277]: the trait bound `usize: MetadataCast<DynMetadata<dyn Trait>>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:40:34
+  --> $DIR/metadata-cast-fail-traits.rs:41:34
    |
 LL |     let _: *mut dyn Trait = cast(slice);
    |                             ---- ^^^^^ the trait `MetadataCast<DynMetadata<dyn Trait>>` is not implemented for `usize`
@@ -191,7 +206,7 @@ LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
 error[E0277]: the trait bound `DynMetadata<dyn Trait + Send>: MetadataCast<DynMetadata<dyn Trait2>>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:41:35
+  --> $DIR/metadata-cast-fail-traits.rs:42:35
    |
 LL |     let _: *mut dyn Trait2 = cast(trait_object);
    |                              ---- ^^^^^^^^^^^^ the trait `MetadataCast<DynMetadata<dyn Trait2>>` is not implemented for `DynMetadata<dyn Trait + Send>`
@@ -209,7 +224,7 @@ LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
 error[E0277]: the trait bound `DynMetadata<dyn Trait + Send>: MetadataCast<DynMetadata<dyn Send>>` is not satisfied
-  --> $DIR/metadata-cast-fail-traits.rs:44:33
+  --> $DIR/metadata-cast-fail-traits.rs:45:33
    |
 LL |     let _: *mut dyn Send = cast(trait_object);
    |                            ---- ^^^^^^^^^^^^ the trait `MetadataCast<DynMetadata<dyn Send>>` is not implemented for `DynMetadata<dyn Trait + Send>`
@@ -226,6 +241,6 @@ LL | where
 LL |     T: PointerCast<U>,
    |        ^^^^^^^^^^^^^^ required by this bound in `cast`
 
-error: aborting due to 14 previous errors
+error: aborting due to 15 previous errors
 
 For more information about this error, try `rustc --explain E0277`.

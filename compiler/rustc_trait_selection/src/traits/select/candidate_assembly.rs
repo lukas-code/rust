@@ -1183,21 +1183,47 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
             return;
         }
 
+        let tcx = self.tcx();
         if let ty::Adt(src_def, src_args) = source.kind()
             && let ty::Adt(tgt_def, tgt_args) = target.kind()
             && src_def == tgt_def
-            && Some(src_def.did()) == self.tcx().lang_items().dyn_metadata()
+            && Some(src_def.did()) == tcx.lang_items().dyn_metadata()
         {
             let src_dyn = src_args.type_at(0);
             let tgt_dyn = tgt_args.type_at(0);
 
-            // We could theoretically allow casting the principal away, but `as` casts
-            // don't allow that, so neither does `MetadataCast` for now.
-            if let ty::Dynamic(src_pred, _, ty::Dyn) = src_dyn.kind()
-                && let ty::Dynamic(tgt_pred, _, ty::Dyn) = tgt_dyn.kind()
-                && src_pred.principal_def_id() == tgt_pred.principal_def_id()
+            if let ty::Dynamic(src_preds, _, ty::Dyn) = src_dyn.kind()
+                && let ty::Dynamic(tgt_preds, _, ty::Dyn) = tgt_dyn.kind()
             {
-                candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Unconditional));
+                let mut src_traits = src_preds.auto_traits().collect::<Vec<_>>();
+
+                if let Some(src_principal_did) = src_preds.principal_def_id() {
+                    src_traits.extend(tcx.super_traits_of(src_principal_did));
+                }
+
+                for tgt_auto_trait in tgt_preds.auto_traits() {
+                    if !src_traits.contains(&tgt_auto_trait) {
+                        // Adding auto traits that aren't on the source or implied by
+                        // the source principal is not allowed.
+                        return;
+                    }
+                }
+
+                if let Some(src_principal) = src_preds.principal() {
+                    if let Some(tgt_principal) = tgt_preds.principal() {
+                        candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Dyn(
+                            src_principal,
+                            tgt_principal,
+                        )));
+                    } else {
+                        // We could theoretically allow casting the principal away, but `as` casts
+                        // don't allow that, so neither does `MetadataCast` for now.
+                    }
+                } else if tgt_preds.principal().is_none() {
+                    // Casting between auto-trait-only trait objects is allowed if the target
+                    // traits are a subset of the source traits, which we checked above.
+                    candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Unconditional));
+                }
                 return;
             }
         }

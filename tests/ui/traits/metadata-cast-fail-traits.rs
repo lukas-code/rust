@@ -23,6 +23,7 @@ fn main() {
     check::<(), DynMetadata<dyn Trait>>(); //~ ERROR not satisfied
     check::<usize, DynMetadata<dyn Trait>>(); //~ ERROR not satisfied
     check::<DynMetadata<dyn Trait>, usize>(); //~ ERROR not satisfied
+    check::<DynMetadata<dyn Trait>, dyn Trait + Send>(); //~ ERROR not satisfied
     check::<DynMetadata<dyn Trait>, DynMetadata<dyn Trait2>>(); //~ ERROR not satisfied
     check::<dyn Trait + Send, dyn Trait + Sync>(); //~ ERROR not satisfied
 

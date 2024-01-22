@@ -281,7 +281,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
     fn confirm_metadata_cast_candidate(
         &mut self,
         obligation: &PolyTraitObligation<'tcx>,
-        kind: MetadataCastKind,
+        kind: MetadataCastKind<'tcx>,
     ) -> Result<Vec<PredicateObligation<'tcx>>, SelectionError<'tcx>> {
         match kind {
             MetadataCastKind::Unconditional => Ok(Vec::new()),
@@ -293,6 +293,15 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                     .infcx
                     .at(&obligation.cause, obligation.param_env)
                     .sub(DefineOpaqueTypes::No, source, target)
+                    .map_err(|_| Unimplemented)?;
+
+                Ok(obligations)
+            }
+            MetadataCastKind::Dyn(source, target) => {
+                let InferOk { obligations, .. } = self
+                    .infcx
+                    .at(&obligation.cause, obligation.param_env)
+                    .eq(DefineOpaqueTypes::No, source, target)
                     .map_err(|_| Unimplemented)?;
 
                 Ok(obligations)

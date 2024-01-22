@@ -278,11 +278,27 @@ LL |     let _ = cf as *const dyn Bar;
    |
    = note: vtable kinds may not match
 
-error[E0606]: casting `*const dyn Foo` as `*const dyn Send` is invalid
+error[E0606]: casting `*const dyn Foo` as `*const dyn Foo + Send` is invalid
   --> $DIR/fat-ptr-cast.rs:85:13
+   |
+LL |     let _ = cf as *const (dyn Foo + Send);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*const dyn Foo` as `*const dyn Send` is invalid
+  --> $DIR/fat-ptr-cast.rs:88:13
    |
 LL |     let _ = cf as *const dyn Send;
    |             ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*mut dyn Send` as `*mut dyn Sync` is invalid
+  --> $DIR/fat-ptr-cast.rs:93:13
+   |
+LL |     let _ = unprincipled as *mut dyn Sync;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
    |
    = note: vtable kinds may not match
 
@@ -305,7 +321,7 @@ LL |     let _ = a as *const dyn Foo;
    = note: required for the cast from `*const str` to `*const dyn Foo`
 
 error[E0606]: casting `&{float}` as `f32` is invalid
-  --> $DIR/fat-ptr-cast.rs:87:30
+  --> $DIR/fat-ptr-cast.rs:95:30
    |
 LL |     vec![0.0].iter().map(|s| s as f32).collect::<Vec<f32>>();
    |                              ^^^^^^^^
@@ -316,7 +332,7 @@ LL |     vec![0.0].iter().map(|s| *s as f32).collect::<Vec<f32>>();
    |                              +
 
 error[E0606]: cannot cast `usize` to a pointer that may be wide
-  --> $DIR/fat-ptr-cast.rs:91:18
+  --> $DIR/fat-ptr-cast.rs:99:18
    |
 LL |     let s = 0 as *const T;
    |             -    ^^^^^^^^ creating a `*const T` requires both an address and type-specific metadata
@@ -324,7 +340,7 @@ LL |     let s = 0 as *const T;
    |             consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
 
 error[E0606]: casting `*const U` as `*const V` is invalid
-  --> $DIR/fat-ptr-cast.rs:97:5
+  --> $DIR/fat-ptr-cast.rs:105:5
    |
 LL |     u as *const V
    |     ^^^^^^^^^^^^^
@@ -332,14 +348,22 @@ LL |     u as *const V
    = note: vtable kinds may not match
 
 error[E0606]: casting `*const U` as `*const str` is invalid
-  --> $DIR/fat-ptr-cast.rs:102:5
+  --> $DIR/fat-ptr-cast.rs:110:5
    |
 LL |     u as *const str
    |     ^^^^^^^^^^^^^^^
    |
    = note: vtable kinds may not match
 
-error: aborting due to 46 previous errors
+error[E0606]: casting `*const (dyn TypeParam<T> + 'static)` as `*const dyn TypeParam<U>` is invalid
+  --> $DIR/fat-ptr-cast.rs:115:5
+   |
+LL |     ptr as _
+   |     ^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error: aborting due to 49 previous errors
 
 Some errors have detailed explanations: E0054, E0277, E0604, E0605, E0606, E0607, E0609.
 For more information about an error, try `rustc --explain E0054`.

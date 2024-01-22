@@ -2,7 +2,7 @@
 
 #![feature(ptr_metadata)]
 
-trait Foo {
+trait Foo: Send {
     fn foo(&self) {}
 }
 
@@ -54,10 +54,10 @@ fn main() {
     assert_eq!(b, d);
     assert_eq!(c, d);
 
-    // Adding auto traits is OK.
+    // Adding auto traits is OK if they're implied by the principal.
     let _ = a as *mut (dyn Foo + Send);
 
-    // Casting between auto-trait-only trait objects is OK.
-    let unprincipled: *mut dyn Send = &mut Bar;
+    // Removing traits from auto-trait-only trait objects is OK.
+    let unprincipled: *mut (dyn Send + Sync) = &mut Bar;
     let _ = unprincipled as *mut dyn Sync;
 }

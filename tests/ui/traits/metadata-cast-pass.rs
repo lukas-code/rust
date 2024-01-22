@@ -17,6 +17,7 @@ where
 }
 
 trait Trait {}
+trait ImpliesSend: Send {}
 
 fn main() {
     // any to () is OK
@@ -31,9 +32,12 @@ fn main() {
     check::<DynMetadata<dyn Trait>, DynMetadata<dyn Trait>>();
     check::<dyn MetadataCast<usize>, dyn MetadataCast<usize>>();
 
-    // changing auto traits of trait object in DynMetadata is OK
-    check::<DynMetadata<dyn Send>, DynMetadata<dyn Sync>>();
-    check::<DynMetadata<dyn Trait + Send>, DynMetadata<dyn Trait + Sync>>();
+    // removing auto traits of trait object in DynMetadata is OK
+    check::<DynMetadata<dyn Send + Sync>, DynMetadata<dyn Sync>>();
+    check::<DynMetadata<dyn Trait + Send + Sync>, DynMetadata<dyn Trait + Sync>>();
+
+    // adding implied auto traits is OK
+    check::<DynMetadata<dyn ImpliesSend>, DynMetadata<dyn ImpliesSend + Send>>();
 }
 
 fn lifetimes_ok<'a, 'b>() {
@@ -45,7 +49,7 @@ fn lifetimes_ok<'a, 'b>() {
     check::<&'static (), &'a ()>();
 }
 
-fn do_casts<'a>(thin: &mut i32, slice: &mut [i32], trait_object: &mut dyn Trait) {
+fn do_casts<'a>(thin: &mut i32, slice: &mut [i32], trait_object: &mut (dyn Trait + Send + Sync)) {
     let _: *mut u8 = cast(thin);
     let _: *mut u8 = cast(slice);
     let _: *mut [u8] = cast(slice);

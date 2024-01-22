@@ -81,8 +81,16 @@ fn main() {
     let _ = cf as *const [u16]; //~ ERROR is invalid
     let _ = cf as *const dyn Bar; //~ ERROR is invalid
 
+    // Adding auto traits is not allowed.
+    let _ = cf as *const (dyn Foo + Send); //~ ERROR is invalid
+
     // casting principal away is not allowed for now
     let _ = cf as *const dyn Send; //~ ERROR is invalid
+
+    // Casting between auto-trait-only trait objects requires the target traits
+    // to be a subset of the source traits.
+    let unprincipled: *mut dyn Send = &mut ();
+    let _ = unprincipled as *mut dyn Sync; //~ ERROR is invalid
 
     vec![0.0].iter().map(|s| s as f32).collect::<Vec<f32>>(); //~ ERROR is invalid
 }
@@ -100,4 +108,9 @@ fn illegal_cast<U:?Sized,V:?Sized>(u: *const U) -> *const V
 fn illegal_cast_2<U:?Sized>(u: *const U) -> *const str
 {
     u as *const str //~ ERROR is invalid
+}
+
+trait TypeParam<T> {}
+fn type_param<T, U>(ptr: *const dyn TypeParam<T>) -> *const dyn TypeParam<U> {
+    ptr as _ //~ ERROR is invalid
 }

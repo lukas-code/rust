@@ -180,11 +180,13 @@ pub enum SelectionCandidate<'tcx> {
 }
 
 #[derive(PartialEq, Eq, Debug, Clone, TypeVisitable)]
-pub enum MetadataCastKind {
+pub enum MetadataCastKind<'tcx> {
     /// No further obligations.
     Unconditional,
     /// `T: MetadataCast<U>` if `T <: U`.
     Subtype,
+    /// Require principals of dyn traits to be equal.
+    Dyn(ty::PolyExistentialTraitRef<'tcx>, ty::PolyExistentialTraitRef<'tcx>),
 }
 
 /// The result of trait evaluation. The order is important
