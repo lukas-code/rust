@@ -33,6 +33,7 @@ use super::FnCtxt;
 use crate::errors;
 use crate::type_error_struct;
 use hir::ExprKind;
+use rustc_data_structures::fx::FxHashSet;
 use rustc_errors::{Applicability, Diagnostic, DiagnosticBuilder, ErrorGuaranteed};
 use rustc_hir as hir;
 use rustc_macros::{TypeFoldable, TypeVisitable};
@@ -72,7 +73,7 @@ enum PointerKind<'tcx> {
     /// No metadata attached, ie pointer to sized type or foreign type
     Thin,
     /// A trait object
-    VTable(Option<ty::Binder<'tcx, ty::ExistentialTraitRef<'tcx>>>),
+    VTable(&'tcx ty::List<ty::PolyExistentialPredicate<'tcx>>),
     /// Slice
     Length,
     /// The unsize info of this projection or opaque type
@@ -100,7 +101,7 @@ impl<'a, 'tcx> FnCtxt<'a, 'tcx> {
 
         Ok(match *t.kind() {
             ty::Slice(_) | ty::Str => Some(PointerKind::Length),
-            ty::Dynamic(tty, _, ty::Dyn) => Some(PointerKind::VTable(tty.principal())),
+            ty::Dynamic(tty, _, ty::Dyn) => Some(PointerKind::VTable(tty)),
             ty::Adt(def, args) if def.is_struct() => match def.non_enum_variant().tail_opt() {
                 None => Some(PointerKind::Thin),
                 Some(f) => {
@@ -797,8 +798,31 @@ impl<'a, 'tcx> CastCheck<'tcx> {
             return Err(CastError::SizedUnsizedCast);
         }
 
+        let cast_kind = fcx.tcx.erase_regions(cast_kind);
+        let expr_kind = fcx.tcx.erase_regions(expr_kind);
+
         // vtable kinds must match
-        if fcx.tcx.erase_regions(cast_kind) == fcx.tcx.erase_regions(expr_kind) {
+        if let PointerKind::VTable(expr_pred) = expr_kind
+            && let PointerKind::VTable(cast_pred) = cast_kind
+        {
+            if expr_pred.principal() != cast_pred.principal()
+                || !expr_pred.projection_bounds().eq(cast_pred.projection_bounds())
+            {
+                return Err(CastError::DifferingKinds);
+            }
+
+            let mut allowed_traits = expr_pred.auto_traits().collect::<FxHashSet<_>>();
+            if let Some(expr_principal) = expr_pred.principal_def_id() {
+                allowed_traits.extend(fcx.tcx.super_traits_of(expr_principal));
+            }
+            for auto_trait in cast_pred.auto_traits() {
+                if !allowed_traits.contains(&auto_trait) {
+                    return Err(CastError::DifferingKinds);
+                }
+            }
+
+            Ok(CastKind::PtrPtrCast)
+        } else if cast_kind == expr_kind {
             Ok(CastKind::PtrPtrCast)
         } else {
             Err(CastError::DifferingKinds)

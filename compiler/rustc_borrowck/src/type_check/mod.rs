@@ -2295,22 +2295,46 @@ impl<'a, 'tcx> TypeChecker<'a, 'tcx> {
                         let cast_ty_to = CastTy::from_ty(*ty);
                         match (cast_ty_from, cast_ty_to) {
                             (Some(CastTy::Ptr(from_pointee)), Some(CastTy::Ptr(to_pointee))) => {
-                                if let ty::Dynamic(to_preds, _, ty::Dyn) = *to_pointee.ty.kind()
+                                let from_tail = tcx.struct_tail_with_normalize(
+                                    from_pointee.ty,
+                                    |ty| self.normalize(ty, location),
+                                    || {},
+                                );
+                                let to_tail = tcx.struct_tail_with_normalize(
+                                    to_pointee.ty,
+                                    |ty| self.normalize(ty, location),
+                                    || {},
+                                );
+
+                                if let ty::Dynamic(to_preds, _, ty::Dyn) = *to_tail.kind()
+                                    && let ty::Dynamic(from_preds, _, ty::Dyn) = *from_tail.kind()
                                     && let Some(to_principal) = to_preds.principal()
-                                    && let ty::Dynamic(from_preds, _, ty::Dyn) =
-                                        *from_pointee.ty.kind()
                                     && let Some(from_principal) = from_preds.principal()
                                 {
                                     let param_env = self.param_env;
                                     let op = CustomTypeOp::new(
                                         |ocx| {
                                             let cause = ObligationCause::dummy_with_span(span);
+
                                             let infer_ok = ocx.infcx.at(&cause, param_env).eq(
                                                 DefineOpaqueTypes::No,
                                                 from_principal,
                                                 to_principal,
                                             )?;
                                             ocx.register_infer_ok_obligations(infer_ok);
+
+                                            for (from_project, to_project) in from_preds
+                                                .projection_bounds()
+                                                .zip(to_preds.projection_bounds())
+                                            {
+                                                let infer_ok = ocx.infcx.at(&cause, param_env).eq(
+                                                    DefineOpaqueTypes::No,
+                                                    from_project,
+                                                    to_project,
+                                                )?;
+                                                ocx.register_infer_ok_obligations(infer_ok);
+                                            }
+
                                             Ok(())
                                         },
                                         "equate PtrToPtr dyn trait principal",
