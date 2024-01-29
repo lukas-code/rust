@@ -119,7 +119,8 @@ fn check_redundant_explicit_link<'md>(
 
                 let explicit_link = &*dest;
 
-                if explicit_link.ends_with(resolvable_link) || resolvable_link.ends_with(explicit_link)
+                if explicit_link.ends_with(resolvable_link)
+                    || resolvable_link.ends_with(explicit_link)
                 {
                     match link_type {
                         LinkType::Inline | LinkType::ReferenceUnknown => {
@@ -178,20 +179,15 @@ fn check_inline_or_reference_unknown_redundancy(
         (find_resolution(resolutions, &dest)?, find_resolution(resolutions, resolvable_link)?);
 
     if dest_res == display_res {
-        let link_span =
-            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)?;
+        let link_span = source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)?;
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
             doc,
             &offset_explicit_range(doc, link_range, open, close),
             doc_fragments,
         )?;
-        let display_span = source_span_for_markdown_range(
-            cx.tcx,
-            doc,
-            resolvable_link_range,
-            doc_fragments,
-        )?;
+        let display_span =
+            source_span_for_markdown_range(cx.tcx, doc, resolvable_link_range, doc_fragments)?;
 
         cx.tcx.node_span_lint(crate::lint::REDUNDANT_EXPLICIT_LINKS, hir_id, explicit_span, "redundant explicit link target", |lint| {
             lint.span_label(explicit_span, "explicit target is redundant")
@@ -221,20 +217,15 @@ fn check_reference_redundancy(
         (find_resolution(resolutions, dest)?, find_resolution(resolutions, resolvable_link)?);
 
     if dest_res == display_res {
-        let link_span =
-            source_span_for_markdown_range(cx.tcx, doc, &link_range, doc_fragments)?;
+        let link_span = source_span_for_markdown_range(cx.tcx, doc, &link_range, doc_fragments)?;
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
             doc,
             &offset_explicit_range(doc, link_range.clone(), b'[', b']'),
             doc_fragments,
         )?;
-        let display_span = source_span_for_markdown_range(
-            cx.tcx,
-            doc,
-            resolvable_link_range,
-            doc_fragments,
-        )?;
+        let display_span =
+            source_span_for_markdown_range(cx.tcx, doc, resolvable_link_range, doc_fragments)?;
         let def_span = source_span_for_markdown_range(
             cx.tcx,
             doc,
