@@ -6,7 +6,8 @@ use rustc_errors::SuggestionStyle;
 use rustc_hir::def::{DefKind, DocLinkResMap, Namespace, Res};
 use rustc_hir::HirId;
 use rustc_lint_defs::Applicability;
-use rustc_resolve::rustdoc::source_span_for_markdown_range;
+use rustc_resolve::rustdoc::{add_doc_fragment, source_span_for_markdown_range, DocFragment};
+use rustc_span::def_id::DefId;
 use rustc_span::Symbol;
 
 use crate::clean::utils::find_nearest_parent_module;
@@ -28,10 +29,34 @@ pub(crate) fn visit_item(cx: &DocContext<'_>, item: &Item) {
         return;
     };
 
-    let doc = item.doc_value();
+    let Some(first_fragment) = item.attrs.doc_strings.first() else {
+        return;
+    };
+
+    let (source_id, doc_fragments, doc) = if let Some(reexport_id) = first_fragment.item_id {
+        let mut doc = String::new();
+        let mut end_index = 0;
+        for frag in &item.attrs.doc_strings {
+            if frag.item_id != Some(reexport_id) {
+                break;
+            }
+            add_doc_fragment(&mut doc, frag);
+            end_index += 1;
+        }
+        (reexport_id, &item.attrs.doc_strings[..end_index], doc)
+    } else {
+        let Some(item_id) = item.def_id() else {
+            return;
+        };
+        (item_id, &item.attrs.doc_strings[..], item.doc_value())
+    };
     if doc.is_empty() {
         return;
     }
+
+    let Some(local_source_id) = source_id.as_local() else {
+        return;
+    };
 
     if item.link_names(&cx.cache).is_empty() {
         // If there's no link names in this item,
@@ -40,31 +65,26 @@ pub(crate) fn visit_item(cx: &DocContext<'_>, item: &Item) {
         return;
     }
 
-    let Some(item_id) = item.def_id() else {
-        return;
-    };
-    let Some(local_item_id) = item_id.as_local() else {
-        return;
-    };
-
     let is_hidden = !cx.render_options.document_hidden
-        && (item.is_doc_hidden() || inherits_doc_hidden(cx.tcx, local_item_id, None));
+        && (item.is_doc_hidden() || inherits_doc_hidden(cx.tcx, local_source_id, None));
     if is_hidden {
         return;
     }
     let is_private = !cx.render_options.document_private
-        && !cx.cache.effective_visibilities.is_directly_public(cx.tcx, item_id);
+        && !cx.cache.effective_visibilities.is_directly_public(cx.tcx, source_id);
     if is_private {
         return;
     }
 
-    check_redundant_explicit_link(cx, item, hir_id, &doc);
+    check_redundant_explicit_link(cx, item, hir_id, source_id, doc_fragments, &doc);
 }
 
 fn check_redundant_explicit_link<'md>(
     cx: &DocContext<'_>,
     item: &Item,
     hir_id: HirId,
+    source_id: DefId,
+    doc_fragments: &[DocFragment],
     doc: &'md str,
 ) -> Option<()> {
     let mut broken_line_callback = |link: BrokenLink<'md>| Some((link.reference, "".into()));
@@ -74,10 +94,9 @@ fn check_redundant_explicit_link<'md>(
         Some(&mut broken_line_callback),
     )
     .into_offset_iter();
-    let item_id = item.def_id()?;
-    let module_id = match cx.tcx.def_kind(item_id) {
-        DefKind::Mod if item.inner_docs(cx.tcx) => item_id,
-        _ => find_nearest_parent_module(cx.tcx, item_id).unwrap(),
+    let module_id = match cx.tcx.def_kind(source_id) {
+        DefKind::Mod if item.inner_docs(cx.tcx) => source_id,
+        _ => find_nearest_parent_module(cx.tcx, source_id).unwrap(),
     };
     let resolutions = cx.tcx.doc_link_resolutions(module_id);
 
@@ -107,6 +126,7 @@ fn check_redundant_explicit_link<'md>(
                                 cx,
                                 item,
                                 hir_id,
+                                doc_fragments,
                                 doc,
                                 resolutions,
                                 link_range,
@@ -124,6 +144,7 @@ fn check_redundant_explicit_link<'md>(
                                 cx,
                                 item,
                                 hir_id,
+                                doc_fragments,
                                 doc,
                                 resolutions,
                                 link_range,
@@ -147,6 +168,7 @@ fn check_inline_or_reference_unknown_redundancy(
     cx: &DocContext<'_>,
     item: &Item,
     hir_id: HirId,
+    doc_fragments: &[DocFragment],
     doc: &str,
     resolutions: &DocLinkResMap,
     link_range: Range<usize>,
@@ -161,19 +183,19 @@ fn check_inline_or_reference_unknown_redundancy(
 
     if dest_res == display_res {
         let link_span =
-            source_span_for_markdown_range(cx.tcx, &doc, &link_range, &item.attrs.doc_strings)
+            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)
                 .unwrap_or(item.attr_span(cx.tcx));
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
             &doc,
             &offset_explicit_range(doc, link_range, open, close),
-            &item.attrs.doc_strings,
+            doc_fragments,
         )?;
         let display_span = source_span_for_markdown_range(
             cx.tcx,
             &doc,
             &resolvable_link_range,
-            &item.attrs.doc_strings,
+            doc_fragments,
         )?;
 
         cx.tcx.node_span_lint(crate::lint::REDUNDANT_EXPLICIT_LINKS, hir_id, explicit_span, "redundant explicit link target", |lint| {
@@ -192,6 +214,7 @@ fn check_reference_redundancy(
     cx: &DocContext<'_>,
     item: &Item,
     hir_id: HirId,
+    doc_fragments: &[DocFragment],
     doc: &str,
     resolutions: &DocLinkResMap,
     link_range: Range<usize>,
@@ -205,19 +228,19 @@ fn check_reference_redundancy(
 
     if dest_res == display_res {
         let link_span =
-            source_span_for_markdown_range(cx.tcx, &doc, &link_range, &item.attrs.doc_strings)
+            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)
                 .unwrap_or(item.attr_span(cx.tcx));
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
             &doc,
             &offset_explicit_range(doc, link_range.clone(), b'[', b']'),
-            &item.attrs.doc_strings,
+            doc_fragments,
         )?;
         let display_span = source_span_for_markdown_range(
             cx.tcx,
             &doc,
             &resolvable_link_range,
-            &item.attrs.doc_strings,
+            doc_fragments,
         )?;
         let def_span = source_span_for_markdown_range(
             cx.tcx,

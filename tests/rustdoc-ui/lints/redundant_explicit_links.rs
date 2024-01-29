@@ -156,3 +156,16 @@ pub fn should_warn_reference() {}
 /// [`Vec<T>`]: Vec
 /// [`Vec<T>`]: std::vec::Vec
 pub fn should_not_warn_reference() {}
+
+mod module {
+    // no lint here, because private
+    /// [`Inside`](Inside)
+    /// [`Outside`](super::Outside)
+    pub struct Inside;
+}
+
+/// [`Inside`](module::Inside)
+/// [`Outside`](Outside)
+//~^ ERROR redundant explicit link target
+#[doc(inline)]
+pub use module::Inside as Outside;
