@@ -86,12 +86,12 @@ fn check_redundant_explicit_link<'md>(
     source_id: DefId,
     doc_fragments: &[DocFragment],
     doc: &'md str,
-) -> Option<()> {
-    let mut broken_line_callback = |link: BrokenLink<'md>| Some((link.reference, "".into()));
+) {
+    let mut broken_link_callback = |link: BrokenLink<'md>| Some((link.reference, "".into()));
     let mut offset_iter = Parser::new_with_broken_link_callback(
-        &doc,
+        doc,
         main_body_opts(),
-        Some(&mut broken_line_callback),
+        Some(&mut broken_link_callback),
     )
     .into_offset_iter();
     let module_id = match cx.tcx.def_kind(source_id) {
@@ -105,26 +105,26 @@ fn check_redundant_explicit_link<'md>(
             Event::Start(Tag::Link(link_type, dest, _)) => {
                 let link_data = collect_link_data(&mut offset_iter);
 
-                if let Some(resolvable_link) = link_data.resolvable_link.as_ref() {
-                    if &link_data.display_link.replace('`', "") != resolvable_link {
-                        // Skips if display link does not match to actual
-                        // resolvable link, usually happens if display link
-                        // has several segments, e.g.
-                        // [this is just an `Option`](Option)
-                        continue;
-                    }
+                let Some(resolvable_link) = link_data.resolvable_link.as_ref() else {
+                    return;
+                };
+
+                if &link_data.display_link.replace('`', "") != resolvable_link {
+                    // Skips if display link does not match to actual
+                    // resolvable link, usually happens if display link
+                    // has several segments, e.g.
+                    // [this is just an `Option`](Option)
+                    continue;
                 }
 
-                let explicit_link = dest.to_string();
-                let display_link = link_data.resolvable_link.clone()?;
+                let explicit_link = &*dest;
 
-                if explicit_link.ends_with(&display_link) || display_link.ends_with(&explicit_link)
+                if explicit_link.ends_with(resolvable_link) || resolvable_link.ends_with(explicit_link)
                 {
                     match link_type {
                         LinkType::Inline | LinkType::ReferenceUnknown => {
                             check_inline_or_reference_unknown_redundancy(
                                 cx,
-                                item,
                                 hir_id,
                                 doc_fragments,
                                 doc,
@@ -142,7 +142,6 @@ fn check_redundant_explicit_link<'md>(
                         LinkType::Reference => {
                             check_reference_redundancy(
                                 cx,
-                                item,
                                 hir_id,
                                 doc_fragments,
                                 doc,
@@ -159,14 +158,11 @@ fn check_redundant_explicit_link<'md>(
             _ => {}
         }
     }
-
-    None
 }
 
 /// FIXME(ChAoSUnItY): Too many arguments.
 fn check_inline_or_reference_unknown_redundancy(
     cx: &DocContext<'_>,
-    item: &Item,
     hir_id: HirId,
     doc_fragments: &[DocFragment],
     doc: &str,
@@ -183,18 +179,17 @@ fn check_inline_or_reference_unknown_redundancy(
 
     if dest_res == display_res {
         let link_span =
-            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)
-                .unwrap_or(item.attr_span(cx.tcx));
+            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)?;
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
-            &doc,
+            doc,
             &offset_explicit_range(doc, link_range, open, close),
             doc_fragments,
         )?;
         let display_span = source_span_for_markdown_range(
             cx.tcx,
-            &doc,
-            &resolvable_link_range,
+            doc,
+            resolvable_link_range,
             doc_fragments,
         )?;
 
@@ -212,7 +207,6 @@ fn check_inline_or_reference_unknown_redundancy(
 /// FIXME(ChAoSUnItY): Too many arguments.
 fn check_reference_redundancy(
     cx: &DocContext<'_>,
-    item: &Item,
     hir_id: HirId,
     doc_fragments: &[DocFragment],
     doc: &str,
@@ -224,29 +218,28 @@ fn check_reference_redundancy(
     let (resolvable_link, resolvable_link_range) =
         (&link_data.resolvable_link?, &link_data.resolvable_link_range?);
     let (dest_res, display_res) =
-        (find_resolution(resolutions, &dest)?, find_resolution(resolutions, resolvable_link)?);
+        (find_resolution(resolutions, dest)?, find_resolution(resolutions, resolvable_link)?);
 
     if dest_res == display_res {
         let link_span =
-            source_span_for_markdown_range(cx.tcx, &doc, &link_range, doc_fragments)
-                .unwrap_or(item.attr_span(cx.tcx));
+            source_span_for_markdown_range(cx.tcx, doc, &link_range, doc_fragments)?;
         let explicit_span = source_span_for_markdown_range(
             cx.tcx,
-            &doc,
+            doc,
             &offset_explicit_range(doc, link_range.clone(), b'[', b']'),
             doc_fragments,
         )?;
         let display_span = source_span_for_markdown_range(
             cx.tcx,
-            &doc,
-            &resolvable_link_range,
+            doc,
+            resolvable_link_range,
             doc_fragments,
         )?;
         let def_span = source_span_for_markdown_range(
             cx.tcx,
-            &doc,
+            doc,
             &offset_reference_def_range(doc, dest, link_range),
-            &item.attrs.doc_strings,
+            doc_fragments,
         )?;
 
         cx.tcx.node_span_lint(crate::lint::REDUNDANT_EXPLICIT_LINKS, hir_id, explicit_span, "redundant explicit link target", |lint| {
