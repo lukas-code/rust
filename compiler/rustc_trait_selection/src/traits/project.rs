@@ -2311,7 +2311,7 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
                 );
                 let sized_obligation = obligation.with(tcx, sized_predicate);
                 if self_ty == tail
-                    || selcx.infcx.predicate_must_hold_considering_regions(&sized_obligation)
+                    && selcx.infcx.predicate_must_hold_modulo_regions(&sized_obligation)
                 {
                     // If the `self_ty` is `Sized`, then the metadata is `()`.
                     // We check this before projecting to the metadata of `tail`,

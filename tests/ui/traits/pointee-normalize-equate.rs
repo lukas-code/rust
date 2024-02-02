@@ -14,15 +14,15 @@ where
 
 struct Wrapper<T: ?Sized>(T);
 
-// if `Wrapper<T>: ?Sized` then normalize `Wrapper<T>::Metadata` -> `T::Metadata`
+// normalize `Wrapper<T>::Metadata` -> `T::Metadata`
 fn wrapper_to_tail<T: ?Sized>(ptr: *const T) -> *const Wrapper<T> {
     cast_same_meta(ptr)
 }
 
-// if `Wrapper<T>: Sized` then normalize `Wrapper<T>::Metadata` -> `()`
+// normalize `Wrapper<T>::Metadata` -> `T::Metadata` -> `()`
 fn wrapper_to_unit<T: ?Sized>(ptr: *const ()) -> *const Wrapper<T>
 where
-    Wrapper<T>: Sized,
+    T: Sized,
 {
     cast_same_meta(ptr)
 }
