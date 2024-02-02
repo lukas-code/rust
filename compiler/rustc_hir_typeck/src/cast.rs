@@ -4,7 +4,7 @@
 //! * `e` has type `T` and `T` coerces to `U`; *coercion-cast*
 //! * `e` has type `*T`, `U` is `*U_0`, and either `U_0: Sized` or
 //!    pointer_kind(`T`) = pointer_kind(`U_0`); *ptr-ptr-cast*
-//! * `e` has type `*T` and `U` is a numeric type, while `T: Sized`; *ptr-addr-cast*
+//! * `e` has type `*T` and `U` is an integer type, while `T: Sized`; *ptr-addr-cast*
 //! * `e` is an integer and `U` is `*U_0`, while `U_0: Sized`; *addr-ptr-cast*
 //! * `e` has type `T` and `T` and `U` are any numeric types; *numeric-cast*
 //! * `e` is a C-like enum and `U` is an integer type; *enum-cast*
@@ -32,10 +32,10 @@ use super::FnCtxt;
 
 use crate::errors;
 use crate::type_error_struct;
-use hir::ExprKind;
+use hir::{ExprKind, LangItem};
 use rustc_errors::{Applicability, Diagnostic, DiagnosticBuilder, ErrorGuaranteed};
 use rustc_hir as hir;
-use rustc_macros::{TypeFoldable, TypeVisitable};
+use rustc_infer::traits::Obligation;
 use rustc_middle::mir::Mutability;
 use rustc_middle::ty::adjustment::AllowTwoPhase;
 use rustc_middle::ty::cast::{CastKind, CastTy};
@@ -45,7 +45,8 @@ use rustc_session::lint;
 use rustc_span::def_id::{DefId, LOCAL_CRATE};
 use rustc_span::symbol::sym;
 use rustc_span::Span;
-use rustc_trait_selection::infer::InferCtxtExt;
+use rustc_trait_selection::infer::InferCtxtExt as _;
+use rustc_trait_selection::traits::query::evaluate_obligation::InferCtxtExt as _;
 
 /// Reifies a cast check to be checked once we have full type information for
 /// a function context.
@@ -67,7 +68,7 @@ pub struct CastCheck<'tcx> {
 /// The kind of pointer and associated metadata (thin, length or vtable) - we
 /// only allow casts between fat pointers if their metadata have the same
 /// kind.
-#[derive(Debug, Copy, Clone, PartialEq, Eq, TypeVisitable, TypeFoldable)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum PointerKind<'tcx> {
     /// No metadata attached, ie pointer to sized type or foreign type
     Thin,
@@ -689,7 +690,12 @@ impl<'a, 'tcx> CastCheck<'tcx> {
                                 if !fcx.type_is_sized_modulo_regions(fcx.param_env, mt.ty) {
                                     return Err(CastError::IllegalCast);
                                 }
-                                self.check_ref_cast(fcx, TypeAndMut { mutbl, ty: inner_ty }, mt)
+                                self.check_array_ptr_cast(
+                                    fcx,
+                                    TypeAndMut { mutbl, ty: inner_ty },
+                                    mt,
+                                )?;
+                                Ok(CastKind::ArrayPtrCast)
                             }
                             _ => Err(CastError::NonScalar),
                         };
@@ -724,14 +730,18 @@ impl<'a, 'tcx> CastCheck<'tcx> {
                 Err(CastError::IllegalCast)
             }
 
-            // ptr -> *
-            (Ptr(m_e), Ptr(m_c)) => self.check_ptr_ptr_cast(fcx, m_e, m_c), // ptr-ptr-cast
-
+            // ptr-ptr-cast
+            (Ptr(m_e), Ptr(m_c)) => {
+                self.check_ptr_ptr_cast(fcx, m_e.ty, m_c.ty)?;
+                Ok(CastKind::PtrPtrCast)
+            }
             // ptr-addr-cast
             (Ptr(m_expr), Int(t_c)) => {
                 self.lossy_provenance_ptr2int_lint(fcx, t_c);
-                self.check_ptr_addr_cast(fcx, m_expr)
+                self.check_ptr_addr_cast(fcx, m_expr.ty)?;
+                Ok(CastKind::PtrAddrCast)
             }
+            // fptr-addr-cast
             (FnPtr, Int(_)) => {
                 // FIXME(#95489): there should eventually be a lint for these casts
                 Ok(CastKind::FnPtrAddrCast)
@@ -739,10 +749,14 @@ impl<'a, 'tcx> CastCheck<'tcx> {
             // addr-ptr-cast
             (Int(_), Ptr(mt)) => {
                 self.fuzzy_provenance_int2ptr_lint(fcx);
-                self.check_addr_ptr_cast(fcx, mt)
+                self.check_addr_ptr_cast(fcx, mt.ty)?;
+                Ok(CastKind::AddrPtrCast)
             }
-            // fn-ptr-cast
-            (FnPtr, Ptr(mt)) => self.check_fptr_ptr_cast(fcx, mt),
+            // fptr-ptr-cast
+            (FnPtr, Ptr(mt)) => {
+                self.check_fptr_ptr_cast(fcx, mt.ty)?;
+                Ok(CastKind::FnPtrPtrCast)
+            }
 
             // prim -> prim
             (Int(CEnum), Int(_)) => {
@@ -765,90 +779,89 @@ impl<'a, 'tcx> CastCheck<'tcx> {
         }
     }
 
+    /// ptr-ptr-cast. metadata must match.
     fn check_ptr_ptr_cast(
         &self,
         fcx: &FnCtxt<'a, 'tcx>,
-        m_expr: ty::TypeAndMut<'tcx>,
-        m_cast: ty::TypeAndMut<'tcx>,
-    ) -> Result<CastKind, CastError> {
-        debug!("check_ptr_ptr_cast m_expr={:?} m_cast={:?}", m_expr, m_cast);
-        // ptr-ptr cast. vtables must match.
+        expr: Ty<'tcx>,
+        cast: Ty<'tcx>,
+    ) -> Result<(), CastError> {
+        debug!(?expr, ?cast, "check_ptr_ptr_cast");
 
-        let expr_kind = fcx.pointer_kind(m_expr.ty, self.span)?;
-        let cast_kind = fcx.pointer_kind(m_cast.ty, self.span)?;
+        let meta_did = fcx.tcx.require_lang_item(LangItem::Metadata, Some(self.span));
+        let expr_meta = Ty::new_projection(fcx.tcx, meta_did, [expr]);
+        let cast_meta = Ty::new_projection(fcx.tcx, meta_did, [cast]);
+        let expr_meta = fcx.normalize(self.span, expr_meta);
+        let cast_meta = fcx.normalize(self.span, cast_meta);
 
-        let Some(cast_kind) = cast_kind else {
+        let pred = ty::TraitRef::from_lang_item(
+            fcx.tcx,
+            LangItem::MetadataCast,
+            self.span,
+            [expr_meta, cast_meta],
+        );
+
+        let obligation = Obligation::new(fcx.tcx, fcx.misc(self.span), fcx.param_env, pred);
+        if fcx.predicate_must_hold_modulo_regions(&obligation) {
+            return Ok(());
+        }
+
+        expr_meta.error_reported()?;
+        cast_meta.error_reported()?;
+
+        if cast_meta == fcx.tcx.types.unit {
+            span_bug!(self.span, "cast to thin pointer, but predicate didn't hold: {pred}");
+        } else if cast_meta.has_infer_types() {
             // We can't cast if target pointer kind is unknown
-            return Err(CastError::UnknownCastPtrKind);
-        };
-
-        // Cast to thin pointer is OK
-        if cast_kind == PointerKind::Thin {
-            return Ok(CastKind::PtrPtrCast);
-        }
-
-        let Some(expr_kind) = expr_kind else {
+            Err(CastError::UnknownCastPtrKind)
+        } else if expr_meta.has_infer_types() {
             // We can't cast to fat pointer if source pointer kind is unknown
-            return Err(CastError::UnknownExprPtrKind);
-        };
-
-        // thin -> fat? report invalid cast (don't complain about vtable kinds)
-        if expr_kind == PointerKind::Thin {
-            return Err(CastError::SizedUnsizedCast);
-        }
-
-        // vtable kinds must match
-        if fcx.tcx.erase_regions(cast_kind) == fcx.tcx.erase_regions(expr_kind) {
-            Ok(CastKind::PtrPtrCast)
+            Err(CastError::UnknownExprPtrKind)
+        } else if expr_meta == fcx.tcx.types.unit {
+            // thin -> fat? report invalid cast (don't complain about metadata kinds)
+            Err(CastError::SizedUnsizedCast)
         } else {
+            // metadata kinds must match
             Err(CastError::DifferingKinds)
         }
     }
 
-    fn check_fptr_ptr_cast(
-        &self,
-        fcx: &FnCtxt<'a, 'tcx>,
-        m_cast: ty::TypeAndMut<'tcx>,
-    ) -> Result<CastKind, CastError> {
-        // fptr-ptr cast. must be to thin ptr
-
-        match fcx.pointer_kind(m_cast.ty, self.span)? {
+    /// fptr-ptr-cast. target must be thin.
+    fn check_fptr_ptr_cast(&self, fcx: &FnCtxt<'a, 'tcx>, cast: Ty<'tcx>) -> Result<(), CastError> {
+        match fcx.pointer_kind(cast, self.span)? {
             None => Err(CastError::UnknownCastPtrKind),
-            Some(PointerKind::Thin) => Ok(CastKind::FnPtrPtrCast),
+            Some(PointerKind::Thin) => Ok(()),
             _ => Err(CastError::IllegalCast),
         }
     }
 
+    /// ptr-addr-cast. source must be thin.
     fn check_ptr_addr_cast(
         &self,
         fcx: &FnCtxt<'a, 'tcx>,
-        m_expr: ty::TypeAndMut<'tcx>,
+        expr: Ty<'tcx>,
     ) -> Result<CastKind, CastError> {
-        // ptr-addr cast. must be from thin ptr
-
-        match fcx.pointer_kind(m_expr.ty, self.span)? {
+        match fcx.pointer_kind(expr, self.span)? {
             None => Err(CastError::UnknownExprPtrKind),
             Some(PointerKind::Thin) => Ok(CastKind::PtrAddrCast),
             _ => Err(CastError::NeedViaThinPtr),
         }
     }
 
-    fn check_ref_cast(
+    /// array-ptr-cast.
+    ///
+    /// This is a special case to cast from `&[T; N]` directly to `*const T`.
+    /// It was added to work around LLVM limitations way before Rust 1.0 and only exists
+    /// for backwards compatibility now.
+    fn check_array_ptr_cast(
         &self,
         fcx: &FnCtxt<'a, 'tcx>,
         m_expr: ty::TypeAndMut<'tcx>,
         m_cast: ty::TypeAndMut<'tcx>,
-    ) -> Result<CastKind, CastError> {
-        // array-ptr-cast: allow mut-to-mut, mut-to-const, const-to-const
+    ) -> Result<(), CastError> {
+        // allow mut-to-mut, mut-to-const, const-to-const
         if m_expr.mutbl >= m_cast.mutbl {
             if let ty::Array(ety, _) = m_expr.ty.kind() {
-                // Due to the limitations of LLVM global constants,
-                // region pointers end up pointing at copies of
-                // vector elements instead of the original values.
-                // To allow raw pointers to work correctly, we
-                // need to special-case obtaining a raw pointer
-                // from a region pointer to a vector.
-
                 // Coerce to a raw pointer so that we generate AddressOf in MIR.
                 let array_ptr_type = Ty::new_ptr(fcx.tcx, m_expr);
                 fcx.coerce(self.expr, self.expr_ty, array_ptr_type, AllowTwoPhase::No, None)
@@ -862,22 +875,18 @@ impl<'a, 'tcx> CastCheck<'tcx> {
 
                 // this will report a type mismatch if needed
                 fcx.demand_eqtype(self.span, *ety, m_cast.ty);
-                return Ok(CastKind::ArrayPtrCast);
+                return Ok(());
             }
         }
 
         Err(CastError::IllegalCast)
     }
 
-    fn check_addr_ptr_cast(
-        &self,
-        fcx: &FnCtxt<'a, 'tcx>,
-        m_cast: TypeAndMut<'tcx>,
-    ) -> Result<CastKind, CastError> {
-        // ptr-addr cast. pointer must be thin.
-        match fcx.pointer_kind(m_cast.ty, self.span)? {
+    /// addr-ptr-cast. target must be thin.
+    fn check_addr_ptr_cast(&self, fcx: &FnCtxt<'a, 'tcx>, cast: Ty<'tcx>) -> Result<(), CastError> {
+        match fcx.pointer_kind(cast, self.span)? {
             None => Err(CastError::UnknownCastPtrKind),
-            Some(PointerKind::Thin) => Ok(CastKind::AddrPtrCast),
+            Some(PointerKind::Thin) => Ok(()),
             Some(PointerKind::VTable(_)) => Err(CastError::IntToFatCast(Some("a vtable"))),
             Some(PointerKind::Length) => Err(CastError::IntToFatCast(Some("a length"))),
             Some(PointerKind::OfAlias(_) | PointerKind::OfParam(_)) => {

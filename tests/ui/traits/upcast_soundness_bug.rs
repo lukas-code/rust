@@ -1,6 +1,4 @@
 #![feature(trait_upcasting)]
-// known-bug: #120222
-// check-pass
 //! This will segfault at runtime.
 
 pub trait SupSupA {
@@ -56,6 +54,7 @@ pub fn user2() -> &'static dyn Trait<u8, u16> {
 fn main() {
     let p: *const dyn Trait<u8, u8> = &();
     let p = p as *const dyn Trait<u8, u16>; // <- this is bad!
+    //~^ ERROR casting `*const dyn Trait<u8, u8>` as `*const dyn Trait<u8, u16>` is invalid
     let p = p as *const dyn Super<u16>; // <- this upcast accesses improper vtable entry
     // accessing from L__unnamed_2 the position for the 'Super<u16> vtable (pointer)',
     // thus reading 'null pointer for missing_method'

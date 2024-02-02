@@ -372,14 +372,7 @@ impl<'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> InterpCx<'mir, 'tcx, M> {
         };
         if let (Some(caller), Some(callee)) = (pointee_ty(caller.ty)?, pointee_ty(callee.ty)?) {
             // This is okay if they have the same metadata type.
-            let meta_ty = |ty: Ty<'tcx>| {
-                let (meta, only_if_sized) = ty.ptr_metadata_ty(*self.tcx, |ty| ty);
-                assert!(
-                    !only_if_sized,
-                    "there should be no more 'maybe has that metadata' types during interpretation"
-                );
-                meta
-            };
+            let meta_ty = |ty: Ty<'tcx>| ty.ptr_metadata_ty(*self.tcx, |ty| ty);
             return Ok(meta_ty(caller) == meta_ty(callee));
         }
 

@@ -1,5 +1,11 @@
+error[E0609]: no field `f` on type `fn() {main}`
+  --> $DIR/fat-ptr-cast.rs:78:18
+   |
+LL |     let _ = main.f as *const u32;
+   |                  ^ unknown field
+
 error[E0606]: casting `&[i32]` as `usize` is invalid
-  --> $DIR/fat-ptr-cast.rs:10:5
+  --> $DIR/fat-ptr-cast.rs:18:5
    |
 LL |     a as usize;
    |     ^^^^^^^^^^
@@ -7,7 +13,7 @@ LL |     a as usize;
    = help: cast through a raw pointer first
 
 error[E0606]: casting `&[i32]` as `isize` is invalid
-  --> $DIR/fat-ptr-cast.rs:11:5
+  --> $DIR/fat-ptr-cast.rs:19:5
    |
 LL |     a as isize;
    |     ^^^^^^^^^^
@@ -15,7 +21,7 @@ LL |     a as isize;
    = help: cast through a raw pointer first
 
 error[E0606]: casting `&[i32]` as `i16` is invalid
-  --> $DIR/fat-ptr-cast.rs:12:5
+  --> $DIR/fat-ptr-cast.rs:20:5
    |
 LL |     a as i16;
    |     ^^^^^^^^
@@ -23,7 +29,7 @@ LL |     a as i16;
    = help: cast through a raw pointer first
 
 error[E0606]: casting `&[i32]` as `u32` is invalid
-  --> $DIR/fat-ptr-cast.rs:13:5
+  --> $DIR/fat-ptr-cast.rs:21:5
    |
 LL |     a as u32;
    |     ^^^^^^^^
@@ -31,13 +37,13 @@ LL |     a as u32;
    = help: cast through a raw pointer first
 
 error[E0605]: non-primitive cast: `Box<[i32]>` as `usize`
-  --> $DIR/fat-ptr-cast.rs:14:5
+  --> $DIR/fat-ptr-cast.rs:22:5
    |
 LL |     b as usize;
    |     ^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
 
 error[E0606]: casting `*const [i32]` as `usize` is invalid
-  --> $DIR/fat-ptr-cast.rs:15:5
+  --> $DIR/fat-ptr-cast.rs:23:5
    |
 LL |     p as usize;
    |     ^^^^^^^^^^
@@ -45,21 +51,21 @@ LL |     p as usize;
    = help: cast through a thin pointer first
 
 error[E0607]: cannot cast thin pointer `*const i32` to fat pointer `*const [i32]`
-  --> $DIR/fat-ptr-cast.rs:19:5
+  --> $DIR/fat-ptr-cast.rs:26:5
    |
 LL |     q as *const [i32];
    |     ^^^^^^^^^^^^^^^^^
 
 error[E0606]: cannot cast `usize` to a pointer that is wide
-  --> $DIR/fat-ptr-cast.rs:22:46
+  --> $DIR/fat-ptr-cast.rs:29:44
    |
-LL |     let t: *mut (dyn Trait + 'static) = 0 as *mut _;
-   |                                         -    ^^^^^^ creating a `*mut (dyn Trait + 'static)` requires both an address and a vtable
-   |                                         |
-   |                                         consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
+LL |     let t: *mut (dyn Foo + 'static) = 0 as *mut _;
+   |                                       -    ^^^^^^ creating a `*mut (dyn Foo + 'static)` requires both an address and a vtable
+   |                                       |
+   |                                       consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
 
 error[E0606]: cannot cast `usize` to a pointer that is wide
-  --> $DIR/fat-ptr-cast.rs:24:37
+  --> $DIR/fat-ptr-cast.rs:31:37
    |
 LL |     let mut fail: *const str = 0 as *const str;
    |                                -    ^^^^^^^^^^ creating a `*const str` requires both an address and a length
@@ -67,22 +73,297 @@ LL |     let mut fail: *const str = 0 as *const str;
    |                                consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
 
 error[E0606]: cannot cast `isize` to a pointer that is wide
-  --> $DIR/fat-ptr-cast.rs:26:43
+  --> $DIR/fat-ptr-cast.rs:33:43
    |
 LL |     let mut fail2: *const str = 0isize as *const str;
    |                                 ------    ^^^^^^^^^^ creating a `*const str` requires both an address and a length
    |                                 |
    |                                 consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
 
+error[E0605]: non-primitive cast: `*const u8` as `&u8`
+  --> $DIR/fat-ptr-cast.rs:42:13
+   |
+LL |     let _ = v as &u8;
+   |             ^^^^^^^^ invalid cast
+   |
+help: consider borrowing the value
+   |
+LL -     let _ = v as &u8;
+LL +     let _ = &*v;
+   |
+
+error[E0605]: non-primitive cast: `*const u8` as `E`
+  --> $DIR/fat-ptr-cast.rs:43:13
+   |
+LL |     let _ = v as E;
+   |             ^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+
+error[E0605]: non-primitive cast: `*const u8` as `fn()`
+  --> $DIR/fat-ptr-cast.rs:44:13
+   |
+LL |     let _ = v as fn();
+   |             ^^^^^^^^^ invalid cast
+
+error[E0605]: non-primitive cast: `*const u8` as `(u32,)`
+  --> $DIR/fat-ptr-cast.rs:45:13
+   |
+LL |     let _ = v as (u32,);
+   |             ^^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+
+error[E0605]: non-primitive cast: `Option<&*const u8>` as `*const u8`
+  --> $DIR/fat-ptr-cast.rs:46:13
+   |
+LL |     let _ = Some(&v) as *const u8;
+   |             ^^^^^^^^^^^^^^^^^^^^^ an `as` expression can only be used to convert between primitive types or to coerce to a specific trait object
+
+error[E0606]: casting `*const u8` as `f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:48:13
+   |
+LL |     let _ = v as f32;
+   |             ^^^^^^^^
+
+error[E0606]: casting `fn() {main}` as `f64` is invalid
+  --> $DIR/fat-ptr-cast.rs:49:13
+   |
+LL |     let _ = main as f64;
+   |             ^^^^^^^^^^^
+
+error[E0606]: casting `&*const u8` as `usize` is invalid
+  --> $DIR/fat-ptr-cast.rs:50:13
+   |
+LL |     let _ = &v as usize;
+   |             ^^^^^^^^^^^
+   |
+   = help: cast through a raw pointer first
+
+error[E0606]: casting `f32` as `*const u8` is invalid
+  --> $DIR/fat-ptr-cast.rs:51:13
+   |
+LL |     let _ = f as *const u8;
+   |             ^^^^^^^^^^^^^^
+
+error[E0054]: cannot cast `i32` as `bool`
+  --> $DIR/fat-ptr-cast.rs:52:13
+   |
+LL |     let _ = 3_i32 as bool;
+   |             ^^^^^^^^^^^^^
+   |
+help: compare with zero instead
+   |
+LL |     let _ = 3_i32 != 0;
+   |                   ~~~~
+
+error[E0054]: cannot cast `E` as `bool`
+  --> $DIR/fat-ptr-cast.rs:53:13
+   |
+LL |     let _ = E::A as bool;
+   |             ^^^^^^^^^^^^ unsupported cast
+
+error[E0604]: only `u8` can be cast as `char`, not `u32`
+  --> $DIR/fat-ptr-cast.rs:54:13
+   |
+LL |     let _ = 0x61u32 as char;
+   |             ^^^^^^^^^^^^^^^
+   |             |
+   |             invalid cast
+   |             help: try `char::from_u32` instead: `char::from_u32(0x61u32)`
+
+error[E0606]: casting `bool` as `f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:56:13
+   |
+LL |     let _ = false as f32;
+   |             ^^^^^^^^^^^^
+   |
+   = help: cast through an integer first
+
+error[E0606]: casting `E` as `f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:57:13
+   |
+LL |     let _ = E::A as f32;
+   |             ^^^^^^^^^^^
+   |
+   = help: cast through an integer first
+
+error[E0606]: casting `char` as `f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:58:13
+   |
+LL |     let _ = 'a' as f32;
+   |             ^^^^^^^^^^
+   |
+   = help: cast through an integer first
+
+error[E0606]: casting `bool` as `*const u8` is invalid
+  --> $DIR/fat-ptr-cast.rs:60:13
+   |
+LL |     let _ = false as *const u8;
+   |             ^^^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `E` as `*const u8` is invalid
+  --> $DIR/fat-ptr-cast.rs:61:13
+   |
+LL |     let _ = E::A as *const u8;
+   |             ^^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `char` as `*const u8` is invalid
+  --> $DIR/fat-ptr-cast.rs:62:13
+   |
+LL |     let _ = 'a' as *const u8;
+   |             ^^^^^^^^^^^^^^^^
+
+error[E0606]: cannot cast `usize` to a pointer that is wide
+  --> $DIR/fat-ptr-cast.rs:64:24
+   |
+LL |     let _ = 42usize as *const [u8];
+   |             -------    ^^^^^^^^^^^ creating a `*const [u8]` requires both an address and a length
+   |             |
+   |             consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
+
+error[E0607]: cannot cast thin pointer `*const u8` to fat pointer `*const [u8]`
+  --> $DIR/fat-ptr-cast.rs:65:13
+   |
+LL |     let _ = v as *const [u8];
+   |             ^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `&dyn Foo` as `*const str` is invalid
+  --> $DIR/fat-ptr-cast.rs:67:13
+   |
+LL |     let _ = foo as *const str;
+   |             ^^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `&dyn Foo` as `*mut str` is invalid
+  --> $DIR/fat-ptr-cast.rs:68:13
+   |
+LL |     let _ = foo as *mut str;
+   |             ^^^^^^^^^^^^^^^
+
+error[E0606]: casting `fn() {main}` as `*mut str` is invalid
+  --> $DIR/fat-ptr-cast.rs:69:13
+   |
+LL |     let _ = main as *mut str;
+   |             ^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `&f32` as `*mut f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:70:13
+   |
+LL |     let _ = &f as *mut f32;
+   |             ^^^^^^^^^^^^^^
+
+error[E0606]: casting `&f32` as `*const f64` is invalid
+  --> $DIR/fat-ptr-cast.rs:71:13
+   |
+LL |     let _ = &f as *const f64;
+   |             ^^^^^^^^^^^^^^^^
+
+error[E0606]: casting `*const [i8]` as `usize` is invalid
+  --> $DIR/fat-ptr-cast.rs:72:13
+   |
+LL |     let _ = fat_sv as usize;
+   |             ^^^^^^^^^^^^^^^
+   |
+   = help: cast through a thin pointer first
+
+error[E0606]: casting `*const dyn Foo` as `*const [u16]` is invalid
+  --> $DIR/fat-ptr-cast.rs:81:13
+   |
+LL |     let _ = cf as *const [u16];
+   |             ^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*const dyn Foo` as `*const dyn Bar` is invalid
+  --> $DIR/fat-ptr-cast.rs:82:13
+   |
+LL |     let _ = cf as *const dyn Bar;
+   |             ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*const dyn Foo` as `*const dyn Foo + Send` is invalid
+  --> $DIR/fat-ptr-cast.rs:85:13
+   |
+LL |     let _ = cf as *const (dyn Foo + Send);
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*const dyn Foo` as `*const dyn Send` is invalid
+  --> $DIR/fat-ptr-cast.rs:88:13
+   |
+LL |     let _ = cf as *const dyn Send;
+   |             ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*mut dyn Send` as `*mut dyn Sync` is invalid
+  --> $DIR/fat-ptr-cast.rs:93:13
+   |
+LL |     let _ = unprincipled as *mut dyn Sync;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0277]: the size for values of type `[u8]` cannot be known at compilation time
+  --> $DIR/fat-ptr-cast.rs:66:13
+   |
+LL |     let _ = fat_v as *const dyn Foo;
+   |             ^^^^^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `[u8]`
+   = note: required for the cast from `*const [u8]` to `*const dyn Foo`
+
+error[E0277]: the size for values of type `str` cannot be known at compilation time
+  --> $DIR/fat-ptr-cast.rs:75:13
+   |
+LL |     let _ = a as *const dyn Foo;
+   |             ^ doesn't have a size known at compile-time
+   |
+   = help: the trait `Sized` is not implemented for `str`
+   = note: required for the cast from `*const str` to `*const dyn Foo`
+
+error[E0606]: casting `&{float}` as `f32` is invalid
+  --> $DIR/fat-ptr-cast.rs:95:30
+   |
+LL |     vec![0.0].iter().map(|s| s as f32).collect::<Vec<f32>>();
+   |                              ^^^^^^^^
+   |
+help: dereference the expression
+   |
+LL |     vec![0.0].iter().map(|s| *s as f32).collect::<Vec<f32>>();
+   |                              +
+
 error[E0606]: cannot cast `usize` to a pointer that may be wide
-  --> $DIR/fat-ptr-cast.rs:31:18
+  --> $DIR/fat-ptr-cast.rs:99:18
    |
 LL |     let s = 0 as *const T;
    |             -    ^^^^^^^^ creating a `*const T` requires both an address and type-specific metadata
    |             |
    |             consider casting this expression to `*const ()`, then using `core::ptr::from_raw_parts`
 
-error: aborting due to 11 previous errors
+error[E0606]: casting `*const U` as `*const V` is invalid
+  --> $DIR/fat-ptr-cast.rs:105:5
+   |
+LL |     u as *const V
+   |     ^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
 
-Some errors have detailed explanations: E0605, E0606, E0607.
-For more information about an error, try `rustc --explain E0605`.
+error[E0606]: casting `*const U` as `*const str` is invalid
+  --> $DIR/fat-ptr-cast.rs:110:5
+   |
+LL |     u as *const str
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error[E0606]: casting `*const (dyn TypeParam<T> + 'static)` as `*const dyn TypeParam<U>` is invalid
+  --> $DIR/fat-ptr-cast.rs:115:5
+   |
+LL |     ptr as _
+   |     ^^^^^^^^
+   |
+   = note: vtable kinds may not match
+
+error: aborting due to 49 previous errors
+
+Some errors have detailed explanations: E0054, E0277, E0604, E0605, E0606, E0607, E0609.
+For more information about an error, try `rustc --explain E0054`.

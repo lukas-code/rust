@@ -11,6 +11,7 @@ use hir::LangItem;
 use rustc_hir as hir;
 use rustc_infer::traits::ObligationCause;
 use rustc_infer::traits::{Obligation, PolyTraitObligation, SelectionError};
+use rustc_middle::traits::select::MetadataCastKind;
 use rustc_middle::ty::fast_reject::{DeepRejectCtxt, TreatParams};
 use rustc_middle::ty::{self, Ty, TypeVisitableExt};
 
@@ -100,6 +101,8 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 self.assemble_candidate_for_pointer_like(obligation, &mut candidates);
             } else if lang_items.fn_ptr_trait() == Some(def_id) {
                 self.assemble_candidates_for_fn_ptr_trait(obligation, &mut candidates);
+            } else if lang_items.metadata_cast_trait() == Some(def_id) {
+                self.assemble_candidates_for_metadata_cast(obligation, &mut candidates);
             } else {
                 if lang_items.clone_trait() == Some(def_id) {
                     // Same builtin conditions as `Copy`, i.e., every type which has builtin support
@@ -1157,5 +1160,74 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 candidates.ambiguous = true;
             }
         }
+    }
+
+    fn assemble_candidates_for_metadata_cast(
+        &mut self,
+        obligation: &PolyTraitObligation<'tcx>,
+        candidates: &mut SelectionCandidateSet<'tcx>,
+    ) {
+        let target = obligation.predicate.skip_binder().trait_ref.args.type_at(1);
+        let target = self.infcx.shallow_resolve(target);
+
+        if target.is_unit() {
+            candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Unconditional));
+            return;
+        }
+
+        let source = obligation.self_ty().skip_binder();
+        let source = self.infcx.shallow_resolve(source);
+
+        if source.has_non_region_infer() || target.has_non_region_infer() {
+            candidates.ambiguous = true;
+            return;
+        }
+
+        let tcx = self.tcx();
+        if let ty::Adt(src_def, src_args) = source.kind()
+            && let ty::Adt(tgt_def, tgt_args) = target.kind()
+            && src_def == tgt_def
+            && Some(src_def.did()) == tcx.lang_items().dyn_metadata()
+        {
+            let src_dyn = src_args.type_at(0);
+            let tgt_dyn = tgt_args.type_at(0);
+
+            if let ty::Dynamic(src_preds, _, ty::Dyn) = src_dyn.kind()
+                && let ty::Dynamic(tgt_preds, _, ty::Dyn) = tgt_dyn.kind()
+            {
+                let mut src_traits = src_preds.auto_traits().collect::<Vec<_>>();
+
+                if let Some(src_principal_did) = src_preds.principal_def_id() {
+                    src_traits.extend(tcx.super_traits_of(src_principal_did));
+                }
+
+                for tgt_auto_trait in tgt_preds.auto_traits() {
+                    if !src_traits.contains(&tgt_auto_trait) {
+                        // Adding auto traits that aren't on the source or implied by
+                        // the source principal is not allowed.
+                        return;
+                    }
+                }
+
+                if let Some(src_principal) = src_preds.principal() {
+                    if let Some(tgt_principal) = tgt_preds.principal() {
+                        candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Dyn(
+                            src_principal,
+                            tgt_principal,
+                        )));
+                    } else {
+                        // We could theoretically allow casting the principal away, but `as` casts
+                        // don't allow that, so neither does `MetadataCast` for now.
+                    }
+                } else if tgt_preds.principal().is_none() {
+                    // Casting between auto-trait-only trait objects is allowed if the target
+                    // traits are a subset of the source traits, which we checked above.
+                    candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Unconditional));
+                }
+                return;
+            }
+        }
+
+        candidates.vec.push(MetadataCastCandidate(MetadataCastKind::Subtype));
     }
 }

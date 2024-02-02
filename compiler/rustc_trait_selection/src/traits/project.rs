@@ -1919,7 +1919,7 @@ fn assemble_candidates_from_impls<'cx, 'tcx>(
                         // type parameters, opaques, and unnormalized projections have pointer
                         // metadata if they're known (e.g. by the param_env) to be sized
                         ty::Param(_) | ty::Alias(..)
-                            if selcx.infcx.predicate_must_hold_modulo_regions(
+                            if self_ty != tail || selcx.infcx.predicate_must_hold_modulo_regions(
                                 &obligation.with(
                                     selcx.tcx(),
                                     ty::TraitRef::from_lang_item(selcx.tcx(), LangItem::Sized, obligation.cause.span(),[self_ty]),
@@ -2278,7 +2278,8 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
     let args = tcx.mk_args(&[self_ty.into()]);
     let lang_items = tcx.lang_items();
     let item_def_id = obligation.predicate.def_id;
-    let trait_def_id = tcx.trait_of_item(item_def_id).unwrap();
+    let trait_def_id: rustc_span::def_id::DefId = tcx.trait_of_item(item_def_id).unwrap();
+    let mut potentially_unnormalized = false;
     let (term, obligations) = if lang_items.discriminant_kind_trait() == Some(trait_def_id) {
         let discriminant_def_id = tcx.require_lang_item(LangItem::Discriminant, None);
         assert_eq!(discriminant_def_id, item_def_id);
@@ -2289,7 +2290,7 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
         assert_eq!(metadata_def_id, item_def_id);
 
         let mut obligations = Vec::new();
-        let (metadata_ty, check_is_sized) = self_ty.ptr_metadata_ty(tcx, |ty| {
+        let normalize = |ty| {
             normalize_with_depth_to(
                 selcx,
                 obligation.param_env,
@@ -2298,17 +2299,34 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
                 ty,
                 &mut obligations,
             )
-        });
-        if check_is_sized {
-            let sized_predicate = ty::TraitRef::from_lang_item(
-                tcx,
-                LangItem::Sized,
-                obligation.cause.span(),
-                [self_ty],
-            );
-            obligations.push(obligation.with(tcx, sized_predicate));
-        }
-        (metadata_ty.into(), obligations)
+        };
+        let metadata = match self_ty.ptr_metadata_ty_or_tail(tcx, normalize) {
+            Ok(metadata) => metadata,
+            Err(tail) => {
+                let sized_predicate = ty::TraitRef::from_lang_item(
+                    tcx,
+                    LangItem::Sized,
+                    obligation.cause.span(),
+                    [self_ty],
+                );
+                let sized_obligation = obligation.with(tcx, sized_predicate);
+                if self_ty == tail
+                    && selcx.infcx.predicate_must_hold_modulo_regions(&sized_obligation)
+                {
+                    // If the `self_ty` is `Sized`, then the metadata is `()`.
+                    // We check this before projecting to the metadata of `tail`,
+                    // because we may know `self_ty: Sized`, but not `tail: Sized`.
+                    obligations.push(sized_obligation);
+                    tcx.types.unit
+                } else {
+                    // We know that `self_ty` has the same metadata as `tail`. This allows
+                    // us to prove predicates like `Wrapper<T>::Metadata == T::Metadata`.
+                    potentially_unnormalized = true;
+                    Ty::new_projection(tcx, metadata_def_id, [tail])
+                }
+            }
+        };
+        (metadata.into(), obligations)
     } else {
         bug!("unexpected builtin trait with associated type: {:?}", obligation.predicate);
     };
@@ -2316,9 +2334,14 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
     let predicate =
         ty::ProjectionPredicate { projection_ty: ty::AliasTy::new(tcx, item_def_id, args), term };
 
-    confirm_param_env_candidate(selcx, obligation, ty::Binder::dummy(predicate), false)
-        .with_addl_obligations(obligations)
-        .with_addl_obligations(data)
+    confirm_param_env_candidate(
+        selcx,
+        obligation,
+        ty::Binder::dummy(predicate),
+        potentially_unnormalized,
+    )
+    .with_addl_obligations(obligations)
+    .with_addl_obligations(data)
 }
 
 fn confirm_fn_pointer_candidate<'cx, 'tcx>(

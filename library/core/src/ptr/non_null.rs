@@ -468,7 +468,35 @@ impl<T: ?Sized> NonNull<T> {
     #[must_use = "this returns the result of the operation, \
                   without modifying the original"]
     #[inline]
+    #[cfg(bootstrap)]
     pub const fn cast<U>(self) -> NonNull<U> {
+        // SAFETY: `self` is a `NonNull` pointer which is necessarily non-null
+        unsafe { NonNull::new_unchecked(self.as_ptr() as *mut U) }
+    }
+
+    /// Casts to a pointer of another type.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use std::ptr::NonNull;
+    ///
+    /// let mut x = 0u32;
+    /// let ptr = NonNull::new(&mut x as *mut _).expect("null pointer");
+    ///
+    /// let casted_ptr = ptr.cast::<i8>();
+    /// let raw_ptr: *mut i8 = casted_ptr.as_ptr();
+    /// ```
+    #[stable(feature = "nonnull_cast", since = "1.27.0")]
+    #[rustc_const_stable(feature = "const_nonnull_cast", since = "1.36.0")]
+    #[must_use = "this returns the result of the operation, \
+                  without modifying the original"]
+    #[inline]
+    #[cfg(not(bootstrap))]
+    pub const fn cast<U: ?Sized>(self) -> NonNull<U>
+    where
+        T: super::PointerCast<U>,
+    {
         // SAFETY: `self` is a `NonNull` pointer which is necessarily non-null
         unsafe { NonNull::new_unchecked(self.as_ptr() as *mut U) }
     }

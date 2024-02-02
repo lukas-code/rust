@@ -1830,12 +1830,18 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
             (TransmutabilityCandidate, _) | (_, TransmutabilityCandidate) => DropVictim::No,
 
             // (*)
-            (BuiltinCandidate { has_nested: false } | ConstDestructCandidate(_), _) => {
-                DropVictim::Yes
-            }
-            (_, BuiltinCandidate { has_nested: false } | ConstDestructCandidate(_)) => {
-                DropVictim::No
-            }
+            (
+                BuiltinCandidate { has_nested: false }
+                | ConstDestructCandidate(_)
+                | MetadataCastCandidate(MetadataCastKind::Unconditional),
+                _,
+            ) => DropVictim::Yes,
+            (
+                _,
+                BuiltinCandidate { has_nested: false }
+                | ConstDestructCandidate(_)
+                | MetadataCastCandidate(MetadataCastKind::Unconditional),
+            ) => DropVictim::No,
 
             (ParamCandidate(other), ParamCandidate(victim)) => {
                 let same_except_bound_vars = other.skip_binder().trait_ref
@@ -1873,6 +1879,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { .. }
+                | MetadataCastCandidate(_)
                 | TraitAliasCandidate
                 | ObjectCandidate(_)
                 | ProjectionCandidate(_),
@@ -1903,6 +1910,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
                 ParamCandidate(ref victim_cand),
             ) => {
@@ -1939,6 +1947,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { .. }
+                | MetadataCastCandidate(_)
                 | TraitAliasCandidate,
             ) => DropVictim::Yes,
 
@@ -1955,6 +1964,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { .. }
+                | MetadataCastCandidate(_)
                 | TraitAliasCandidate,
                 ObjectCandidate(_) | ProjectionCandidate(_),
             ) => DropVictim::No,
@@ -2063,6 +2073,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
                 ImplCandidate(_)
                 | ClosureCandidate { .. }
@@ -2075,6 +2086,7 @@ impl<'tcx> SelectionContext<'_, 'tcx> {
                 | BuiltinUnsizeCandidate
                 | TraitUpcastingUnsizeCandidate(_)
                 | BuiltinCandidate { has_nested: true }
+                | MetadataCastCandidate(MetadataCastKind::Subtype | MetadataCastKind::Dyn(..))
                 | TraitAliasCandidate,
             ) => DropVictim::No,
         }

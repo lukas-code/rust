@@ -11,6 +11,7 @@ use rustc_data_structures::stack::ensure_sufficient_stack;
 use rustc_hir::lang_items::LangItem;
 use rustc_infer::infer::BoundRegionConversionTime::HigherRankedType;
 use rustc_infer::infer::{DefineOpaqueTypes, InferOk};
+use rustc_middle::traits::select::MetadataCastKind;
 use rustc_middle::traits::{BuiltinImplSource, SignatureMismatchData};
 use rustc_middle::ty::{
     self, GenericArgs, GenericArgsRef, GenericParamDefKind, ToPolyTraitRef, ToPredicate,
@@ -48,6 +49,11 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         let mut impl_src = match candidate {
             BuiltinCandidate { has_nested } => {
                 let data = self.confirm_builtin_candidate(obligation, has_nested);
+                ImplSource::Builtin(BuiltinImplSource::Misc, data)
+            }
+
+            MetadataCastCandidate(kind) => {
+                let data = self.confirm_metadata_cast_candidate(obligation, kind)?;
                 ImplSource::Builtin(BuiltinImplSource::Misc, data)
             }
 
@@ -270,6 +276,37 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         debug!(?obligations);
 
         obligations
+    }
+
+    fn confirm_metadata_cast_candidate(
+        &mut self,
+        obligation: &PolyTraitObligation<'tcx>,
+        kind: MetadataCastKind<'tcx>,
+    ) -> Result<Vec<PredicateObligation<'tcx>>, SelectionError<'tcx>> {
+        match kind {
+            MetadataCastKind::Unconditional => Ok(Vec::new()),
+            MetadataCastKind::Subtype => {
+                let source = obligation.self_ty().skip_binder();
+                let target = obligation.predicate.skip_binder().trait_ref.args.type_at(1);
+
+                let InferOk { obligations, .. } = self
+                    .infcx
+                    .at(&obligation.cause, obligation.param_env)
+                    .sub(DefineOpaqueTypes::No, source, target)
+                    .map_err(|_| Unimplemented)?;
+
+                Ok(obligations)
+            }
+            MetadataCastKind::Dyn(source, target) => {
+                let InferOk { obligations, .. } = self
+                    .infcx
+                    .at(&obligation.cause, obligation.param_env)
+                    .eq(DefineOpaqueTypes::No, source, target)
+                    .map_err(|_| Unimplemented)?;
+
+                Ok(obligations)
+            }
+        }
     }
 
     #[instrument(level = "debug", skip(self))]

@@ -77,6 +77,22 @@ pub trait Pointee {
 // NOTE: don’t stabilize this before trait aliases are stable in the language?
 pub trait Thin = Pointee<Metadata = ()>;
 
+/// A marker for valid metadata conversions during pointer-to-pointer casts.
+///
+/// A type `T` implements `MetadataCast<U>` if and only if pointers with metadata `T`
+/// can be cast to pointers with metadata `U`.
+#[unstable(feature = "ptr_metadata_cast", issue = "none")]
+#[cfg_attr(not(bootstrap), lang = "metadata_cast")]
+#[rustc_deny_explicit_impl(implement_via_object = false)]
+pub trait MetadataCast<T: ?Sized> {}
+
+/// A marker for valid pointer-to-pointer casts.
+///
+/// A type `T` implements `PointerCast<U>` if and only if a pointer to `T` can be
+/// cast into a pointer to `U`.
+#[unstable(feature = "ptr_metadata_cast", issue = "none")]
+pub trait PointerCast<T: ?Sized> = Pointee<Metadata: MetadataCast<<T as Pointee>::Metadata>>;
+
 /// Extract the metadata component of a pointer.
 ///
 /// Values of type `*mut T`, `&T`, or `&mut T` can be passed directly to this function
