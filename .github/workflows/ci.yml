@@ -53,20 +53,20 @@ jobs:
       matrix:
         include:
           - name: mingw-check
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
             env: {}
           - name: x86_64-msvc
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
               SCRIPT: make ci-msvc
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: x86_64-mingw
             env:
               SCRIPT: make ci-mingw
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-gnu --enable-profiler"
               NO_DOWNLOAD_CI_LLVM: 1
               CUSTOM_MINGW: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
     timeout-minutes: 600
     runs-on: "${{ matrix.os }}"
     steps:
@@ -276,22 +276,22 @@ jobs:
             os: ubuntu-20.04-8core-32gb
             env: {}
           - name: mingw-check
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
             env: {}
           - name: test-various
             os: ubuntu-20.04-8core-32gb
             env: {}
           - name: x86_64-gnu
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
             env: {}
           - name: x86_64-gnu-stable
             env:
               IMAGE: x86_64-gnu
               RUST_CI_OVERRIDE_RELEASE_CHANNEL: stable
               CI_ONLY_WHEN_CHANNEL: nightly
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
           - name: x86_64-gnu-aux
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
             env: {}
           - name: x86_64-gnu-integration
             env:
@@ -312,7 +312,7 @@ jobs:
               RUST_BACKTRACE: 1
             os: ubuntu-20.04-8core-32gb
           - name: x86_64-gnu-nopt
-            os: ubuntu-20.04-4core-16gb
+            os: ubuntu-20.04
             env: {}
           - name: x86_64-gnu-tools
             env:
@@ -397,51 +397,51 @@ jobs:
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
               SCRIPT: make ci-msvc
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: i686-msvc
             env:
               RUST_CONFIGURE_ARGS: "--build=i686-pc-windows-msvc"
               SCRIPT: make ci-msvc
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: x86_64-msvc-ext
             env:
               SCRIPT: python x.py --stage 2 test src/tools/cargotest src/tools/cargo && src/ci/docker/host-x86_64/x86_64-gnu-tools/checktools.sh x.py /tmp/toolstate/toolstates.json windows
               HOST_TARGET: x86_64-pc-windows-msvc
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-lld --save-toolstates=/tmp/toolstate/toolstates.json"
               DEPLOY_TOOLSTATES_JSON: toolstates-windows.json
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: i686-mingw
             env:
               RUST_CONFIGURE_ARGS: "--build=i686-pc-windows-gnu"
               SCRIPT: make ci-mingw
               NO_DOWNLOAD_CI_LLVM: 1
               CUSTOM_MINGW: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: x86_64-mingw
             env:
               SCRIPT: make ci-mingw
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-gnu --enable-profiler"
               NO_DOWNLOAD_CI_LLVM: 1
               CUSTOM_MINGW: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-x86_64-msvc
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --host=x86_64-pc-windows-msvc --target=x86_64-pc-windows-msvc --enable-full-tools --enable-profiler"
               SCRIPT: python x.py build --set rust.debug=true opt-dist && PGO_HOST=x86_64-pc-windows-msvc ./build/x86_64-pc-windows-msvc/stage0-tools-bin/opt-dist windows-ci -- python x.py dist bootstrap --include-default-paths
               DIST_REQUIRE_ALL_TOOLS: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-i686-msvc
             env:
               RUST_CONFIGURE_ARGS: "--build=i686-pc-windows-msvc --host=i686-pc-windows-msvc --target=i686-pc-windows-msvc,i586-pc-windows-msvc --enable-full-tools --enable-profiler"
               SCRIPT: python x.py dist bootstrap --include-default-paths
               DIST_REQUIRE_ALL_TOOLS: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-aarch64-msvc
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --host=aarch64-pc-windows-msvc --enable-full-tools --enable-profiler"
               SCRIPT: python x.py dist bootstrap --include-default-paths
               DIST_REQUIRE_ALL_TOOLS: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-i686-mingw
             env:
               RUST_CONFIGURE_ARGS: "--build=i686-pc-windows-gnu --enable-full-tools --enable-profiler"
@@ -449,7 +449,7 @@ jobs:
               SCRIPT: python x.py dist bootstrap --include-default-paths
               CUSTOM_MINGW: 1
               DIST_REQUIRE_ALL_TOOLS: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-x86_64-mingw
             env:
               SCRIPT: python x.py dist bootstrap --include-default-paths
@@ -457,12 +457,12 @@ jobs:
               NO_DOWNLOAD_CI_LLVM: 1
               CUSTOM_MINGW: 1
               DIST_REQUIRE_ALL_TOOLS: 1
-            os: windows-2019-8core-32gb
+            os: windows-2019
           - name: dist-x86_64-msvc-alt
             env:
               RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-extended --enable-profiler"
               SCRIPT: python x.py dist bootstrap --include-default-paths
-            os: windows-2019-8core-32gb
+            os: windows-2019
     timeout-minutes: 600
     runs-on: "${{ matrix.os }}"
     steps:

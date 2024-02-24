@@ -77,7 +77,7 @@ x--expand-yaml-anchors--remove:
     env: {}
 
   - &job-linux-4c
-    os: ubuntu-20.04-4core-16gb
+    os: ubuntu-20.04
     <<: *base-job
 
   - &job-linux-8c
@@ -97,7 +97,7 @@ x--expand-yaml-anchors--remove:
     <<: *base-job
 
   - &job-windows-8c
-    os: windows-2019-8core-32gb
+    os: windows-2019
     <<: *base-job
 
   - &job-windows-16c
