@@ -562,6 +562,7 @@ fn close_read_wakes_up() {
             assert_eq!(t!(s2.read(&mut [0])), 0);
             tx.send(()).unwrap();
         });
+        crate::thread::sleep(crate::time::Duration::from_secs(5));
         // this should wake up the child thread
         t!(s.shutdown(Shutdown::Read));
 
