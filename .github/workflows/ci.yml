@@ -55,18 +55,31 @@ jobs:
           - name: mingw-check
             os: ubuntu-20.04
             env: {}
-          - name: x86_64-msvc
+          - name: x86_64-apple-1
             env:
-              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-msvc --enable-profiler"
-              SCRIPT: make ci-msvc
-            os: windows-2019
-          - name: x86_64-mingw
+              SCRIPT: "./x.py --stage 2 test --skip tests/ui --skip tests/rustdoc --skip tests/run-make-fulldeps"
+              RUST_CONFIGURE_ARGS: "--build=x86_64-apple-darwin --enable-sanitizers --enable-profiler --set rust.jemalloc"
+              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              MACOSX_DEPLOYMENT_TARGET: 10.12
+              MACOSX_STD_DEPLOYMENT_TARGET: 10.12
+              SELECT_XCODE: /Applications/Xcode_14.3.1.app
+              NO_LLVM_ASSERTIONS: 1
+              NO_DEBUG_ASSERTIONS: 1
+              NO_OVERFLOW_CHECKS: 1
+            os: macos-13
+          - name: aarch64-apple
             env:
-              SCRIPT: make ci-mingw
-              RUST_CONFIGURE_ARGS: "--build=x86_64-pc-windows-gnu --enable-profiler"
-              NO_DOWNLOAD_CI_LLVM: 1
-              CUSTOM_MINGW: 1
-            os: windows-2019
+              SCRIPT: "./x.py --stage 2 test --host=aarch64-apple-darwin --target=aarch64-apple-darwin"
+              RUST_CONFIGURE_ARGS: "--enable-sanitizers --enable-profiler --set rust.jemalloc"
+              RUSTC_RETRY_LINKER_ON_SEGFAULT: 1
+              SELECT_XCODE: /Applications/Xcode_14.3.1.app
+              USE_XCODE_CLANG: 1
+              MACOSX_DEPLOYMENT_TARGET: 11.0
+              MACOSX_STD_DEPLOYMENT_TARGET: 11.0
+              NO_LLVM_ASSERTIONS: 1
+              NO_DEBUG_ASSERTIONS: 1
+              NO_OVERFLOW_CHECKS: 1
+            os: macos-14
     timeout-minutes: 600
     runs-on: "${{ matrix.os }}"
     steps:
