@@ -1460,14 +1460,14 @@ fn confirm_async_iterator_candidate<'cx, 'tcx>(
 fn confirm_builtin_candidate<'cx, 'tcx>(
     selcx: &mut SelectionContext<'cx, 'tcx>,
     obligation: &ProjectionTyObligation<'tcx>,
-    data: Vec<PredicateObligation<'tcx>>,
+    mut nested: Vec<PredicateObligation<'tcx>>,
 ) -> Progress<'tcx> {
     let tcx = selcx.tcx();
     let self_ty = obligation.predicate.self_ty();
-    let args = tcx.mk_args(&[self_ty.into()]);
     let lang_items = tcx.lang_items();
     let item_def_id = obligation.predicate.def_id;
-    let trait_def_id = tcx.trait_of_item(item_def_id).unwrap();
+    let trait_def_id = obligation.predicate.trait_def_id(tcx);
+
     let term = if lang_items.discriminant_kind_trait() == Some(trait_def_id) {
         let discriminant_def_id = tcx.require_lang_item(LangItem::Discriminant, None);
         assert_eq!(discriminant_def_id, item_def_id);
@@ -1541,11 +1541,8 @@ fn confirm_builtin_candidate<'cx, 'tcx>(
         bug!("unexpected builtin trait with associated type: {:?}", obligation.predicate);
     };
 
-    let predicate =
-        ty::ProjectionPredicate { projection_ty: ty::AliasTy::new(tcx, item_def_id, args), term };
-
-    confirm_param_env_candidate(selcx, obligation, ty::Binder::dummy(predicate), false)
-        .with_addl_obligations(data)
+    assoc_ty_own_obligations(selcx, obligation, &mut nested);
+    Progress { term, obligations: nested }
 }
 
 fn confirm_fn_pointer_candidate<'cx, 'tcx>(
