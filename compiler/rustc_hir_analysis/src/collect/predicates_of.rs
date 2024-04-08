@@ -3,7 +3,7 @@ use crate::collect::ItemCtxt;
 use crate::constrained_generic_params as cgp;
 use crate::hir_ty_lowering::{HirTyLowerer, OnlySelfBounds, PredicateFilter};
 use hir::{HirId, Node};
-use rustc_data_structures::fx::FxIndexSet;
+use rustc_data_structures::fx::{FxHashSet, FxIndexSet};
 use rustc_hir as hir;
 use rustc_hir::def::DefKind;
 use rustc_hir::def_id::{DefId, LocalDefId};
@@ -16,6 +16,7 @@ use rustc_span::{Span, DUMMY_SP};
 /// Returns a list of all type predicates (explicit and implicit) for the definition with
 /// ID `def_id`. This includes all predicates returned by `predicates_defined_on`, plus
 /// `Self: Trait` predicates for traits.
+#[instrument(level = "debug", skip(tcx), ret)]
 pub(super) fn predicates_of(tcx: TyCtxt<'_>, def_id: DefId) -> ty::GenericPredicates<'_> {
     let mut result = tcx.predicates_defined_on(def_id);
 
@@ -45,8 +46,35 @@ pub(super) fn predicates_of(tcx: TyCtxt<'_>, def_id: DefId) -> ty::GenericPredic
                 span,
             ))));
     }
-    debug!("predicates_of(def_id={:?}) = {:?}", def_id, result);
     result
+}
+
+pub(super) fn non_self_assumptions_of(tcx: TyCtxt<'_>, def_id: DefId) -> ty::GenericPredicates<'_> {
+    let all_predicates = tcx.predicates_defined_on(def_id);
+    if all_predicates.parent.is_some() {
+        span_bug!(
+            tcx.def_span(def_id),
+            "`non_self_assumptions_of` called on item with parent predicates",
+        );
+    }
+
+    let super_predicates = tcx
+        .super_predicates_of(def_id)
+        .predicates
+        .iter()
+        .map(|&(clause, _span)| clause)
+        .collect::<FxHashSet<_>>();
+
+    let non_super_predicates = all_predicates
+        .predicates
+        .iter()
+        .copied()
+        .filter(|(clause, _span)| !super_predicates.contains(clause));
+
+    ty::GenericPredicates {
+        parent: all_predicates.parent,
+        predicates: tcx.arena.alloc_from_iter(non_super_predicates),
+    }
 }
 
 /// Returns a list of user-specified type predicates for the definition with ID `def_id`.

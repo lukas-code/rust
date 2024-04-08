@@ -126,7 +126,7 @@ pub fn trait_obligations<'tcx>(
         recursion_depth: 0,
         item: Some(item),
     };
-    wf.compute_trait_pred(trait_pred, Elaborate::All);
+    wf.compute_trait_pred(trait_pred, Elaborate::Yes);
     debug!(obligations = ?wf.out);
     wf.normalize(infcx)
 }
@@ -157,7 +157,7 @@ pub fn clause_obligations<'tcx>(
     // It's ok to skip the binder here because wf code is prepared for it
     match clause.kind().skip_binder() {
         ty::ClauseKind::Trait(t) => {
-            wf.compute_trait_pred(t, Elaborate::None);
+            wf.compute_trait_pred(t, Elaborate::No);
         }
         ty::ClauseKind::RegionOutlives(..) => {}
         ty::ClauseKind::TypeOutlives(ty::OutlivesPredicate(ty, _reg)) => {
@@ -221,8 +221,14 @@ struct WfPredicates<'a, 'tcx> {
 /// impl for `T`).
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 enum Elaborate {
-    All,
-    None,
+    Yes,
+    No,
+}
+
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
+enum IncludeSelf {
+    Yes,
+    No,
 }
 
 /// Points the cause span of a super predicate at the relevant associated type.
@@ -369,7 +375,11 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
         }
 
         // if the trait predicate is not const, the wf obligations should not be const as well.
-        let obligations = self.nominal_obligations(trait_ref.def_id, trait_ref.args);
+        let include_self = match elaborate {
+            Elaborate::Yes => IncludeSelf::Yes,
+            Elaborate::No => IncludeSelf::No,
+        };
+        let obligations = self.nominal_obligations(trait_ref.def_id, trait_ref.args, include_self);
 
         debug!("compute_trait_pred obligations {:?}", obligations);
         let param_env = self.param_env;
@@ -377,18 +387,18 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
 
         let item = self.item;
 
-        let extend = |traits::PredicateObligation { predicate, mut cause, .. }| {
-            if let Some(parent_trait_pred) = predicate.to_opt_poly_trait_pred() {
-                cause = cause.derived_cause(
-                    parent_trait_pred,
-                    traits::ObligationCauseCode::DerivedObligation,
-                );
-            }
-            extend_cause_with_original_assoc_item_obligation(tcx, item, &mut cause, predicate);
-            traits::Obligation::with_depth(tcx, cause, depth, param_env, predicate)
-        };
+        if elaborate == Elaborate::Yes {
+            let extend = |traits::PredicateObligation { predicate, mut cause, .. }| {
+                if let Some(parent_trait_pred) = predicate.to_opt_poly_trait_pred() {
+                    cause = cause.derived_cause(
+                        parent_trait_pred,
+                        traits::ObligationCauseCode::DerivedObligation,
+                    );
+                }
+                extend_cause_with_original_assoc_item_obligation(tcx, item, &mut cause, predicate);
+                traits::Obligation::with_depth(tcx, cause, depth, param_env, predicate)
+            };
 
-        if let Elaborate::All = elaborate {
             let implied_obligations = traits::util::elaborate(tcx, obligations);
             let implied_obligations = implied_obligations.map(extend);
             self.out.extend(implied_obligations);
@@ -460,7 +470,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
         //     `i32: Clone`
         //     `i32: Copy`
         // ]
-        let obligations = self.nominal_obligations(data.def_id, data.args);
+        let obligations = self.nominal_obligations(data.def_id, data.args, IncludeSelf::Yes);
         self.out.extend(obligations);
 
         self.compute_projection_args(data.args);
@@ -489,7 +499,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                 self.recursion_depth,
                 &mut self.out,
             );
-            let obligations = self.nominal_obligations(data.def_id, args);
+            let obligations = self.nominal_obligations(data.def_id, args, IncludeSelf::Yes);
             self.out.extend(obligations);
         }
 
@@ -549,12 +559,22 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
         &mut self,
         def_id: DefId,
         args: GenericArgsRef<'tcx>,
+        include_self: IncludeSelf,
     ) -> Vec<traits::PredicateObligation<'tcx>> {
-        let predicates = self.tcx().predicates_of(def_id);
+        let tcx = self.tcx();
+        let predicates_of = |def_id| {
+            if include_self == IncludeSelf::Yes {
+                tcx.predicates_of(def_id)
+            } else {
+                tcx.non_self_assumptions_of(def_id)
+            }
+        };
+
+        let predicates = predicates_of(def_id);
         let mut origins = vec![def_id; predicates.predicates.len()];
         let mut head = predicates;
         while let Some(parent) = head.parent {
-            head = self.tcx().predicates_of(parent);
+            head = predicates_of(parent);
             origins.extend(iter::repeat(parent).take(head.predicates.len()));
         }
 
@@ -571,7 +591,7 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                 };
                 let cause = self.cause(code);
                 traits::Obligation::with_depth(
-                    self.tcx(),
+                    tcx,
                     cause,
                     self.recursion_depth,
                     self.param_env,
@@ -708,7 +728,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
 
             ty::Adt(def, args) => {
                 // WfNominalType
-                let obligations = self.nominal_obligations(def.did(), args);
+                let obligations = self.nominal_obligations(def.did(), args, IncludeSelf::Yes);
                 self.out.extend(obligations);
             }
 
@@ -721,7 +741,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
                 let fn_sig = tcx.fn_sig(did).instantiate(tcx, args);
                 fn_sig.output().skip_binder().visit_with(self);
 
-                let obligations = self.nominal_obligations(did, args);
+                let obligations = self.nominal_obligations(did, args, IncludeSelf::Yes);
                 self.out.extend(obligations);
             }
 
@@ -749,7 +769,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
                 // about the signature of the closure. We don't
                 // have the problem of implied bounds here since
                 // coroutines don't take arguments.
-                let obligations = self.nominal_obligations(did, args);
+                let obligations = self.nominal_obligations(did, args, IncludeSelf::Yes);
                 self.out.extend(obligations);
             }
 
@@ -769,7 +789,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
                 // can cause compiler crashes when the user abuses unsafe
                 // code to procure such a closure.
                 // See tests/ui/type-alias-impl-trait/wf_check_closures.rs
-                let obligations = self.nominal_obligations(did, args);
+                let obligations = self.nominal_obligations(did, args, IncludeSelf::Yes);
                 self.out.extend(obligations);
                 // Only check the upvar types for WF, not the rest
                 // of the types within. This is needed because we
@@ -797,7 +817,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
 
             ty::CoroutineClosure(did, args) => {
                 // See the above comments. The same apply to coroutine-closures.
-                let obligations = self.nominal_obligations(did, args);
+                let obligations = self.nominal_obligations(did, args, IncludeSelf::Yes);
                 self.out.extend(obligations);
                 let upvars = args.as_coroutine_closure().tupled_upvars_ty();
                 return upvars.visit_with(self);
@@ -869,7 +889,7 @@ impl<'a, 'tcx> TypeVisitor<TyCtxt<'tcx>> for WfPredicates<'a, 'tcx> {
         match c.kind() {
             ty::ConstKind::Unevaluated(uv) => {
                 if !c.has_escaping_bound_vars() {
-                    let obligations = self.nominal_obligations(uv.def, uv.args);
+                    let obligations = self.nominal_obligations(uv.def, uv.args, IncludeSelf::Yes);
                     self.out.extend(obligations);
 
                     let predicate = ty::Binder::dummy(ty::PredicateKind::Clause(

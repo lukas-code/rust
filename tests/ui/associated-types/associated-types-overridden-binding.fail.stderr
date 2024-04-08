@@ -1,0 +1,35 @@
+error[E0284]: type annotations needed
+  --> $DIR/associated-types-overridden-binding.rs:13:29
+   |
+LL | fn normalize_bar<T: Bar>(_: T::Item) {}
+   |                             ^^^^^^^ cannot infer type
+   |
+   = note: cannot satisfy `<T as Iterator>::Item == _`
+
+error[E0284]: type annotations needed
+  --> $DIR/associated-types-overridden-binding.rs:18:45
+   |
+LL | fn normalize_u32iterator<T: U32Iterator>(_: T::Item) {}
+   |                                             ^^^^^^^ cannot infer type
+   |
+   = note: cannot satisfy `<T as Iterator>::Item == _`
+
+error[E0284]: type annotations needed
+  --> $DIR/associated-types-overridden-binding.rs:13:38
+   |
+LL | fn normalize_bar<T: Bar>(_: T::Item) {}
+   |                                      ^^ cannot infer type
+   |
+   = note: cannot satisfy `<T as Iterator>::Item == _`
+
+error[E0284]: type annotations needed
+  --> $DIR/associated-types-overridden-binding.rs:18:54
+   |
+LL | fn normalize_u32iterator<T: U32Iterator>(_: T::Item) {}
+   |                                                      ^^ cannot infer type
+   |
+   = note: cannot satisfy `<T as Iterator>::Item == _`
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0284`.

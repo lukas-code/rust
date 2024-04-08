@@ -334,6 +334,10 @@ rustc_queries! {
         cache_on_disk_if { key.is_local() }
     }
 
+    query non_self_assumptions_of(key: DefId) -> ty::GenericPredicates<'tcx> {
+        desc { |tcx| "computing non-super predicates of `{}`", tcx.def_path_str(key) }
+    }
+
     query opaque_types_defined_by(
         key: LocalDefId
     ) -> &'tcx ty::List<LocalDefId> {
