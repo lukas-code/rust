@@ -562,14 +562,13 @@ impl<'tcx> assembly::GoalKind<'tcx> for NormalizesTo<'tcx> {
                         .instantiate(tcx, &[ty::GenericArg::from(goal.predicate.self_ty())])
                 }
 
-                ty::Adt(def, args) if def.is_struct() => match def.non_enum_variant().tail_opt() {
+                ty::Adt(def, args) => match def.sized_constraint(tcx) {
                     None => tcx.types.unit,
-                    Some(tail_def) => {
-                        let tail_ty = tail_def.ty(tcx, args);
-                        Ty::new_projection(tcx, metadata_def_id, [tail_ty])
+                    Some(constraint) => {
+                        let constraint = constraint.instantiate(tcx, args);
+                        Ty::new_projection(tcx, metadata_def_id, [constraint])
                     }
                 },
-                ty::Adt(_, _) => tcx.types.unit,
 
                 ty::Tuple(elements) => match elements.last() {
                     None => tcx.types.unit,
