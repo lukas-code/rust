@@ -2036,7 +2036,10 @@ pub(super) fn check_type_bounds<'tcx>(
     // predicate too, but we don't do that because of performance issues.
     // See <https://github.com/rust-lang/rust/pull/117542#issue-1976337685>.
     let normalize_param_env = param_env_with_gat_bounds(tcx, impl_ty, impl_trait_ref);
-    for mut obligation in util::elaborate(tcx, obligations) {
+    // We skip the supertraits of `Sized` here due to performance issues.
+    // This is sound, because `Sized` cannot be manually implemented and
+    // all compiler-generated impls are guaranteed to be well-formed.
+    for mut obligation in util::elaborate(tcx, obligations).without_sized_super() {
         let normalized_predicate =
             ocx.normalize(&normalize_cause, normalize_param_env, obligation.predicate);
         debug!("compare_projection_bounds: normalized predicate = {:?}", normalized_predicate);

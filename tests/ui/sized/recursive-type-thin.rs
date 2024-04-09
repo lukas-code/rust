@@ -1,6 +1,10 @@
 //@ check-fail
 
-trait A { type Assoc; }
+#![feature(ptr_metadata)]
+
+trait A {
+    type Assoc: std::ptr::Thin;
+}
 
 impl A for () {
     type Assoc = Foo<()>;

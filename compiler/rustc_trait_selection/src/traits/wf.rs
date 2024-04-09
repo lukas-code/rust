@@ -399,7 +399,11 @@ impl<'a, 'tcx> WfPredicates<'a, 'tcx> {
                 traits::Obligation::with_depth(tcx, cause, depth, param_env, predicate)
             };
 
-            let implied_obligations = traits::util::elaborate(tcx, obligations);
+            // We skip the supertraits of `Sized` here due to performance issues.
+            // This is sound, because `Sized` cannot be manually implemented and
+            // all compiler-generated impls are guaranteed to be well-formed.
+            let implied_obligations =
+                traits::util::elaborate(tcx, obligations).without_sized_super();
             let implied_obligations = implied_obligations.map(extend);
             self.out.extend(implied_obligations);
         } else {

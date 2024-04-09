@@ -77,6 +77,7 @@ pub struct Elaborator<'tcx, O> {
     stack: Vec<O>,
     visited: PredicateSet<'tcx>,
     mode: Filter,
+    without_sized_super: bool,
 }
 
 enum Filter {
@@ -229,8 +230,12 @@ pub fn elaborate<'tcx, O: Elaboratable<'tcx>>(
     tcx: TyCtxt<'tcx>,
     obligations: impl IntoIterator<Item = O>,
 ) -> Elaborator<'tcx, O> {
-    let mut elaborator =
-        Elaborator { stack: Vec::new(), visited: PredicateSet::new(tcx), mode: Filter::All };
+    let mut elaborator = Elaborator {
+        stack: Vec::new(),
+        visited: PredicateSet::new(tcx),
+        mode: Filter::All,
+        without_sized_super: false,
+    };
     elaborator.extend_deduped(obligations);
     elaborator
 }
@@ -258,6 +263,12 @@ impl<'tcx, O: Elaboratable<'tcx>> Elaborator<'tcx, O> {
         self
     }
 
+    /// Don't include the supertraits of [`Sized`].
+    pub fn without_sized_super(mut self) -> Self {
+        self.without_sized_super = true;
+        self
+    }
+
     fn elaborate(&mut self, elaboratable: &O) {
         let tcx = self.visited.tcx;
 
@@ -273,6 +284,13 @@ impl<'tcx, O: Elaboratable<'tcx>> Elaborator<'tcx, O> {
                 if data.polarity != ty::PredicatePolarity::Positive {
                     return;
                 }
+
+                // Skip elaborating `Sized` if requested.
+                if self.without_sized_super && Some(data.def_id()) == tcx.lang_items().sized_trait()
+                {
+                    return;
+                }
+
                 // Get predicates implied by the trait, or only super predicates if we only care about self predicates.
                 let predicates = match self.mode {
                     Filter::All => tcx.implied_predicates_of(data.def_id()),
