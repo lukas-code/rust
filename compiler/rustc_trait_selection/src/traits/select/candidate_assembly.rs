@@ -218,26 +218,21 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
         stack: &TraitObligationStack<'o, 'tcx>,
         candidates: &mut SelectionCandidateSet<'tcx>,
     ) -> Result<(), SelectionError<'tcx>> {
-        debug!(?stack.obligation);
+        let obligation = stack.obligation;
+        debug!(?obligation);
 
         // An error type will unify with anything. So, avoid
         // matching an error type with `ParamCandidate`.
         // This helps us avoid spurious errors like issue #121941.
-        if stack.obligation.predicate.references_error() {
+        if obligation.predicate.references_error() {
             return Ok(());
         }
 
-        let all_bounds = stack
-            .obligation
+        let matching_bounds = obligation
             .param_env
             .caller_bounds()
-            .iter()
-            .filter(|p| !p.references_error())
-            .filter_map(|p| p.as_trait_clause());
-
-        // Micro-optimization: filter out predicates relating to different traits.
-        let matching_bounds =
-            all_bounds.filter(|p| p.def_id() == stack.obligation.predicate.def_id());
+            .filter(self.tcx())
+            .by_trait(obligation.predicate.def_id());
 
         // Keep only those bounds which may apply, and propagate overflow if it occurs.
         for bound in matching_bounds {

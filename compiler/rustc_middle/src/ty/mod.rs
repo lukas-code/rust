@@ -38,6 +38,7 @@ pub use rustc_ast_ir::{try_visit, Movability, Mutability};
 use rustc_attr as attr;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet, FxIndexMap, FxIndexSet};
 use rustc_data_structures::intern::Interned;
+use rustc_data_structures::sharded::ShardedHashMap;
 use rustc_data_structures::stable_hasher::{HashStable, StableHasher};
 use rustc_data_structures::steal::Steal;
 use rustc_data_structures::tagged_ptr::CopyTaggedPtr;
@@ -68,6 +69,8 @@ use std::mem;
 use std::num::NonZero;
 use std::ptr::NonNull;
 use std::{fmt, str};
+
+use either::Either;
 
 pub use crate::ty::diagnostics::*;
 pub use rustc_type_ir::ConstKind::{
@@ -1038,6 +1041,99 @@ impl PlaceholderLike for PlaceholderConst {
 }
 
 pub type Clauses<'tcx> = &'tcx ListWithCachedTypeInfo<Clause<'tcx>>;
+
+impl<'tcx> ListWithCachedTypeInfo<Clause<'tcx>> {
+    pub fn filter(&'tcx self, tcx: TyCtxt<'tcx>) -> FilterClauses<'tcx> {
+        const CACHE_THRESHOLD: usize = 8;
+
+        // For short lists it's faster to just iterate over all clauses every time.
+        if self.len() < CACHE_THRESHOLD {
+            return FilterClauses { kind: FilterClausesKind::Trivial(self) };
+        }
+
+        let filter = tcx.filter_clauses_cache.map.get_or_insert_with(self, || {
+            let filter = tcx.arena.alloc(CachedFilterClauses::default());
+
+            for clause in self {
+                if let Some(trait_clause) = clause.as_trait_clause() {
+                    if !clause.references_error() {
+                        filter
+                            .by_trait
+                            .entry(trait_clause.def_id())
+                            .or_insert_with(Vec::new)
+                            .push(trait_clause);
+                    }
+                } else if let Some(projection_clause) = clause.as_projection_clause() {
+                    filter
+                        .by_projection
+                        .entry(projection_clause.projection_def_id())
+                        .or_insert_with(Vec::new)
+                        .push(projection_clause);
+                }
+            }
+
+            filter
+        });
+
+        FilterClauses { kind: FilterClausesKind::Cached(filter) }
+    }
+}
+
+#[derive(Copy, Clone)]
+pub struct FilterClauses<'tcx> {
+    kind: FilterClausesKind<'tcx>,
+}
+
+#[derive(Copy, Clone)]
+enum FilterClausesKind<'tcx> {
+    Trivial(Clauses<'tcx>),
+    Cached(&'tcx CachedFilterClauses<'tcx>),
+}
+
+#[derive(Default)]
+pub(crate) struct CachedFilterClauses<'tcx> {
+    by_trait: UnordMap<DefId, Vec<PolyTraitPredicate<'tcx>>>,
+    by_projection: UnordMap<DefId, Vec<PolyProjectionPredicate<'tcx>>>,
+}
+
+impl<'tcx> FilterClauses<'tcx> {
+    pub fn by_trait(self, def_id: DefId) -> impl Iterator<Item = PolyTraitPredicate<'tcx>> {
+        match self.kind {
+            FilterClausesKind::Trivial(clauses) => Either::Left(
+                clauses
+                    .iter()
+                    .filter(|clause| !clause.references_error())
+                    .filter_map(|clause| clause.as_trait_clause())
+                    .filter(move |pred| pred.def_id() == def_id),
+            ),
+            FilterClausesKind::Cached(filter) => Either::Right(
+                filter.by_trait.get(&def_id).unwrap_or(const { &Vec::new() }).iter().copied(),
+            ),
+        }
+    }
+
+    pub fn by_projection(
+        self,
+        def_id: DefId,
+    ) -> impl Iterator<Item = PolyProjectionPredicate<'tcx>> {
+        match self.kind {
+            FilterClausesKind::Trivial(clauses) => Either::Left(
+                clauses
+                    .iter()
+                    .filter_map(|clause| clause.as_projection_clause())
+                    .filter(move |pred| pred.projection_def_id() == def_id),
+            ),
+            FilterClausesKind::Cached(filter) => Either::Right(
+                filter.by_projection.get(&def_id).unwrap_or(const { &Vec::new() }).iter().copied(),
+            ),
+        }
+    }
+}
+
+#[derive(Default)]
+pub(crate) struct FilterClausesCache<'tcx> {
+    map: ShardedHashMap<Clauses<'tcx>, &'tcx CachedFilterClauses<'tcx>>,
+}
 
 impl<'tcx> rustc_type_ir::visit::Flags for Clauses<'tcx> {
     fn flags(&self) -> TypeFlags {

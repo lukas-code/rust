@@ -160,11 +160,31 @@ pub fn shards() -> usize {
 
 pub type ShardedHashMap<K, V> = Sharded<FxHashMap<K, V>>;
 
-impl<K: Eq, V> ShardedHashMap<K, V> {
+impl<K: Eq + Hash, V> ShardedHashMap<K, V> {
     pub fn len(&self) -> usize {
         self.lock_shards().map(|shard| shard.len()).sum()
     }
+
+    pub fn get_or_insert_with(&self, key: K, make: impl FnOnce() -> V) -> V
+    where
+        V: Copy,
+    {
+        let hash = make_hash(&key);
+        let mut shard = self.lock_shard_by_hash(hash);
+        let entry = shard.raw_entry_mut().from_key_hashed_nocheck(hash, &key);
+
+        match entry {
+            RawEntryMut::Occupied(e) => *e.into_mut(),
+            RawEntryMut::Vacant(e) => {
+                let value = make();
+                e.insert_hashed_nocheck(hash, key, value);
+                value
+            }
+        }
+    }
 }
+
+// get or insert with: Q: ?Sized -> &Q
 
 impl<K: Eq + Hash + Copy> ShardedHashMap<K, ()> {
     #[inline]
