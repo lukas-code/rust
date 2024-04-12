@@ -36,7 +36,7 @@ use rustc_middle::ty::visit::{TypeVisitable, TypeVisitableExt};
 use rustc_middle::ty::{self, ToPredicate, Ty, TyCtxt, TypeFolder, TypeSuperVisitable};
 use rustc_middle::ty::{GenericArgs, GenericArgsRef};
 use rustc_span::def_id::DefId;
-use rustc_span::Span;
+use rustc_span::{Span, DUMMY_SP};
 
 use std::fmt::Debug;
 use std::ops::ControlFlow;
@@ -178,11 +178,10 @@ fn pred_known_to_hold_modulo_regions<'tcx>(
 #[instrument(level = "debug", skip(tcx, elaborated_env))]
 fn do_normalize_predicates<'tcx>(
     tcx: TyCtxt<'tcx>,
-    cause: ObligationCause<'tcx>,
+    cause: Option<ObligationCause<'tcx>>,
     elaborated_env: ty::ParamEnv<'tcx>,
     predicates: Vec<ty::Clause<'tcx>>,
 ) -> Result<Vec<ty::Clause<'tcx>>, ErrorGuaranteed> {
-    let span = cause.span;
     // FIXME. We should really... do something with these region
     // obligations. But this call just continues the older
     // behavior (i.e., doesn't cause any new bugs), and it would
@@ -197,13 +196,29 @@ fn do_normalize_predicates<'tcx>(
     // them here too, and we will remove this function when
     // we move over to lazy normalization *anyway*.
     let infcx = tcx.infer_ctxt().ignoring_regions().build();
-    let predicates = match fully_normalize(&infcx, cause, elaborated_env, predicates) {
-        Ok(predicates) => predicates,
-        Err(errors) => {
-            let reported = infcx.err_ctxt().report_fulfillment_errors(errors);
-            return Err(reported);
-        }
+
+    let (span, cause, query_mode) = match cause {
+        Some(cause) => (cause.span, cause, TraitQueryMode::Standard),
+        None => (DUMMY_SP, ObligationCause::dummy(), TraitQueryMode::Canonical),
     };
+
+    let ocx = ObligationCtxt::with_query_mode(&infcx, query_mode);
+    let predicates = ocx.normalize(&cause, elaborated_env, predicates);
+    let errors = ocx.select_all_or_error();
+    if !errors.is_empty() {
+        match query_mode {
+            TraitQueryMode::Standard => {
+                let guar = infcx.err_ctxt().report_fulfillment_errors(errors);
+                return Err(guar);
+            }
+            TraitQueryMode::Canonical => {
+                let guar = tcx.dcx().delayed_bug("failed to normalize predicates");
+                return Err(guar);
+            }
+        }
+    }
+
+    let predicates = infcx.resolve_vars_if_possible(predicates);
 
     debug!("do_normalize_predicates: normalized predicates = {:?}", predicates);
 
@@ -251,6 +266,31 @@ pub fn normalize_param_env_or_error<'tcx>(
     unnormalized_env: ty::ParamEnv<'tcx>,
     cause: ObligationCause<'tcx>,
 ) -> ty::ParamEnv<'tcx> {
+    if let Ok(normalized) = tcx.at(cause.span).normalize_param_env_or_error_query(unnormalized_env)
+    {
+        return normalized;
+    }
+    normalize_param_env_or_error_internal(tcx, unnormalized_env, Some(cause)).unwrap()
+}
+
+pub fn normalize_param_env_or_error_query<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    unnormalized_env: ty::ParamEnv<'tcx>,
+) -> Result<ty::ParamEnv<'tcx>, ErrorGuaranteed> {
+    normalize_param_env_or_error_internal(tcx, unnormalized_env, None)
+}
+
+pub fn normalize_param_env_or_error_internal<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    unnormalized_env: ty::ParamEnv<'tcx>,
+    cause: Option<ObligationCause<'tcx>>,
+) -> Result<ty::ParamEnv<'tcx>, ErrorGuaranteed> {
+    if tcx.next_trait_solver_globally() {
+        let clauses = unnormalized_env.caller_bounds();
+        let clauses = tcx.mk_clauses_from_iter(util::elaborate(tcx, clauses));
+        return Ok(ty::ParamEnv::new(clauses, unnormalized_env.reveal()));
+    }
+
     // I'm not wild about reporting errors here; I'd prefer to
     // have the errors get reported at a defined place (e.g.,
     // during typeck). Instead I have all parameter
@@ -332,6 +372,8 @@ pub fn normalize_param_env_or_error<'tcx>(
 
     let elaborated_env = ty::ParamEnv::new(tcx.mk_clauses(&predicates), unnormalized_env.reveal());
 
+    let recover = cause.is_some();
+
     // HACK: we are trying to normalize the param-env inside *itself*. The problem is that
     // normalization expects its param-env to be already normalized, which means we have
     // a circularity.
@@ -360,13 +402,21 @@ pub fn normalize_param_env_or_error<'tcx>(
         "normalize_param_env_or_error: predicates=(non-outlives={:?}, outlives={:?})",
         predicates, outlives_predicates
     );
-    let Ok(non_outlives_predicates) =
-        do_normalize_predicates(tcx, cause.clone(), elaborated_env, predicates)
-    else {
-        // An unnormalized env is better than nothing.
-        debug!("normalize_param_env_or_error: errored resolving non-outlives predicates");
-        return elaborated_env;
-    };
+    let non_outlives_predicates =
+        match do_normalize_predicates(tcx, cause.clone(), elaborated_env, predicates) {
+            Ok(predicates) => predicates,
+            Err(guar) => {
+                return if recover {
+                    // An unnormalized env is better than nothing.
+                    debug!(
+                        "normalize_param_env_or_error: errored resolving non-outlives predicates"
+                    );
+                    Ok(elaborated_env)
+                } else {
+                    Err(guar)
+                };
+            }
+        };
 
     debug!("normalize_param_env_or_error: non-outlives predicates={:?}", non_outlives_predicates);
 
@@ -376,19 +426,25 @@ pub fn normalize_param_env_or_error<'tcx>(
     let outlives_env = non_outlives_predicates.iter().chain(&outlives_predicates).cloned();
     let outlives_env =
         ty::ParamEnv::new(tcx.mk_clauses_from_iter(outlives_env), unnormalized_env.reveal());
-    let Ok(outlives_predicates) =
-        do_normalize_predicates(tcx, cause, outlives_env, outlives_predicates)
-    else {
-        // An unnormalized env is better than nothing.
-        debug!("normalize_param_env_or_error: errored resolving outlives predicates");
-        return elaborated_env;
-    };
+    let outlives_predicates =
+        match do_normalize_predicates(tcx, cause, outlives_env, outlives_predicates) {
+            Ok(predicates) => predicates,
+            Err(guar) => {
+                return if recover {
+                    // An unnormalized env is better than nothing.
+                    debug!("normalize_param_env_or_error: errored resolving outlives predicates");
+                    Ok(elaborated_env)
+                } else {
+                    Err(guar)
+                };
+            }
+        };
     debug!("normalize_param_env_or_error: outlives predicates={:?}", outlives_predicates);
 
     let mut predicates = non_outlives_predicates;
     predicates.extend(outlives_predicates);
     debug!("normalize_param_env_or_error: final predicates={:?}", predicates);
-    ty::ParamEnv::new(tcx.mk_clauses(&predicates), unnormalized_env.reveal())
+    Ok(ty::ParamEnv::new(tcx.mk_clauses(&predicates), unnormalized_env.reveal()))
 }
 
 /// Normalize a type and process all resulting obligations, returning any errors.
@@ -551,6 +607,7 @@ pub fn provide(providers: &mut Providers) {
         instantiate_and_check_impossible_predicates,
         check_tys_might_be_eq: misc::check_tys_might_be_eq,
         is_impossible_associated_item,
+        normalize_param_env_or_error_query,
         ..*providers
     };
 }

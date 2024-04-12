@@ -1348,6 +1348,10 @@ rustc_queries! {
         desc { |tcx| "computing revealed normalized predicates of `{}`", tcx.def_path_str(def_id) }
     }
 
+    query normalize_param_env_or_error_query(env: ty::ParamEnv<'tcx>) -> Result<ty::ParamEnv<'tcx>, ErrorGuaranteed> {
+        desc { "normalizing predicates" }
+    }
+
     /// Trait selection queries. These are best used by invoking `ty.is_copy_modulo_regions()`,
     /// `ty.is_copy()`, etc, since that will prune the environment where possible.
     query is_copy_raw(env: ty::ParamEnvAnd<'tcx, Ty<'tcx>>) -> bool {

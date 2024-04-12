@@ -3,6 +3,7 @@ use std::fmt::Debug;
 
 use super::FulfillmentContext;
 use super::TraitEngine;
+use super::TraitQueryMode;
 use crate::regions::InferCtxtRegionExt;
 use crate::solve::FulfillmentCtxt as NextFulfillmentCtxt;
 use crate::traits::error_reporting::TypeErrCtxtExt;
@@ -33,13 +34,21 @@ impl<'tcx> dyn TraitEngine<'tcx> {
         if infcx.next_trait_solver() {
             Box::new(NextFulfillmentCtxt::new(infcx))
         } else {
+            Self::with_query_mode(infcx, TraitQueryMode::Standard)
+        }
+    }
+
+    fn with_query_mode(infcx: &InferCtxt<'tcx>, query_mode: TraitQueryMode) -> Box<Self> {
+        if infcx.next_trait_solver() {
+            Box::new(NextFulfillmentCtxt::new(infcx))
+        } else {
             let new_solver_globally =
                 infcx.tcx.sess.opts.unstable_opts.next_solver.map_or(false, |c| c.globally);
             assert!(
                 !new_solver_globally,
                 "using old solver even though new solver is enabled globally"
             );
-            Box::new(FulfillmentContext::new(infcx))
+            Box::new(FulfillmentContext::with_query_mode(infcx, query_mode))
         }
     }
 }
@@ -54,6 +63,13 @@ pub struct ObligationCtxt<'a, 'tcx> {
 impl<'a, 'tcx> ObligationCtxt<'a, 'tcx> {
     pub fn new(infcx: &'a InferCtxt<'tcx>) -> Self {
         Self { infcx, engine: RefCell::new(<dyn TraitEngine<'_>>::new(infcx)) }
+    }
+
+    pub fn with_query_mode(infcx: &'a InferCtxt<'tcx>, query_mode: TraitQueryMode) -> Self {
+        Self {
+            infcx,
+            engine: RefCell::new(<dyn TraitEngine<'_>>::with_query_mode(infcx, query_mode)),
+        }
     }
 
     pub fn register_obligation(&self, obligation: PredicateObligation<'tcx>) {

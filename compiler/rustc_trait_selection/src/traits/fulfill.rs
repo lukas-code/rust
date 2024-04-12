@@ -21,6 +21,7 @@ use super::select::SelectionContext;
 use super::wf;
 use super::EvaluationResult;
 use super::PredicateObligation;
+use super::TraitQueryMode;
 use super::Unimplemented;
 use super::{FulfillmentError, FulfillmentErrorCode};
 
@@ -59,6 +60,8 @@ pub struct FulfillmentContext<'tcx> {
     /// gets rolled back. Because of this we explicitly check that we only
     /// use the context in exactly this snapshot.
     usable_in_snapshot: usize,
+
+    query_mode: TraitQueryMode,
 }
 
 #[derive(Clone, Debug)]
@@ -77,7 +80,10 @@ static_assert_size!(PendingPredicateObligation<'_>, 72);
 
 impl<'tcx> FulfillmentContext<'tcx> {
     /// Creates a new fulfillment context.
-    pub(super) fn new(infcx: &InferCtxt<'tcx>) -> FulfillmentContext<'tcx> {
+    pub(super) fn with_query_mode(
+        infcx: &InferCtxt<'tcx>,
+        query_mode: TraitQueryMode,
+    ) -> FulfillmentContext<'tcx> {
         assert!(
             !infcx.next_trait_solver(),
             "old trait solver fulfillment context created when \
@@ -86,6 +92,7 @@ impl<'tcx> FulfillmentContext<'tcx> {
         FulfillmentContext {
             predicates: ObligationForest::new(),
             usable_in_snapshot: infcx.num_open_snapshots(),
+            query_mode,
         }
     }
 
@@ -145,7 +152,7 @@ impl<'tcx> TraitEngine<'tcx> for FulfillmentContext<'tcx> {
     }
 
     fn select_where_possible(&mut self, infcx: &InferCtxt<'tcx>) -> Vec<FulfillmentError<'tcx>> {
-        let selcx = SelectionContext::new(infcx);
+        let selcx = SelectionContext::with_query_mode(infcx, self.query_mode);
         self.select(selcx)
     }
 

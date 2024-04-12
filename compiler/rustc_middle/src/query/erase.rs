@@ -169,6 +169,10 @@ impl EraseType for Result<ty::EarlyBinder<Ty<'_>>, CyclePlaceholder> {
     type Result = [u8; size_of::<Result<ty::EarlyBinder<Ty<'_>>, CyclePlaceholder>>()];
 }
 
+impl EraseType for Result<ty::ParamEnv<'_>, rustc_errors::ErrorGuaranteed> {
+    type Result = [u8; size_of::<Result<ty::ParamEnv<'_>, rustc_errors::ErrorGuaranteed>>()];
+}
+
 impl<T> EraseType for Option<&'_ T> {
     type Result = [u8; size_of::<Option<&'static ()>>()];
 }
