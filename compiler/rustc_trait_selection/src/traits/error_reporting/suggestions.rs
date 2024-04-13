@@ -1100,7 +1100,7 @@ impl<'tcx> TypeErrCtxt<'_, 'tcx> {
                     ty::Alias(ty::Opaque, ty::AliasTy { def_id, args, .. }) => {
                         self.tcx
                             .item_super_predicates(def_id)
-                            .iter_instantiated(self.tcx, args)
+                            .iter_instantiated_clauses(self.tcx, args)
                             .find_map(|pred| {
                                 if let ty::ClauseKind::Projection(proj) = pred.kind().skip_binder()
                         && Some(proj.projection_ty.def_id) == self.tcx.lang_items().fn_once_output()

@@ -23,6 +23,8 @@ use std::num::NonZero;
 use std::ops::Deref;
 use std::ptr::NonNull;
 
+use either::Either;
+
 /// An entity in the Rust type system, which can be one of
 /// several kinds (types, lifetimes, and consts).
 /// To reduce memory usage, a `GenericArg` is an interned pointer,
@@ -639,6 +641,20 @@ where
     /// but on an iterator of `TypeFoldable` values.
     pub fn instantiate_identity_iter(self) -> I::IntoIter {
         self.value.into_iter()
+    }
+}
+
+impl<'tcx> EarlyBinder<ty::Clauses<'tcx>> {
+    pub fn iter_instantiated_clauses(
+        self,
+        tcx: TyCtxt<'tcx>,
+        args: GenericArgsRef<'tcx>,
+    ) -> impl Iterator<Item = ty::Clause<'tcx>> {
+        if (self.value, args).has_infer() {
+            Either::Left(self.iter_instantiated(tcx, args))
+        } else {
+            Either::Right(tcx.instantiate_clauses((self, args)).iter())
+        }
     }
 }
 

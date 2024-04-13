@@ -440,6 +440,14 @@ impl<'tcx> Key for ty::Clauses<'tcx> {
     }
 }
 
+impl<'tcx> Key for (ty::EarlyBinder<ty::Clauses<'tcx>>, ty::GenericArgsRef<'tcx>) {
+    type Cache<V> = DefaultCache<Self, V>;
+
+    fn default_span(&self, _: TyCtxt<'_>) -> Span {
+        DUMMY_SP
+    }
+}
+
 impl<'tcx> Key for ty::ParamEnv<'tcx> {
     type Cache<V> = DefaultCache<Self, V>;
 

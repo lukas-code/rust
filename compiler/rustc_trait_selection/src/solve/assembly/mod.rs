@@ -640,8 +640,10 @@ impl<'tcx> EvalCtxt<'_, 'tcx> {
             }
         };
 
-        for assumption in
-            self.tcx().item_bounds(alias_ty.def_id).iter_instantiated(self.tcx(), alias_ty.args)
+        for assumption in self
+            .tcx()
+            .item_bounds(alias_ty.def_id)
+            .iter_instantiated_clauses(self.tcx(), alias_ty.args)
         {
             match G::consider_implied_clause(self, goal, assumption, []) {
                 Ok(result) => {

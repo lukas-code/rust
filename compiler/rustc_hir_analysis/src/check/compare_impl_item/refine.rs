@@ -108,7 +108,8 @@ pub(super) fn check_refining_return_position_impl_trait_in_trait<'tcx>(
         }
 
         trait_bounds.extend(
-            tcx.item_bounds(trait_projection.def_id).iter_instantiated(tcx, trait_projection.args),
+            tcx.item_bounds(trait_projection.def_id)
+                .iter_instantiated_clauses(tcx, trait_projection.args),
         );
         impl_bounds.extend(elaborate(
             tcx,

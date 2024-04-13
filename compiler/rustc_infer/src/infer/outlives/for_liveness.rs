@@ -64,7 +64,7 @@ where
                 let param_env = self.param_env;
                 let outlives_bounds: Vec<_> = tcx
                     .item_bounds(def_id)
-                    .iter_instantiated(tcx, args)
+                    .iter_instantiated_clauses(tcx, args)
                     .chain(param_env.caller_bounds())
                     .filter_map(|clause| {
                         let outlives = clause.as_type_outlives_clause()?;

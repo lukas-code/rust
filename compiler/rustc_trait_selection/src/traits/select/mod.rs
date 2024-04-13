@@ -1643,7 +1643,7 @@ impl<'cx, 'tcx> SelectionContext<'cx, 'tcx> {
                 self.tcx().item_super_predicates(alias_ty.def_id)
             };
 
-            for bound in relevant_bounds.iter_instantiated(self.tcx(), alias_ty.args) {
+            for bound in relevant_bounds.iter_instantiated_clauses(self.tcx(), alias_ty.args) {
                 for_each(self, bound, idx)?;
                 idx += 1;
             }

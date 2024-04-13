@@ -1348,6 +1348,10 @@ rustc_queries! {
         desc { |tcx| "computing revealed normalized predicates of `{}`", tcx.def_path_str(def_id) }
     }
 
+    query instantiate_clauses(_: (ty::EarlyBinder<ty::Clauses<'tcx>>, ty::GenericArgsRef<'tcx>)) -> ty::Clauses<'tcx> {
+        desc { "instantiating clauses" }
+    }
+
     query normalize_param_env_or_error_query(env: ty::ParamEnv<'tcx>) -> Result<ty::ParamEnv<'tcx>, ErrorGuaranteed> {
         desc { "normalizing predicates" }
     }

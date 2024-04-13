@@ -683,8 +683,9 @@ pub(in crate::solve) fn predicates_for_object_candidate<'tcx>(
                 continue;
             }
 
-            requirements
-                .extend(tcx.item_bounds(item.def_id).iter_instantiated(tcx, trait_ref.args));
+            requirements.extend(
+                tcx.item_bounds(item.def_id).iter_instantiated_clauses(tcx, trait_ref.args),
+            );
         }
     }
 

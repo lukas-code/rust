@@ -229,7 +229,7 @@ impl<'tcx> TypeVisitor<TyCtxt<'tcx>> for ImplTraitInTraitFinder<'_, 'tcx> {
             for bound in self
                 .tcx
                 .item_bounds(unshifted_alias_ty.def_id)
-                .iter_instantiated(self.tcx, unshifted_alias_ty.args)
+                .iter_instantiated_clauses(self.tcx, unshifted_alias_ty.args)
             {
                 bound.visit_with(self);
             }
@@ -241,6 +241,13 @@ impl<'tcx> TypeVisitor<TyCtxt<'tcx>> for ImplTraitInTraitFinder<'_, 'tcx> {
 
 fn param_env_reveal_all_normalized(tcx: TyCtxt<'_>, def_id: DefId) -> ty::ParamEnv<'_> {
     tcx.param_env(def_id).with_reveal_all_normalized(tcx)
+}
+
+fn instantiate_clauses<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    (clauses, args): (EarlyBinder<ty::Clauses<'tcx>>, ty::GenericArgsRef<'tcx>),
+) -> ty::Clauses<'tcx> {
+    clauses.instantiate(tcx, args)
 }
 
 /// If `def_id` is an issue 33140 hack impl, returns its self type; otherwise, returns `None`.
@@ -351,6 +358,7 @@ pub(crate) fn provide(providers: &mut Providers) {
         adt_sized_constraint,
         param_env,
         param_env_reveal_all_normalized,
+        instantiate_clauses,
         issue33140_self_ty,
         defaultness,
         unsizing_params_for_adt,
