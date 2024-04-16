@@ -1,0 +1,1346 @@
+--------------------------------------------------------------------------------
+-- Metadata
+--------------------------------------------------------------------------------
+Invocation:       /usr/bin/cg_annotate --show-percs=no /tmp/.tmpI6F9UC
+Files compared:   results/cgout-Id1-hyper-0.14.18-Doc-Full; results/cgout-Id2-hyper-0.14.18-Doc-Full
+Command:          /data/code/rust/build/keep/before/bin/rustdoc --edition=2018 --crate-type lib --crate-name hyper src/lib.rs -o /tmp/.tmp6p5kaU/target/doc --cfg feature="client" --cfg feature="default" --cfg feature="h2" --cfg feature="http1" --cfg feature="http2" --cfg feature="server" --cfg feature="stream" --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat -C metadata=6ddab4bf30f0818d -L dependency=/tmp/.tmp6p5kaU/target/debug/deps --extern bytes=/tmp/.tmp6p5kaU/target/debug/deps/libbytes-029116899d9f8f87.rmeta --extern futures_channel=/tmp/.tmp6p5kaU/target/debug/deps/libfutures_channel-c0c60745537d3e9a.rmeta --extern futures_core=/tmp/.tmp6p5kaU/target/debug/deps/libfutures_core-8a4f41e17ec130a6.rmeta --extern futures_util=/tmp/.tmp6p5kaU/target/debug/deps/libfutures_util-c771f8511624a3b9.rmeta --extern h2=/tmp/.tmp6p5kaU/target/debug/deps/libh2-caef54af8e03d6cf.rmeta --extern http=/tmp/.tmp6p5kaU/target/debug/deps/libhttp-23cad9751cd244de.rmeta --extern http_body=/tmp/.tmp6p5kaU/target/debug/deps/libhttp_body-1dbc19e485c4cc97.rmeta --extern httparse=/tmp/.tmp6p5kaU/target/debug/deps/libhttparse-afd8abf8b89a5c8d.rmeta --extern httpdate=/tmp/.tmp6p5kaU/target/debug/deps/libhttpdate-b6e2db706d027fc3.rmeta --extern itoa=/tmp/.tmp6p5kaU/target/debug/deps/libitoa-88d7da467714815e.rmeta --extern pin_project_lite=/tmp/.tmp6p5kaU/target/debug/deps/libpin_project_lite-45f5bd47db9092f1.rmeta --extern tokio=/tmp/.tmp6p5kaU/target/debug/deps/libtokio-8a12e25eebceb973.rmeta --extern tower_service=/tmp/.tmp6p5kaU/target/debug/deps/libtower_service-ec615f7c3750c075.rmeta --extern tracing=/tmp/.tmp6p5kaU/target/debug/deps/libtracing-93ab3ae544d5eac4.rmeta --extern want=/tmp/.tmp6p5kaU/target/debug/deps/libwant-47753403e0c21687.rmeta --crate-version 0.14.18 -Adeprecated -Aunknown-lints -Zincremental-verify-ich; /data/code/rust/build/keep/after/bin/rustdoc --edition=2018 --crate-type lib --crate-name hyper src/lib.rs -o /tmp/.tmpo4QhHx/target/doc --cfg feature="client" --cfg feature="default" --cfg feature="h2" --cfg feature="http1" --cfg feature="http2" --cfg feature="server" --cfg feature="stream" --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat -C metadata=6ddab4bf30f0818d -L dependency=/tmp/.tmpo4QhHx/target/debug/deps --extern bytes=/tmp/.tmpo4QhHx/target/debug/deps/libbytes-029116899d9f8f87.rmeta --extern futures_channel=/tmp/.tmpo4QhHx/target/debug/deps/libfutures_channel-c0c60745537d3e9a.rmeta --extern futures_core=/tmp/.tmpo4QhHx/target/debug/deps/libfutures_core-8a4f41e17ec130a6.rmeta --extern futures_util=/tmp/.tmpo4QhHx/target/debug/deps/libfutures_util-c771f8511624a3b9.rmeta --extern h2=/tmp/.tmpo4QhHx/target/debug/deps/libh2-caef54af8e03d6cf.rmeta --extern http=/tmp/.tmpo4QhHx/target/debug/deps/libhttp-23cad9751cd244de.rmeta --extern http_body=/tmp/.tmpo4QhHx/target/debug/deps/libhttp_body-1dbc19e485c4cc97.rmeta --extern httparse=/tmp/.tmpo4QhHx/target/debug/deps/libhttparse-afd8abf8b89a5c8d.rmeta --extern httpdate=/tmp/.tmpo4QhHx/target/debug/deps/libhttpdate-b6e2db706d027fc3.rmeta --extern itoa=/tmp/.tmpo4QhHx/target/debug/deps/libitoa-88d7da467714815e.rmeta --extern pin_project_lite=/tmp/.tmpo4QhHx/target/debug/deps/libpin_project_lite-45f5bd47db9092f1.rmeta --extern tokio=/tmp/.tmpo4QhHx/target/debug/deps/libtokio-8a12e25eebceb973.rmeta --extern tower_service=/tmp/.tmpo4QhHx/target/debug/deps/libtower_service-ec615f7c3750c075.rmeta --extern tracing=/tmp/.tmpo4QhHx/target/debug/deps/libtracing-93ab3ae544d5eac4.rmeta --extern want=/tmp/.tmpo4QhHx/target/debug/deps/libwant-47753403e0c21687.rmeta --crate-version 0.14.18 -Adeprecated -Aunknown-lints -Zincremental-verify-ich
+Events recorded:  Ir
+Events shown:     Ir
+Event sort order: Ir
+Threshold:        0.1%
+Annotation:       on
+
+--------------------------------------------------------------------------------
+-- Summary
+--------------------------------------------------------------------------------
+Ir_________ 
+
+611,029,324  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+-- File:function summary
+--------------------------------------------------------------------------------
+  Ir_________  file:function
+
+< 107,404,045  /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs:
+   31,988,128    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+   21,994,512    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+   21,267,061    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitableExt<rustc_middle::ty::context::TyCtxt>>::has_vars_bound_at_or_above
+   14,644,319    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq
+   10,787,939    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+    6,196,027    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+      633,117    <rustc_infer::infer::ShallowResolver as rustc_type_ir::fold::FallibleTypeFolder<rustc_middle::ty::context::TyCtxt>>::try_fold_predicate
+
+<  66,971,002  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs:
+   27,626,347    <rustc_infer::traits::util::PredicateSet>::insert
+   14,249,530    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+   11,557,574    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+    6,711,280    <rustc_middle::ty::context::TyCtxt>::mk_args
+    3,879,918    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+    1,983,307    <rustc_middle::ty::list::RawList<rustc_middle::ty::list::TypeInfo, rustc_middle::ty::predicate::Clause>>::filter
+    1,282,286    <rustc_middle::ty::FilterClauses>::by_trait
+
+<  57,381,892  /data/code/rust/compiler/rustc_middle/src/ty/context.rs:
+   21,297,484    <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds
+   12,532,487    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    8,186,448    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+    8,123,971    <rustc_middle::ty::context::TyCtxt>::mk_args
+    4,483,657    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+    3,075,609    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+    2,238,400    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+   -1,418,631    <rustc_middle::ty::context::TyCtxt>::mk_clauses
+
+<  52,691,046  /data/code/rust/compiler/rustc_infer/src/traits/util.rs:
+   30,218,400    <rustc_infer::traits::util::PredicateSet>::insert
+   20,661,971    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+    2,326,274    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+     -618,216    rustc_trait_selection::traits::normalize_param_env_or_error
+
+<  49,524,106  /data/code/rust/compiler/rustc_middle/src/ty/fold.rs:
+   42,529,272    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+    6,921,198    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+
+<  42,026,880  /usr/src/debug/glibc/glibc/malloc/malloc.c:
+   16,600,010    _int_malloc
+    6,650,357    _int_free
+    6,567,178    realloc
+    5,590,151    _int_realloc
+    2,193,839    _int_free_merge_chunk
+    1,935,039    unlink_chunk.isra.0
+    1,891,731    _int_free_create_chunk
+
+<  41,713,389  /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs:
+   17,220,411    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+   13,083,563    <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+    8,572,483    <rustc_middle::ty::generic_args::GenericArg as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+    2,691,577    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+    1,543,871    <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_infer::infer::ShallowResolver>
+     -955,205    <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_trait_selection::traits::normalize_param_env_or_error::{closure#0}::ConstNormalizer>
+
+<  28,406,184  /data/code/rust/compiler/rustc_middle/src/ty/sty.rs:
+   13,430,220    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+    5,767,594    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+    2,279,769    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+    2,242,852    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    1,858,115    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+    1,231,674    <rustc_middle::ty::predicate::Clause>::kind
+    1,099,290    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+
+<  25,449,716  /data/code/rust/compiler/rustc_type_ir/src/interner.rs:
+   24,659,609    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+    1,153,366    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+
+<  23,108,859  /data/code/rust/library/core/src/mem/mod.rs:
+   12,617,066    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    8,214,503    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq
+    2,229,738    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+
+<  21,783,624  /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs:
+   15,764,725    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+   -8,338,543    <rustc_middle::ty::predicate::Clause>::as_trait_clause
+    6,776,496    <rustc_middle::ty::predicate::Predicate>::as_clause
+    2,084,566    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq
+    1,894,514    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    1,436,953    <rustc_middle::ty::predicate::Clause>::kind
+      957,256    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+      799,713    <rustc_infer::infer::ShallowResolver as rustc_type_ir::fold::FallibleTypeFolder<rustc_middle::ty::context::TyCtxt>>::try_fold_predicate
+
+<  16,144,704  /data/code/rust/library/core/src/num/mod.rs:
+    3,327,173    <rustc_data_structures::sip128::SipHasher128>::finish128
+    2,972,984    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+    2,408,119    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+    1,696,377    <rustc_middle::ty::context::TyCtxt>::mk_args
+    1,492,195    <rustc_infer::traits::util::PredicateSet>::insert
+    1,042,070    <rustc_middle::ty::context::TyCtxt>::mk_clauses
+      907,639    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+
+<  15,962,774  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs:
+    8,131,052    <rustc_infer::traits::util::PredicateSet>::insert
+    2,983,119    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+    1,736,790    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+    1,212,601    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+      695,880    <rustc_middle::ty::context::TyCtxt>::mk_args
+
+< -13,597,866  /data/code/rust/library/core/src/ptr/mod.rs:
+    3,464,085    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+   -2,369,848    core::ptr::drop_in_place::<rustc_infer::infer::region_constraints::RegionConstraintData>
+   -2,278,978    core::ptr::drop_in_place::<alloc::vec::Vec<rustc_infer::infer::region_constraints::Verify>>
+   -2,190,682    core::ptr::drop_in_place::<rustc_infer::infer::InferCtxt>
+   -1,914,108    core::ptr::drop_in_place::<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>>
+   -1,822,940    core::ptr::drop_in_place::<rustc_trait_selection::traits::select::SelectionContext>
+   -1,367,220    core::ptr::drop_in_place::<rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>
+   -1,139,507    core::ptr::drop_in_place::<alloc::vec::Vec<rustc_infer::infer::RegionObligation>>
+   -1,139,350    <rustc_infer::infer::region_constraints::RegionConstraintCollector>::into_infos_and_data
+    1,137,564    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+    1,131,003    <rustc_infer::traits::util::PredicateSet>::insert
+   -1,093,656    core::ptr::drop_in_place::<alloc::vec::Vec<(rustc_infer::infer::region_constraints::Constraint, rustc_infer::infer::SubregionOrigin)>>
+    1,060,233    <rustc_middle::ty::context::TyCtxt>::mk_args
+   -1,048,202    core::ptr::drop_in_place::<core::cell::RefCell<indexmap::map::IndexMap<rustc_span::span_encoding::Span, (alloc::vec::Vec<rustc_middle::ty::predicate::Predicate>, rustc_span::ErrorGuaranteed), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>>>
+     -891,028    core::ptr::drop_in_place::<alloc::vec::into_iter::IntoIter<rustc_infer::traits::Obligation<rustc_middle::ty::predicate::Predicate>>>
+      822,859    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+     -729,184    core::ptr::drop_in_place::<std::collections::hash::map::HashMap<rustc_data_structures::obligation_forest::ObligationTreeId, std::collections::hash::set::HashSet<rustc_middle::ty::ParamEnvAnd<rustc_middle::ty::predicate::Predicate>, core::hash::BuildHasherDefault<rustc_hash::FxHasher>>, core::hash::BuildHasherDefault<rustc_hash::FxHasher>>>
+     -728,796    core::ptr::drop_in_place::<rustc_query_system::cache::Cache<(rustc_middle::ty::ParamEnv, rustc_middle::ty::predicate::TraitPredicate), core::result::Result<core::option::Option<rustc_middle::traits::select::SelectionCandidate>, rustc_middle::traits::SelectionError>>>
+      724,317    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+     -702,292    rustc_trait_selection::traits::do_normalize_predicates
+     -683,610    core::ptr::drop_in_place::<rustc_infer::infer::outlives::env::OutlivesEnvironment>
+     -683,556    core::ptr::drop_in_place::<rustc_infer::infer::region_constraints::RegionConstraintStorage>
+      627,927    <rustc_middle::ty::context::TyCtxt>::mk_clauses
+
+<  12,704,439  /data/code/rust/compiler/rustc_middle/src/ty/mod.rs:
+    5,047,961    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+    2,574,654    <rustc_middle::ty::list::RawList<rustc_middle::ty::list::TypeInfo, rustc_middle::ty::predicate::Clause>>::filter
+    1,837,716    <rustc_middle::ty::TermKind as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+    1,135,680    <rustc_middle::ty::FilterClauses>::by_trait
+      913,515    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>
+      845,065    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+
+<  11,735,691  /data/code/rust/compiler/rustc_type_ir/src/visit.rs:
+    8,954,552    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitableExt<rustc_middle::ty::context::TyCtxt>>::has_vars_bound_at_or_above
+    2,238,400    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+      769,022    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+
+<  10,565,795  /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs:
+    5,845,440    <rustc_infer::traits::util::PredicateSet>::insert
+    1,077,633    <rustc_middle::ty::context::TyCtxt>::mk_args
+      968,888    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+      955,431    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+      660,433    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+
+<  -8,155,281  /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:__memcpy_avx_unaligned_erms
+
+<   8,118,876  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map.rs:
+    7,834,400    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+
+<   7,635,713  /data/code/rust/library/core/src/ptr/non_null.rs:
+    4,952,629    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+    1,521,180    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+    1,318,365    <rustc_middle::ty::context::TyCtxt>::mk_args
+   -1,147,970    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+    1,120,737    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+    1,020,765    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+      788,547    <rustc_middle::ty::context::TyCtxt>::mk_clauses
+
+<   6,725,676  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map/iter.rs:
+    6,715,200    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+
+<  -6,484,744  /data/code/rust/compiler/rustc_infer/src/infer/mod.rs:
+   -3,554,772    <rustc_infer::infer::InferCtxtBuilder>::build
+   -1,048,202    <rustc_infer::infer::InferCtxt>::tainted_by_errors
+     -865,906    <rustc_middle::ty::context::TyCtxt as rustc_infer::infer::TyCtxtInferExt>::infer_ctxt
+     -678,042    rustc_trait_selection::traits::do_normalize_predicates
+
+<   6,047,234  /data/code/rust/compiler/rustc_data_structures/src/sharded.rs:
+    2,601,361    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+    2,121,450    <rustc_middle::ty::context::TyCtxt>::mk_args
+      972,767    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+
+<   5,784,685  /data/code/rust/compiler/rustc_middle/src/query/plumbing.rs:
+    5,792,036    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+
+<   5,502,663  /data/code/rust/library/core/src/intrinsics.rs:
+    2,408,024    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+    1,154,865    <rustc_infer::traits::util::PredicateSet>::insert
+      673,249    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+
+<   5,349,973  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/smallvec-1.13.2/src/lib.rs:
+    4,431,400    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+    1,499,238    <smallvec::SmallVec<[rustc_middle::ty::Ty; 8]>>::try_grow
+
+<   5,325,904  /data/code/rust/library/core/src/ptr/mut_ptr.rs:
+    2,238,236    <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>
+    1,717,533    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+      745,990    <rustc_infer::traits::util::PredicateSet>::insert
+
+<   4,260,304  /data/code/rust/library/core/src/cmp.rs:
+    1,147,006    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    1,008,288    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq
+      681,237    <rustc_middle::ty::context::TyCtxt>::mk_args
+
+<  -4,017,008  /data/code/rust/compiler/rustc_data_structures/src/obligation_forest/mod.rs:
+   -1,753,731    <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::process_obligations::<rustc_trait_selection::traits::fulfill::FulfillProcessor>
+   -1,048,202    <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::compress::<<rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#2}>
+     -883,515    <dyn rustc_infer::traits::engine::TraitEngine as rustc_trait_selection::traits::engine::TraitEngineExt>::new
+
+<   3,910,757  /data/code/rust/compiler/rustc_span/src/def_id.rs:
+    2,990,032    <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate
+    1,453,278    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+   -1,229,275    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+      651,207    <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq
+
+<  -3,867,143  /data/code/rust/compiler/rustc_trait_selection/src/traits/normalize.rs:
+   -1,959,682    <rustc_trait_selection::traits::engine::ObligationCtxt>::normalize::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>
+   -1,275,352    rustc_trait_selection::traits::normalize::normalize_with_depth_to::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>::{closure#0}
+
+<   3,787,432  /data/code/rust/library/core/src/iter/traits/iterator.rs:
+    4,766,531    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+   -2,125,229    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+    1,153,470    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+
+<   3,652,240  /data/code/rust/compiler/rustc_data_structures/src/sip128.rs:
+    2,357,356    <rustc_data_structures::sip128::SipHasher128>::finish128
+
+<  -3,650,808  /data/code/rust/compiler/rustc_infer/src/infer/lexical_region_resolve/mod.rs:
+   -1,823,906    <rustc_infer::infer::lexical_region_resolve::LexicalResolver>::infer_variable_values
+   -1,822,960    rustc_infer::infer::lexical_region_resolve::resolve
+
+<  -3,638,689  /data/code/rust/compiler/rustc_trait_selection/src/traits/mod.rs:
+   -2,485,328    rustc_trait_selection::traits::do_normalize_predicates
+   -1,514,307    rustc_trait_selection::traits::normalize_param_env_or_error
+
+<   3,602,841  /data/code/rust/library/core/src/ptr/const_ptr.rs:
+    4,483,724    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+
+<   3,437,666  /data/code/rust/compiler/rustc_middle/src/ty/list.rs:
+    2,307,066    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+    1,508,383    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+
+<  -3,286,827  /data/code/rust/compiler/rustc_trait_selection/src/traits/fulfill.rs:
+   -1,705,029    <rustc_trait_selection::traits::fulfill::FulfillmentContext as rustc_infer::traits::engine::TraitEngine>::select_where_possible
+     -911,480    <rustc_trait_selection::traits::fulfill::FulfillmentContext as rustc_infer::traits::engine::TraitEngine>::collect_remaining_errors
+
+<  -3,190,180  /data/code/rust/compiler/rustc_infer/src/infer/outlives/env.rs:
+   -1,686,238    <rustc_infer::infer::outlives::env::OutlivesEnvironment>::builder
+   -1,503,942    rustc_trait_selection::traits::do_normalize_predicates
+
+<   2,997,056  /data/code/rust/library/alloc/src/vec/mod.rs:
+    3,189,568    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+    1,937,776    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+     -729,184    <rustc_infer::infer::lexical_region_resolve::LexicalResolver>::infer_variable_values
+
+<   2,976,297  /data/code/rust/library/core/src/slice/iter/macros.rs:
+    3,001,558    <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>
+    1,392,430    <rustc_middle::ty::context::TyCtxt>::mk_args
+     -786,223    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+      771,936    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+
+<  -2,849,294  /data/code/rust/compiler/rustc_trait_selection/src/traits/engine.rs:
+   -1,595,090    <rustc_trait_selection::traits::engine::ObligationCtxt>::normalize::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>
+     -680,617    <dyn rustc_infer::traits::engine::TraitEngine as rustc_trait_selection::traits::engine::TraitEngineExt>::new
+     -649,172    rustc_trait_selection::traits::do_normalize_predicates
+
+<  -2,674,722  /data/code/rust/library/core/src/cell.rs:
+   -1,914,108    <rustc_infer::infer::InferCtxtBuilder>::build
+
+<   2,645,191  /data/code/rust/library/core/src/slice/cmp.rs:
+    2,048,169    <rustc_middle::ty::context::TyCtxt>::mk_args
+
+<  -2,510,038  /data/code/rust/compiler/rustc_infer/src/infer/outlives/mod.rs:<rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions
+
+<   2,498,808  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/parking_lot-0.12.1/src/raw_mutex.rs:
+    2,241,974    <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds
+
+<  -2,471,149  /data/code/rust/library/core/src/iter/adapters/map.rs:
+     -911,480    <core::iter::adapters::map::Map<core::iter::adapters::filter::Filter<core::iter::adapters::enumerate::Enumerate<core::slice::iter::Iter<rustc_data_structures::obligation_forest::Node<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>>, <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#0}>, <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#1}> as core::iter::traits::iterator::Iterator>::next
+     -638,036    <alloc::vec::Vec<rustc_infer::traits::FulfillmentError> as alloc::vec::spec_from_iter::SpecFromIter<rustc_infer::traits::FulfillmentError, core::iter::adapters::map::Map<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>, rustc_trait_selection::traits::fulfill::to_fulfillment_error>>>::from_iter
+
+<   2,456,278  /data/code/rust/library/core/src/num/nonzero.rs:
+      758,008    <rustc_infer::traits::util::PredicateSet>::insert
+
+<  -2,286,421  /data/code/rust/library/core/src/iter/adapters/filter_map.rs:
+   -2,110,856    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+
+<   2,283,922  /data/code/rust/compiler/rustc_query_system/src/query/caches.rs:
+    2,177,178    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+
+<   2,163,547  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustc-hash-1.1.0/src/lib.rs:
+    1,486,492    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+      743,246    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+
+<   2,145,815  /data/code/rust/compiler/rustc_type_ir/src/fold.rs:
+      799,728    <rustc_infer::infer::ShallowResolver as rustc_type_ir::fold::FallibleTypeFolder<rustc_middle::ty::context::TyCtxt>>::try_fold_predicate
+      769,022    <rustc_middle::ty::predicate::Clause>::instantiate_supertrait
+
+<  -1,943,707  /data/code/rust/library/core/src/iter/adapters/mod.rs:
+     -987,414    <core::iter::adapters::GenericShunt<core::iter::adapters::by_ref_sized::ByRefSized<core::iter::adapters::filter_map::FilterMap<core::iter::adapters::copied::Copied<core::slice::iter::Iter<rustc_middle::ty::predicate::Clause>>, <rustc_infer::infer::InferCtxt>::process_registered_region_obligations<<rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions::{closure#0}>::{closure#0}>>, core::result::Result<core::convert::Infallible, (rustc_middle::ty::sty::Binder<rustc_middle::ty::predicate::OutlivesPredicate<rustc_middle::ty::Ty, rustc_middle::ty::region::Region>>, rustc_infer::infer::SubregionOrigin)>> as core::iter::traits::iterator::Iterator>::next
+     -950,454    <rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions
+
+<   1,900,652  /usr/src/debug/glibc/glibc/malloc/arena.c:
+    1,778,521    realloc
+
+<   1,861,952  /data/code/rust/library/core/src/ops/bit.rs:
+    1,114,869    <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>
+
+<  -1,822,960  /data/code/rust/compiler/rustc_data_structures/src/transitive_relation.rs:<rustc_data_structures::transitive_relation::TransitiveRelationBuilder<rustc_middle::ty::region::Region>>::freeze
+
+<   1,769,541  /data/code/rust/compiler/rustc_data_structures/src/sync/lock.rs:
+    1,114,869    <rustc_middle::ty::context::CtxtInterners>::intern_predicate
+      707,150    <rustc_middle::ty::context::TyCtxt>::mk_args
+
+<  -1,646,422  /data/code/rust/library/alloc/src/vec/in_place_collect.rs:
+   -1,549,516    <alloc::vec::Vec<rustc_infer::traits::FulfillmentError> as alloc::vec::spec_from_iter::SpecFromIter<rustc_infer::traits::FulfillmentError, core::iter::adapters::map::Map<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>, rustc_trait_selection::traits::fulfill::to_fulfillment_error>>>::from_iter
+
+<  -1,313,016  /data/code/rust/library/core/src/iter/adapters/filter.rs:
+     -647,787    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+
+<  -1,296,268  /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stacker-0.1.15/src/lib.rs:
+     -683,610    <rustc_trait_selection::traits::engine::ObligationCtxt>::normalize::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>
+
+<   1,085,904  /data/code/rust/library/core/src/iter/range.rs:
+      681,237    <rustc_middle::ty::context::TyCtxt>::mk_args
+
+<   1,081,615  /data/code/rust/library/core/src/option.rs:
+    2,049,857    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+   -1,367,220    <rustc_infer::infer::InferCtxtBuilder>::build
+   -1,367,220    <rustc_infer::infer::InferCtxt>::tainted_by_errors
+    1,132,600    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+      817,320    <rustc_infer::traits::util::PredicateSet>::insert
+
+<  -1,046,336  /data/code/rust/compiler/rustc_trait_selection/src/regions.rs:
+   -1,002,628    <rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions
+
+<  -1,041,099  /data/code/rust/compiler/rustc_infer/src/infer/region_constraints/mod.rs:
+   -1,002,628    <rustc_infer::infer::region_constraints::RegionConstraintCollector>::into_infos_and_data
+
+<   1,005,099  /data/code/rust/compiler/rustc_middle/src/query/mod.rs:
+      842,504    <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next
+
+<     954,984  /data/code/rust/library/std/src/sys/pal/unix/alloc.rs:
+      926,280    __rdl_realloc
+
+<     949,645  /data/code/rust/compiler/rustc_query_system/src/query/plumbing.rs:
+      726,737    rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>
+
+<     902,399  /data/code/rust/compiler/rustc_trait_selection/src/traits/auto_trait.rs:
+      760,590    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+
+<    -865,798  /data/code/rust/compiler/rustc_index/src/bit_set.rs:
+     -865,906    <rustc_data_structures::transitive_relation::TransitiveRelationBuilder<rustc_middle::ty::region::Region>>::freeze
+
+<     859,953  /data/code/rust/compiler/rustc_trait_selection/src/traits/select/candidate_assembly.rs:
+      789,625    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+
+<     852,304  /data/code/rust/library/alloc/src/raw_vec.rs:
+    2,241,862    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+    1,505,120    <alloc::raw_vec::RawVec<_, _>>::reserve::do_reserve_and_handle::<rustc_middle::ty::Ty, alloc::alloc::Global>
+      900,420    alloc::raw_vec::finish_grow::<alloc::alloc::Global>
+     -729,184    core::ptr::drop_in_place::<rustc_infer::infer::InferCtxt>
+      683,748    <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates
+     -638,036    <alloc::vec::Vec<rustc_infer::traits::FulfillmentError> as alloc::vec::spec_from_iter::SpecFromIter<rustc_infer::traits::FulfillmentError, core::iter::adapters::map::Map<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>, rustc_trait_selection::traits::fulfill::to_fulfillment_error>>>::from_iter
+
+<    -755,985  /data/code/rust/compiler/rustc_middle/src/ty/structural_impls.rs:
+     -909,516    <rustc_middle::ty::Ty as rustc_type_ir::fold::TypeSuperFoldable<rustc_middle::ty::context::TyCtxt>>::try_super_fold_with::<rustc_trait_selection::traits::normalize_param_env_or_error::{closure#0}::ConstNormalizer>
+      649,779    <rustc_infer::infer::ShallowResolver as rustc_type_ir::fold::FallibleTypeFolder<rustc_middle::ty::context::TyCtxt>>::try_fold_predicate
+
+<    -722,848  /data/code/rust/compiler/rustc_trait_selection/src/traits/project.rs:
+     -637,210    rustc_trait_selection::traits::project::opt_normalize_projection_type
+
+<     717,863  /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:__memset_avx2_unaligned_erms
+
+<     705,474  /data/code/rust/library/std/src/alloc.rs:
+      694,710    __rdl_realloc
+
+<    -360,270  /data/code/rust/library/alloc/src/vec/extract_if.rs:
+     -649,407    rustc_trait_selection::traits::normalize_param_env_or_error
+
+<     251,732  /data/code/rust/library/alloc/src/alloc.rs:
+      686,610    <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>
+
+<     187,084  /data/code/rust/library/alloc/src/vec/into_iter.rs:
+    1,120,640    <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>
+
+<    -181,476  /data/code/rust/compiler/rustc_type_ir/src/flags.rs:
+     -647,787    <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds
+
+--------------------------------------------------------------------------------
+-- Function:file summary
+--------------------------------------------------------------------------------
+  Ir________  function:file
+
+> 78,348,066  <rustc_infer::traits::util::PredicateSet>::insert:
+  30,218,400    /data/code/rust/compiler/rustc_infer/src/traits/util.rs
+  27,626,347    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   8,131,052    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+   5,845,440    /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+   1,492,195    /data/code/rust/library/core/src/num/mod.rs
+   1,154,865    /data/code/rust/library/core/src/intrinsics.rs
+   1,131,003    /data/code/rust/library/core/src/ptr/mod.rs
+     817,320    /data/code/rust/library/core/src/option.rs
+     758,008    /data/code/rust/library/core/src/num/nonzero.rs
+     745,990    /data/code/rust/library/core/src/ptr/mut_ptr.rs
+
+> 77,221,078  <rustc_middle::ty::context::TyCtxt>::anonymize_bound_vars::<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>>:
+  42,529,272    /data/code/rust/compiler/rustc_middle/src/ty/fold.rs
+  13,430,220    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+   7,834,400    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map.rs
+   6,715,200    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map/iter.rs
+   2,238,400    /data/code/rust/compiler/rustc_type_ir/src/visit.rs
+   2,238,400    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   2,238,236    /data/code/rust/library/core/src/ptr/mut_ptr.rs
+
+> 65,129,779  <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitable<rustc_middle::ty::context::TyCtxt>>::visit_with::<rustc_type_ir::visit::HasEscapingVarsVisitor>:
+  31,988,128    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+  17,220,411    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+   5,047,961    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+   4,952,629    /data/code/rust/library/core/src/ptr/non_null.rs
+   3,001,558    /data/code/rust/library/core/src/slice/iter/macros.rs
+   1,508,383    /data/code/rust/compiler/rustc_middle/src/ty/list.rs
+     907,639    /data/code/rust/library/core/src/num/mod.rs
+
+> 58,882,554  <rustc_middle::ty::context::TyCtxt>::reuse_or_mk_predicate:
+  21,994,512    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+  12,617,066    /data/code/rust/library/core/src/mem/mod.rs
+  12,532,487    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   3,464,085    /data/code/rust/library/core/src/ptr/mod.rs
+   2,990,032    /data/code/rust/compiler/rustc_span/src/def_id.rs
+   2,242,852    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+   1,894,514    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+   1,147,006    /data/code/rust/library/core/src/cmp.rs
+
+> 39,218,978  <rustc_middle::ty::predicate::Clause>::instantiate_supertrait:
+  15,764,725    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+   6,921,198    /data/code/rust/compiler/rustc_middle/src/ty/fold.rs
+   5,767,594    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+   3,075,609    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   2,691,577    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+   2,307,066    /data/code/rust/compiler/rustc_middle/src/ty/list.rs
+   1,153,366    /data/code/rust/compiler/rustc_type_ir/src/interner.rs
+     769,022    /data/code/rust/compiler/rustc_type_ir/src/visit.rs
+     769,022    /data/code/rust/compiler/rustc_type_ir/src/fold.rs
+
+> 38,109,215  <rustc_middle::ty::sty::BoundVariableKind as rustc_type_ir::interner::CollectAndApply<rustc_middle::ty::sty::BoundVariableKind, &rustc_middle::ty::list::RawList<(), rustc_middle::ty::sty::BoundVariableKind>>>::collect_and_apply::<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds_from_iter<indexmap::map::iter::IntoValues<rustc_type_ir::BoundVar, rustc_middle::ty::sty::BoundVariableKind>, rustc_middle::ty::sty::BoundVariableKind>::{closure#0}>:
+  24,659,609    /data/code/rust/compiler/rustc_type_ir/src/interner.rs
+   4,483,724    /data/code/rust/library/core/src/ptr/const_ptr.rs
+   4,483,657    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   2,241,862    /data/code/rust/library/alloc/src/raw_vec.rs
+   1,120,737    /data/code/rust/library/core/src/ptr/non_null.rs
+   1,120,640    /data/code/rust/library/alloc/src/vec/into_iter.rs
+
+> 31,899,486  <rustc_infer::traits::util::Elaborator<rustc_middle::ty::predicate::Clause> as core::iter::traits::iterator::Iterator>::next:
+  20,661,971    /data/code/rust/compiler/rustc_infer/src/traits/util.rs
+   3,189,568    /data/code/rust/library/alloc/src/vec/mod.rs
+   2,279,769    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+   1,153,470    /data/code/rust/library/core/src/iter/traits/iterator.rs
+   1,020,765    /data/code/rust/library/core/src/ptr/non_null.rs
+     845,065    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+     842,504    /data/code/rust/compiler/rustc_middle/src/query/mod.rs
+
+> 31,330,939  <rustc_middle::ty::context::CtxtInterners>::intern_predicate:
+  11,557,574    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   8,186,448    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   2,601,361    /data/code/rust/compiler/rustc_data_structures/src/sharded.rs
+   1,736,790    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+   1,486,492    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustc-hash-1.1.0/src/lib.rs
+   1,137,564    /data/code/rust/library/core/src/ptr/mod.rs
+   1,114,869    /data/code/rust/compiler/rustc_data_structures/src/sync/lock.rs
+   1,099,290    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+     955,431    /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+     673,249    /data/code/rust/library/core/src/intrinsics.rs
+
+> 30,221,613  <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::visit::TypeVisitableExt<rustc_middle::ty::context::TyCtxt>>::has_vars_bound_at_or_above:
+  21,267,061    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+   8,954,552    /data/code/rust/compiler/rustc_type_ir/src/visit.rs
+
+> 29,350,328  <rustc_middle::ty::context::TyCtxt>::mk_args:
+   8,123,971    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   6,711,280    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   2,121,450    /data/code/rust/compiler/rustc_data_structures/src/sharded.rs
+   2,048,169    /data/code/rust/library/core/src/slice/cmp.rs
+   1,696,377    /data/code/rust/library/core/src/num/mod.rs
+   1,392,430    /data/code/rust/library/core/src/slice/iter/macros.rs
+   1,318,365    /data/code/rust/library/core/src/ptr/non_null.rs
+   1,077,633    /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+   1,060,233    /data/code/rust/library/core/src/ptr/mod.rs
+     707,150    /data/code/rust/compiler/rustc_data_structures/src/sync/lock.rs
+     695,880    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+     681,237    /data/code/rust/library/core/src/iter/range.rs
+     681,237    /data/code/rust/library/core/src/cmp.rs
+
+> 27,257,187  <rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt> as core::cmp::PartialEq>::eq:
+  14,644,319    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+   8,214,503    /data/code/rust/library/core/src/mem/mod.rs
+   2,084,566    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+   1,008,288    /data/code/rust/library/core/src/cmp.rs
+     651,207    /data/code/rust/compiler/rustc_span/src/def_id.rs
+
+> 26,191,378  <hashbrown::raw::RawTable<(rustc_middle::ty::predicate::Predicate, ())>>::reserve_rehash::<hashbrown::map::make_hasher<rustc_middle::ty::predicate::Predicate, (), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>::{closure#0}>:
+  14,249,530    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   2,983,119    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+   2,408,119    /data/code/rust/library/core/src/num/mod.rs
+   2,408,024    /data/code/rust/library/core/src/intrinsics.rs
+   1,717,533    /data/code/rust/library/core/src/ptr/mut_ptr.rs
+     686,610    /data/code/rust/library/alloc/src/alloc.rs
+     660,433    /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+
+> 23,529,055  <rustc_middle::ty::context::TyCtxt>::mk_bound_variable_kinds:
+  21,297,484    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   2,241,974    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/parking_lot-0.12.1/src/raw_mutex.rs
+
+> 21,042,824  rustc_middle::query::plumbing::query_get_at::<rustc_query_system::query::caches::DefIdCache<rustc_middle::query::erase::Erased<[u8; 24]>>>:
+   5,792,036    /data/code/rust/compiler/rustc_middle/src/query/plumbing.rs
+   3,879,918    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   2,177,178    /data/code/rust/compiler/rustc_query_system/src/query/caches.rs
+   1,453,278    /data/code/rust/compiler/rustc_span/src/def_id.rs
+   1,212,601    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+     972,767    /data/code/rust/compiler/rustc_data_structures/src/sharded.rs
+     968,888    /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+     726,737    /data/code/rust/compiler/rustc_query_system/src/query/plumbing.rs
+     724,317    /data/code/rust/library/core/src/ptr/mod.rs
+
+> 19,315,434  <rustc_trait_selection::traits::auto_trait::AutoTraitFinder>::evaluate_predicates:
+   4,766,531    /data/code/rust/library/core/src/iter/traits/iterator.rs
+   4,431,400    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/smallvec-1.13.2/src/lib.rs
+   2,326,274    /data/code/rust/compiler/rustc_infer/src/traits/util.rs
+   1,937,776    /data/code/rust/library/alloc/src/vec/mod.rs
+   1,521,180    /data/code/rust/library/core/src/ptr/non_null.rs
+   1,132,600    /data/code/rust/library/core/src/option.rs
+     822,859    /data/code/rust/library/core/src/ptr/mod.rs
+     771,936    /data/code/rust/library/core/src/slice/iter/macros.rs
+     760,590    /data/code/rust/compiler/rustc_trait_selection/src/traits/auto_trait.rs
+     683,748    /data/code/rust/library/alloc/src/raw_vec.rs
+
+> 16,600,010  _int_malloc:/usr/src/debug/glibc/glibc/malloc/malloc.c
+
+> 15,114,979  <rustc_middle::ty::sty::Binder<rustc_type_ir::predicate_kind::PredicateKind<rustc_middle::ty::context::TyCtxt>> as core::hash::Hash>::hash::<rustc_hash::FxHasher>:
+   6,196,027    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+   2,972,984    /data/code/rust/library/core/src/num/mod.rs
+   2,229,738    /data/code/rust/library/core/src/mem/mod.rs
+   1,858,115    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+   1,114,869    /data/code/rust/library/core/src/ops/bit.rs
+     743,246    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustc-hash-1.1.0/src/lib.rs
+
+> 13,432,826  <rustc_type_ir::predicate_kind::ClauseKind<rustc_middle::ty::context::TyCtxt> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>:
+  10,787,939    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+     957,256    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+     913,515    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+
+> 13,171,565  <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>:
+  13,083,563    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+
+> 10,003,656  <rustc_middle::ty::generic_args::GenericArg as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>:
+   8,572,483    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+
+> -9,980,706  <rustc_infer::infer::InferCtxtBuilder>::build:
+  -3,554,772    /data/code/rust/compiler/rustc_infer/src/infer/mod.rs
+  -1,914,108    /data/code/rust/library/core/src/cell.rs
+  -1,367,220    /data/code/rust/library/core/src/option.rs
+
+> -9,562,192  rustc_trait_selection::traits::do_normalize_predicates:
+  -2,485,328    /data/code/rust/compiler/rustc_trait_selection/src/traits/mod.rs
+  -1,503,942    /data/code/rust/compiler/rustc_infer/src/infer/outlives/env.rs
+    -702,292    /data/code/rust/library/core/src/ptr/mod.rs
+    -678,042    /data/code/rust/compiler/rustc_infer/src/infer/mod.rs
+    -649,172    /data/code/rust/compiler/rustc_trait_selection/src/traits/engine.rs
+
+>  8,345,699  realloc:
+   6,567,178    /usr/src/debug/glibc/glibc/malloc/malloc.c
+   1,778,521    /usr/src/debug/glibc/glibc/malloc/arena.c
+
+> -8,338,543  <rustc_middle::ty::predicate::Clause>::as_trait_clause:/data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+
+> -8,155,281  __memcpy_avx_unaligned_erms:/usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+
+>  7,881,267  <rustc_middle::ty::list::RawList<rustc_middle::ty::list::TypeInfo, rustc_middle::ty::predicate::Clause>>::filter:
+   2,574,654    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+   1,983,307    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+
+> -7,424,999  <rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions:
+  -2,510,038    /data/code/rust/compiler/rustc_infer/src/infer/outlives/mod.rs
+  -1,002,628    /data/code/rust/compiler/rustc_trait_selection/src/regions.rs
+    -950,454    /data/code/rust/library/core/src/iter/adapters/mod.rs
+
+>  6,776,496  <rustc_middle::ty::predicate::Predicate>::as_clause:/data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+
+> -6,700,338  <rustc_trait_selection::traits::engine::ObligationCtxt>::normalize::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>:
+  -1,959,682    /data/code/rust/compiler/rustc_trait_selection/src/traits/normalize.rs
+  -1,595,090    /data/code/rust/compiler/rustc_trait_selection/src/traits/engine.rs
+    -683,610    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stacker-0.1.15/src/lib.rs
+
+>  6,650,357  _int_free:/usr/src/debug/glibc/glibc/malloc/malloc.c
+
+> -6,280,279  rustc_trait_selection::traits::normalize_param_env_or_error:
+  -1,514,307    /data/code/rust/compiler/rustc_trait_selection/src/traits/mod.rs
+    -649,407    /data/code/rust/library/alloc/src/vec/extract_if.rs
+    -618,216    /data/code/rust/compiler/rustc_infer/src/traits/util.rs
+
+>  6,084,419  <rustc_data_structures::sip128::SipHasher128>::finish128:
+   3,327,173    /data/code/rust/library/core/src/num/mod.rs
+   2,357,356    /data/code/rust/compiler/rustc_data_structures/src/sip128.rs
+
+>  5,713,525  _int_realloc:
+   5,590,151    /usr/src/debug/glibc/glibc/malloc/malloc.c
+
+> -5,442,691  <rustc_trait_selection::traits::select::SelectionContext>::assemble_candidates_from_caller_bounds:
+  -2,125,229    /data/code/rust/library/core/src/iter/traits/iterator.rs
+  -2,110,856    /data/code/rust/library/core/src/iter/adapters/filter_map.rs
+   2,049,857    /data/code/rust/library/core/src/option.rs
+  -1,229,275    /data/code/rust/compiler/rustc_span/src/def_id.rs
+  -1,147,970    /data/code/rust/library/core/src/ptr/non_null.rs
+     789,625    /data/code/rust/compiler/rustc_trait_selection/src/traits/select/candidate_assembly.rs
+    -786,223    /data/code/rust/library/core/src/slice/iter/macros.rs
+    -647,787    /data/code/rust/library/core/src/iter/adapters/filter.rs
+    -647,787    /data/code/rust/compiler/rustc_type_ir/src/flags.rs
+
+> -4,785,270  <rustc_infer::infer::InferCtxt>::tainted_by_errors:
+  -1,367,220    /data/code/rust/library/core/src/option.rs
+  -1,048,202    /data/code/rust/compiler/rustc_infer/src/infer/mod.rs
+
+> -4,559,955  <rustc_infer::infer::lexical_region_resolve::LexicalResolver>::infer_variable_values:
+  -1,823,906    /data/code/rust/compiler/rustc_infer/src/infer/lexical_region_resolve/mod.rs
+    -729,184    /data/code/rust/library/alloc/src/vec/mod.rs
+
+> -4,557,400  <alloc::vec::Vec<rustc_infer::traits::FulfillmentError> as alloc::vec::spec_from_iter::SpecFromIter<rustc_infer::traits::FulfillmentError, core::iter::adapters::map::Map<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>, rustc_trait_selection::traits::fulfill::to_fulfillment_error>>>::from_iter:
+  -1,549,516    /data/code/rust/library/alloc/src/vec/in_place_collect.rs
+    -638,036    /data/code/rust/library/core/src/iter/adapters/map.rs
+    -638,036    /data/code/rust/library/alloc/src/raw_vec.rs
+
+>  4,528,992  <rustc_middle::ty::FilterClauses>::by_trait:
+   1,282,286    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+   1,135,680    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+
+>  3,448,851  <rustc_infer::infer::ShallowResolver as rustc_type_ir::fold::FallibleTypeFolder<rustc_middle::ty::context::TyCtxt>>::try_fold_predicate:
+     799,728    /data/code/rust/compiler/rustc_type_ir/src/fold.rs
+     799,713    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+     649,779    /data/code/rust/compiler/rustc_middle/src/ty/structural_impls.rs
+     633,117    /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+
+> -3,387,882  core::ptr::drop_in_place::<rustc_infer::infer::InferCtxt>:
+  -2,190,682    /data/code/rust/library/core/src/ptr/mod.rs
+    -729,184    /data/code/rust/library/alloc/src/raw_vec.rs
+
+> -3,007,884  <rustc_data_structures::transitive_relation::TransitiveRelationBuilder<rustc_middle::ty::region::Region>>::freeze:
+  -1,822,960    /data/code/rust/compiler/rustc_data_structures/src/transitive_relation.rs
+    -865,906    /data/code/rust/compiler/rustc_index/src/bit_set.rs
+
+> -2,911,119  <dyn rustc_infer::traits::engine::TraitEngine as rustc_trait_selection::traits::engine::TraitEngineExt>::new:
+    -883,515    /data/code/rust/compiler/rustc_data_structures/src/obligation_forest/mod.rs
+    -680,617    /data/code/rust/compiler/rustc_trait_selection/src/traits/engine.rs
+
+> -2,825,588  core::ptr::drop_in_place::<alloc::vec::into_iter::IntoIter<rustc_data_structures::obligation_forest::Error<rustc_trait_selection::traits::fulfill::PendingPredicateObligation, rustc_infer::traits::FulfillmentErrorCode>>>:
+  -1,914,108    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -2,688,866  <rustc_trait_selection::traits::fulfill::FulfillmentContext as rustc_infer::traits::engine::TraitEngine>::collect_remaining_errors:
+    -911,480    /data/code/rust/compiler/rustc_trait_selection/src/traits/fulfill.rs
+
+>  2,668,627  <rustc_middle::ty::predicate::Clause>::kind:
+   1,436,953    /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+   1,231,674    /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+
+> -2,643,292  core::ptr::drop_in_place::<rustc_infer::infer::region_constraints::RegionConstraintData>:
+  -2,369,848    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -2,597,886  <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::process_obligations::<rustc_trait_selection::traits::fulfill::FulfillProcessor>:
+  -1,753,731    /data/code/rust/compiler/rustc_data_structures/src/obligation_forest/mod.rs
+
+>  2,537,337  <alloc::raw_vec::RawVec<_, _>>::reserve::do_reserve_and_handle::<rustc_middle::ty::Ty, alloc::alloc::Global>:
+   1,505,120    /data/code/rust/library/alloc/src/raw_vec.rs
+
+> -2,461,502  core::ptr::drop_in_place::<alloc::vec::Vec<rustc_infer::infer::region_constraints::Verify>>:
+  -2,278,978    /data/code/rust/library/core/src/ptr/mod.rs
+
+>  2,326,102  <rustc_middle::ty::context::TyCtxt>::mk_clauses:
+  -1,418,631    /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+   1,042,070    /data/code/rust/library/core/src/num/mod.rs
+     788,547    /data/code/rust/library/core/src/ptr/non_null.rs
+     627,927    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -2,302,696  core::ptr::drop_in_place::<rustc_trait_selection::traits::select::SelectionContext>:
+  -1,822,940    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -2,298,504  rustc_trait_selection::traits::normalize::normalize_with_depth_to::<alloc::vec::Vec<rustc_middle::ty::predicate::Clause>>::{closure#0}:
+  -1,275,352    /data/code/rust/compiler/rustc_trait_selection/src/traits/normalize.rs
+
+> -2,297,491  <rustc_trait_selection::traits::fulfill::FulfillmentContext as rustc_infer::traits::engine::TraitEngine>::select_where_possible:
+  -1,705,029    /data/code/rust/compiler/rustc_trait_selection/src/traits/fulfill.rs
+
+>  2,235,456  <smallvec::SmallVec<[rustc_middle::ty::Ty; 8]>>::try_grow:
+   1,499,238    /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/smallvec-1.13.2/src/lib.rs
+
+>  2,193,839  _int_free_merge_chunk:/usr/src/debug/glibc/glibc/malloc/malloc.c
+
+> -2,187,624  rustc_infer::infer::lexical_region_resolve::resolve:
+  -1,822,960    /data/code/rust/compiler/rustc_infer/src/infer/lexical_region_resolve/mod.rs
+
+> -2,187,552  <rustc_infer::infer::region_constraints::RegionConstraintCollector>::into_infos_and_data:
+  -1,139,350    /data/code/rust/library/core/src/ptr/mod.rs
+  -1,002,628    /data/code/rust/compiler/rustc_infer/src/infer/region_constraints/mod.rs
+
+>  2,097,819  <rustc_middle::ty::TermKind as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_middle::ty::generic_args::ArgFolder>:
+   1,837,716    /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+
+> -1,966,392  <rustc_infer::infer::outlives::env::OutlivesEnvironment>::builder:
+  -1,686,238    /data/code/rust/compiler/rustc_infer/src/infer/outlives/env.rs
+
+>  1,935,039  unlink_chunk.isra.0:/usr/src/debug/glibc/glibc/malloc/malloc.c
+
+>  1,891,731  _int_free_create_chunk:/usr/src/debug/glibc/glibc/malloc/malloc.c
+
+> -1,868,534  <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::compress::<<rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#2}>:
+  -1,048,202    /data/code/rust/compiler/rustc_data_structures/src/obligation_forest/mod.rs
+
+>  1,821,270  alloc::raw_vec::finish_grow::<alloc::alloc::Global>:
+     900,420    /data/code/rust/library/alloc/src/raw_vec.rs
+
+> -1,797,599  rustc_trait_selection::traits::project::opt_normalize_projection_type:
+    -637,210    /data/code/rust/compiler/rustc_trait_selection/src/traits/project.rs
+
+>  1,742,838  <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_infer::infer::ShallowResolver>:
+   1,543,871    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+
+> -1,731,812  core::ptr::drop_in_place::<rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>:
+  -1,367,220    /data/code/rust/library/core/src/ptr/mod.rs
+
+>  1,620,990  __rdl_realloc:
+     926,280    /data/code/rust/library/std/src/sys/pal/unix/alloc.rs
+     694,710    /data/code/rust/library/std/src/alloc.rs
+
+> -1,269,702  <core::iter::adapters::GenericShunt<core::iter::adapters::by_ref_sized::ByRefSized<core::iter::adapters::filter_map::FilterMap<core::iter::adapters::copied::Copied<core::slice::iter::Iter<rustc_middle::ty::predicate::Clause>>, <rustc_infer::infer::InferCtxt>::process_registered_region_obligations<<rustc_infer::infer::InferCtxt as rustc_trait_selection::regions::InferCtxtRegionExt>::resolve_regions::{closure#0}>::{closure#0}>>, core::result::Result<core::convert::Infallible, (rustc_middle::ty::sty::Binder<rustc_middle::ty::predicate::OutlivesPredicate<rustc_middle::ty::Ty, rustc_middle::ty::region::Region>>, rustc_infer::infer::SubregionOrigin)>> as core::iter::traits::iterator::Iterator>::next:
+    -987,414    /data/code/rust/library/core/src/iter/adapters/mod.rs
+
+> -1,235,726  core::ptr::drop_in_place::<alloc::vec::into_iter::IntoIter<rustc_infer::traits::Obligation<rustc_middle::ty::predicate::Predicate>>>:
+    -891,028    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -1,230,871  core::ptr::drop_in_place::<alloc::vec::Vec<rustc_infer::infer::RegionObligation>>:
+  -1,139,507    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -1,230,498  core::ptr::drop_in_place::<rustc_infer::infer::outlives::env::OutlivesEnvironment>:
+    -683,610    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -1,230,498  core::ptr::drop_in_place::<core::cell::RefCell<indexmap::map::IndexMap<rustc_span::span_encoding::Span, (alloc::vec::Vec<rustc_middle::ty::predicate::Predicate>, rustc_span::ErrorGuaranteed), core::hash::BuildHasherDefault<rustc_hash::FxHasher>>>>:
+  -1,048,202    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -1,230,498  <core::iter::adapters::map::Map<core::iter::adapters::filter::Filter<core::iter::adapters::enumerate::Enumerate<core::slice::iter::Iter<rustc_data_structures::obligation_forest::Node<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>>, <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#0}>, <rustc_data_structures::obligation_forest::ObligationForest<rustc_trait_selection::traits::fulfill::PendingPredicateObligation>>::to_errors<rustc_infer::traits::FulfillmentErrorCode>::{closure#1}> as core::iter::traits::iterator::Iterator>::next:
+    -911,480    /data/code/rust/library/core/src/iter/adapters/map.rs
+
+> -1,184,969  core::ptr::drop_in_place::<alloc::vec::Vec<(rustc_infer::infer::region_constraints::Constraint, rustc_infer::infer::SubregionOrigin)>>:
+  -1,093,656    /data/code/rust/library/core/src/ptr/mod.rs
+
+> -1,183,461  <&rustc_middle::ty::list::RawList<(), rustc_middle::ty::generic_args::GenericArg> as rustc_type_ir::fold::TypeFoldable<rustc_middle::ty::context::TyCtxt>>::try_fold_with::<rustc_trait_selection::traits::normalize_param_env_or_error::{closure#0}::ConstNormalizer>:
+    -955,205    /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+
+> -1,048,274  core::ptr::drop_in_place::<rustc_infer::infer::region_constraints::RegionConstraintStorage>:
+    -683,556    /data/code/rust/library/core/src/ptr/mod.rs
+
+>   -965,615  <rustc_middle::ty::Ty as rustc_type_ir::fold::TypeSuperFoldable<rustc_middle::ty::context::TyCtxt>>::try_super_fold_with::<rustc_trait_selection::traits::normalize_param_env_or_error::{closure#0}::ConstNormalizer>:
+    -909,516    /data/code/rust/compiler/rustc_middle/src/ty/structural_impls.rs
+
+>   -865,906  core::ptr::drop_in_place::<std::collections::hash::map::HashMap<rustc_data_structures::obligation_forest::ObligationTreeId, std::collections::hash::set::HashSet<rustc_middle::ty::ParamEnvAnd<rustc_middle::ty::predicate::Predicate>, core::hash::BuildHasherDefault<rustc_hash::FxHasher>>, core::hash::BuildHasherDefault<rustc_hash::FxHasher>>>:
+    -729,184    /data/code/rust/library/core/src/ptr/mod.rs
+
+>   -865,906  <rustc_middle::ty::context::TyCtxt as rustc_infer::infer::TyCtxtInferExt>::infer_ctxt:/data/code/rust/compiler/rustc_infer/src/infer/mod.rs
+
+>   -862,766  core::ptr::drop_in_place::<rustc_query_system::cache::Cache<(rustc_middle::ty::ParamEnv, rustc_middle::ty::predicate::TraitPredicate), core::result::Result<core::option::Option<rustc_middle::traits::select::SelectionCandidate>, rustc_middle::traits::SelectionError>>>:
+    -728,796    /data/code/rust/library/core/src/ptr/mod.rs
+
+>    717,863  __memset_avx2_unaligned_erms:/usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_data_structures/src/obligation_forest/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-4,017,008  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_data_structures/src/sharded.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+6,047,234  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_data_structures/src/sip128.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+3,652,240  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_data_structures/src/sync/lock.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+1,769,541  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_data_structures/src/transitive_relation.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,822,960  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_index/src/bit_set.rs
+--------------------------------------------------------------------------------
+Ir______ 
+
+-865,798  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/infer/lexical_region_resolve/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-3,650,808  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/infer/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-6,484,744  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/infer/outlives/env.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-3,190,180  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/infer/outlives/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-2,510,038  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/infer/region_constraints/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,041,099  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_infer/src/traits/util.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+52,691,046  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/query/mod.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+1,005,099  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/query/plumbing.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+5,784,685  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/context.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+57,381,892  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/fold.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+49,524,106  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/generic_args.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+41,713,389  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/list.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+3,437,666  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+12,704,439  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/predicate.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+21,783,624  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/structural_impls.rs
+--------------------------------------------------------------------------------
+Ir______ 
+
+-755,985  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_middle/src/ty/sty.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+28,406,184  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_query_system/src/query/caches.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,283,922  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_query_system/src/query/plumbing.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+949,645  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_span/src/def_id.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+3,910,757  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/regions.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,046,336  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/auto_trait.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+902,399  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/engine.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-2,849,294  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/fulfill.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-3,286,827  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-3,638,689  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/normalize.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-3,867,143  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/project.rs
+--------------------------------------------------------------------------------
+Ir______ 
+
+-722,848  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_trait_selection/src/traits/select/candidate_assembly.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+859,953  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_type_ir/src/flags.rs
+--------------------------------------------------------------------------------
+Ir______ 
+
+-181,476  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_type_ir/src/fold.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,145,815  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_type_ir/src/interner.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+25,449,716  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_type_ir/src/predicate_kind.rs
+--------------------------------------------------------------------------------
+Ir_________ 
+
+107,404,045  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/compiler/rustc_type_ir/src/visit.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+11,735,691  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/alloc.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+251,732  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/raw_vec.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+852,304  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/vec/extract_if.rs
+--------------------------------------------------------------------------------
+Ir______ 
+
+-360,270  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/vec/in_place_collect.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,646,422  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/vec/into_iter.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+187,084  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/alloc/src/vec/mod.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,997,056  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/../../stdarch/crates/core_arch/src/x86/sse2.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+10,565,795  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/cell.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-2,674,722  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/cmp.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+4,260,304  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/intrinsics.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+5,502,663  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/adapters/filter.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,313,016  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/adapters/filter_map.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-2,286,421  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/adapters/map.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-2,471,149  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/adapters/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,943,707  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/range.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+1,085,904  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/iter/traits/iterator.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+3,787,432  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/mem/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+23,108,859  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/num/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+16,144,704  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/num/nonzero.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,456,278  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/ops/bit.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+1,861,952  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/option.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+1,081,615  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/ptr/const_ptr.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+3,602,841  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/ptr/mod.rs
+--------------------------------------------------------------------------------
+Ir_________ 
+
+-13,597,866  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/ptr/mut_ptr.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+5,325,904  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/ptr/non_null.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+7,635,713  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/slice/cmp.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,645,191  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/core/src/slice/iter/macros.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,976,297  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/std/src/alloc.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+705,474  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /data/code/rust/library/std/src/sys/pal/unix/alloc.rs
+--------------------------------------------------------------------------------
+Ir_____ 
+
+954,984  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/bitmask.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+15,962,774  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/hashbrown-0.14.3/src/raw/mod.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+66,971,002  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+8,118,876  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/indexmap-2.2.6/src/map/iter.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+6,725,676  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/parking_lot-0.12.1/src/raw_mutex.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,498,808  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rustc-hash-1.1.0/src/lib.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+2,163,547  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/smallvec-1.13.2/src/lib.rs
+--------------------------------------------------------------------------------
+Ir_______ 
+
+5,349,973  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /home/lukas/.cargo/registry/src/index.crates.io-6f17d22bba15001f/stacker-0.1.15/src/lib.rs
+--------------------------------------------------------------------------------
+Ir________ 
+
+-1,296,268  <unknown (line 0)>
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /usr/src/debug/glibc/glibc/malloc/arena.c
+--------------------------------------------------------------------------------
+Unannotated because one or more of these original files are unreadable:
+- /usr/src/debug/glibc/glibc/malloc/arena.c
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /usr/src/debug/glibc/glibc/malloc/malloc.c
+--------------------------------------------------------------------------------
+Unannotated because one or more of these original files are unreadable:
+- /usr/src/debug/glibc/glibc/malloc/malloc.c
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+--------------------------------------------------------------------------------
+Unannotated because one or more of these original files are unreadable:
+- /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+
+--------------------------------------------------------------------------------
+-- Annotated source file: /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+--------------------------------------------------------------------------------
+Unannotated because one or more of these original files are unreadable:
+- /usr/src/debug/glibc/glibc/string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+
+--------------------------------------------------------------------------------
+-- Annotation summary
+--------------------------------------------------------------------------------
+Ir_________ 
+
+          0    annotated: files known & above threshold & readable, line numbers known
+579,802,756    annotated: files known & above threshold & readable, line numbers unknown
+          0  unannotated: files known & above threshold & two or more non-identical
+ 36,490,114  unannotated: files known & above threshold & unreadable 
+ -5,348,040  unannotated: files known & below threshold
+     84,494  unannotated: files unknown
+
