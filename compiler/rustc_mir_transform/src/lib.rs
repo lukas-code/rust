@@ -528,20 +528,27 @@ fn mir_drops_elaborated_and_const_checked(tcx: TyCtxt<'_>, def: LocalDefId) -> &
     // parameters (e.g. `<T as Foo>::MyItem`). This can confuse
     // the normalization code (leading to cycle errors), since
     // it's usually never invoked in this way.
-    let predicates = tcx
-        .predicates_of(body.source.def_id())
-        .predicates
-        .iter()
-        .filter_map(|(p, _)| if p.is_global() { Some(*p) } else { None });
-    if traits::impossible_predicates(tcx, traits::elaborate(tcx, predicates).collect()) {
-        trace!("found unsatisfiable predicates for {:?}", body.source);
-        // Clear the body to only contain a single `unreachable` statement.
-        let bbs = body.basic_blocks.as_mut();
-        bbs.raw.truncate(1);
-        bbs[START_BLOCK].statements.clear();
-        bbs[START_BLOCK].terminator_mut().kind = TerminatorKind::Unreachable;
-        body.var_debug_info.clear();
-        body.local_decls.raw.truncate(body.arg_count + 1);
+    //
+    // Note, however, that some anon consts (such as array lengths) can be
+    // evaluated despite some of their (parent's) predicates being unsatisfiable
+    // and must not be replaced with `unreachable`.
+    if tcx.def_kind(def) != DefKind::AnonConst {
+        let predicates = tcx
+            .predicates_of(body.source.def_id())
+            .instantiate_identity(tcx)
+            .predicates
+            .into_iter()
+            .filter(|p| p.is_global());
+        if traits::impossible_predicates(tcx, traits::elaborate(tcx, predicates).collect()) {
+            trace!("found unsatisfiable predicates for {:?}", body.source);
+            // Clear the body to only contain a single `unreachable` statement.
+            let bbs = body.basic_blocks.as_mut();
+            bbs.raw.truncate(1);
+            bbs[START_BLOCK].statements.clear();
+            bbs[START_BLOCK].terminator_mut().kind = TerminatorKind::Unreachable;
+            body.var_debug_info.clear();
+            body.local_decls.raw.truncate(body.arg_count + 1);
+        }
     }
 
     run_analysis_to_runtime_passes(tcx, &mut body);

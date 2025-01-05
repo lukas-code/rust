@@ -1,0 +1,28 @@
+warning: trait bound str: Sized does not depend on any type or lifetime parameters
+  --> $DIR/ice-mir-opt-trivial-parent-bounds.rs:12:10
+   |
+LL |     str: Sized,
+   |          ^^^^^
+   |
+   = note: `#[warn(trivial_bounds)]` on by default
+
+warning: trait bound str: Sized does not depend on any type or lifetime parameters
+  --> $DIR/ice-mir-opt-trivial-parent-bounds.rs:20:10
+   |
+LL |     str: Sized,
+   |          ^^^^^
+
+warning: trait bound str: Sized does not depend on any type or lifetime parameters
+  --> $DIR/ice-mir-opt-trivial-parent-bounds.rs:28:10
+   |
+LL |     str: Sized;
+   |          ^^^^^
+
+warning: trait bound str: Sized does not depend on any type or lifetime parameters
+  --> $DIR/ice-mir-opt-trivial-parent-bounds.rs:32:10
+   |
+LL |     str: Sized,
+   |          ^^^^^
+
+warning: 4 warnings emitted
+

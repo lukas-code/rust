@@ -1,6 +1,8 @@
-//@ known-bug: #131507
 //@ compile-flags: -Zmir-enable-passes=+GVN -Zmir-enable-passes=+Inline -Zvalidate-mir
+//@ check-pass
+
 #![feature(non_lifetime_binders)]
+#![expect(incomplete_features)]
 
 fn brick()
 where
@@ -8,3 +10,5 @@ where
 {
     || format_args!("");
 }
+
+fn main() {}
