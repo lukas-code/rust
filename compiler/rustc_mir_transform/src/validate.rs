@@ -1,6 +1,6 @@
 //! Validates the MIR to ensure that invariants are upheld.
 
-use rustc_abi::{ExternAbi, FIRST_VARIANT, Size};
+use rustc_abi::{BackendRepr, ExternAbi, Size, FIRST_VARIANT};
 use rustc_attr_parsing::InlineAttr;
 use rustc_data_structures::fx::{FxHashMap, FxHashSet};
 use rustc_hir::LangItem;
@@ -1595,5 +1595,41 @@ impl<'a, 'tcx> Visitor<'tcx> for TypeChecker<'a, 'tcx> {
         }
 
         self.super_terminator(terminator, location);
+    }
+
+    fn visit_const_operand(&mut self, constant: &ConstOperand<'tcx>, location: Location) {
+        let Const::Val(const_value, ty) = constant.const_ else {
+            return;
+        };
+        let Ok(layout) = self.tcx.layout_of(self.typing_env.as_query_input(ty)) else {
+            return;
+        };
+        match const_value {
+            ConstValue::Scalar(scalar) => {
+                if !layout.backend_repr.is_scalar() {
+                    self.fail(
+                        location,
+                        format!("scalar const value `{scalar}` has non-scalar layout: {layout:#?}"),
+                    );
+                }
+            }
+            ConstValue::ZeroSized => {
+                if !layout.is_zst() {
+                    self.fail(
+                        location,
+                        format!("ZST const value has non-ZST layout: {layout:#?}"),
+                    );
+                }
+            }
+            ConstValue::Slice { .. } => {
+                if !matches!(layout.backend_repr, BackendRepr::ScalarPair(..)) {
+                    self.fail(
+                        location,
+                        format!("slice const value has non-scalar-pair layout: {layout:#?}"),
+                    );
+                }
+            }
+            ConstValue::Indirect { .. } => {}
+        }
     }
 }
