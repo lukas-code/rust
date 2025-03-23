@@ -1,0 +1,35 @@
+error[E0606]: casting `&[u8; 3]` as `*const [u32; 3]` is invalid
+  --> $DIR/array-to-ptr-suggestions.rs:6:13
+   |
+LL |     let _ = &a as *const [u32; 3];
+   |             ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: you can cast to `*const [u8; 3]` instead
+
+error[E0606]: casting `&[u8; 3]` as `*const [u8; 4]` is invalid
+  --> $DIR/array-to-ptr-suggestions.rs:7:13
+   |
+LL |     let _ = &a as *const [u8; 4];
+   |             ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: you can cast to `*const [u8; 3]` instead
+
+error[E0606]: casting `&mut [u8; 3]` as `*mut [u32; 3]` is invalid
+  --> $DIR/array-to-ptr-suggestions.rs:9:13
+   |
+LL |     let _ = &mut a as *mut [u32; 3];
+   |             ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: you can cast to `*mut [u8; 3]` instead
+
+error[E0606]: casting `&mut [u8; 3]` as `*mut [u8; 4]` is invalid
+  --> $DIR/array-to-ptr-suggestions.rs:10:13
+   |
+LL |     let _ = &mut a as *mut [u8; 4];
+   |             ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: you can cast to `*mut [u8; 3]` instead
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0606`.

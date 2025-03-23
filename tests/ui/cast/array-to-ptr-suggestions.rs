@@ -1,0 +1,11 @@
+//@ run-rustfix
+
+fn main() {
+    let mut a: [u8; 3] = [1, 2, 3];
+
+    let _ = &a as *const [u32; 3]; //~ ERROR casting `&[u8; 3]` as `*const [u32; 3]` is invalid
+    let _ = &a as *const [u8; 4]; //~ ERROR casting `&[u8; 3]` as `*const [u8; 4]` is invalid
+
+    let _ = &mut a as *mut [u32; 3]; //~ ERROR casting `&mut [u8; 3]` as `*mut [u32; 3]` is invalid
+    let _ = &mut a as *mut [u8; 4]; //~ ERROR casting `&mut [u8; 3]` as `*mut [u8; 4]` is invalid
+}

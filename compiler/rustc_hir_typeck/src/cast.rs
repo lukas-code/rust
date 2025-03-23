@@ -182,6 +182,8 @@ enum CastError<'tcx> {
     IntToWideCast(Option<&'static str>),
     ForeignNonExhaustiveAdt,
     PtrPtrAddingAutoTrait(Vec<DefId>),
+    /// Attempted to cast from `&[T; N]` to `*const U` where `U` is neither `T` nor `[T; N]`.
+    InvalidArrayPtrCast,
 }
 
 impl From<ErrorGuaranteed> for CastError<'_> {
@@ -611,6 +613,57 @@ impl<'a, 'tcx> CastCheck<'tcx> {
                     },
                 });
             }
+            CastError::InvalidArrayPtrCast => {
+                let expr_ty = fcx.resolve_vars_if_possible(self.expr_ty);
+                let cast_ty = fcx.resolve_vars_if_possible(self.cast_ty);
+
+                let bug = || {
+                    span_bug!(
+                        self.span,
+                        "source of `InvalidArrayPtrCast`\nsource: {expr_ty}\ntarget: {cast_ty}`"
+                    )
+                };
+                let ty::Ref(_, expr_array, _) = *expr_ty.kind() else { bug() };
+                let ty::Array(expr_elem, _) = *expr_array.kind() else { bug() };
+                let ty::RawPtr(cast_pointee, cast_mutbl) = *cast_ty.kind() else { bug() };
+
+                let mut diag =
+                    make_invalid_casting_error(self.span, self.expr_ty, self.cast_ty, fcx);
+
+                if cast_pointee.is_array() {
+                    // If the target is an array type, assume that either the element type
+                    // or length was typo'd and suggest a reference to pointer coercion cast
+                    // instead of an array to pointer cast.
+                    let target_ty = Ty::new_ptr(fcx.tcx, expr_array, cast_mutbl);
+                    diag.span_suggestion_hidden(
+                        self.cast_span,
+                        format!("you can cast to `{target_ty}` instead"),
+                        target_ty,
+                        Applicability::MaybeIncorrect,
+                    );
+                } else {
+                    // Suggest casting to `*const/mut [T; N]` or `*const/mut T` instead.
+                    let array_target_ty = Ty::new_ptr(fcx.tcx, expr_array, cast_mutbl);
+                    let elem_target_ty = Ty::new_ptr(fcx.tcx, expr_elem, cast_mutbl);
+                    diag.help(format!(
+                        "you can cast to `{array_target_ty}` or `{elem_target_ty}` instead"
+                    ));
+                    diag.tool_only_span_suggestion(
+                        self.cast_span,
+                        format!("cast to `{array_target_ty}` instead"),
+                        array_target_ty,
+                        Applicability::MaybeIncorrect,
+                    );
+                    diag.tool_only_span_suggestion(
+                        self.cast_span,
+                        format!("cast to `{elem_target_ty}` instead"),
+                        elem_target_ty,
+                        Applicability::MaybeIncorrect,
+                    );
+                };
+
+                diag.emit();
+            }
         }
     }
 
@@ -689,6 +742,21 @@ impl<'a, 'tcx> CastCheck<'tcx> {
             self.span,
             errors::TrivialCast { numeric, expr_ty, cast_ty },
         );
+    }
+
+    /// This is like `fcx.demand_eqtype`, but doesn't report a type error on mismatch.
+    ///
+    /// We use this to report a cast error rather than type mismatch error.
+    fn demand_eqtype(
+        &self,
+        fcx: &FnCtxt<'a, 'tcx>,
+        expected: Ty<'tcx>,
+        actual: Ty<'tcx>,
+    ) -> Result<(), TypeError<'tcx>> {
+        let cause = fcx.misc(self.span);
+        fcx.at(&cause, fcx.param_env)
+            .eq(DefineOpaqueTypes::Yes, expected, actual)
+            .map(|infer_ok| fcx.register_infer_ok_obligations(infer_ok))
     }
 
     #[instrument(skip(fcx), level = "debug")]
@@ -928,14 +996,7 @@ impl<'a, 'tcx> CastCheck<'tcx> {
                         );
 
                         // `dyn Src = dyn Dst`, this checks for matching traits/generics/projections
-                        // This is `fcx.demand_eqtype`, but inlined to give a better error.
-                        let cause = fcx.misc(self.span);
-                        if fcx
-                            .at(&cause, fcx.param_env)
-                            .eq(DefineOpaqueTypes::Yes, src_obj, dst_obj)
-                            .map(|infer_ok| fcx.register_infer_ok_obligations(infer_ok))
-                            .is_err()
-                        {
+                        if self.demand_eqtype(fcx, src_obj, dst_obj).is_err() {
                             return Err(CastError::DifferingKinds { src_kind, dst_kind });
                         }
 
@@ -1062,9 +1123,10 @@ impl<'a, 'tcx> CastCheck<'tcx> {
                     )
                     });
 
-                // this will report a type mismatch if needed
-                fcx.demand_eqtype(self.span, *ety, m_cast.ty);
-                return Ok(CastKind::ArrayPtrCast);
+                return match self.demand_eqtype(fcx, *ety, m_cast.ty) {
+                    Ok(()) => Ok(CastKind::ArrayPtrCast),
+                    Err(_) => Err(CastError::InvalidArrayPtrCast),
+                };
             }
         }
 
